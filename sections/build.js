@@ -2,7 +2,8 @@
    vertical pipeline of search steps beside the filters. The 3 px line runs down through the
    steps, turns under the pipeline, rises between the two columns and comes down through the
    filters. The picture is also the record of a run: every search step carries the papers it
-   found; on the line under the pipeline stand the total found and the duplicates merged. A
+   found; on the line under the pipeline stand the total found and the duplicates merged. At
+   most two steps stand side by side, and every step card has one width and one layout. A
    filter is a card the line passes through, as tall as the filter is heavy: a rule on a paper's
    record takes one row, a query a second row, a criterion a language model reads the lines of
    its prompt. Above each card a pale bar lies across the line, as long as the papers that reach
@@ -25,7 +26,7 @@
     { icon: '<rect x="3" y="3" width="14" height="14" rx="3.4"/><path d="M6.7 10.4l2.4 2.4 4.4-5.4"/>', title: 'Set your own bar', text: 'Choose from a library of criteria, from a publication year to a judgment a language model makes on the full text.' }
   ];
 
-  /* a kind of step: its name (split where a small card breaks it) and what it does */
+  /* a kind of step: its name (split where the one-column card breaks it) and what it does */
   var KINDS = {
     seed: { name: ['Seed', 'set'], does: 'The papers you trust' },
     back: { name: ['Backward', 'Searcher'], does: 'The papers each paper cites' },
@@ -33,12 +34,12 @@
     sem: { name: ['Semantic', 'Search'], does: 'The papers closest in meaning' },
     db: { name: ['Database', 'Search'], does: 'Queries written from the question' }
   };
-  /* a preset: its rows from top to bottom; the steps of one row run side by side. A step keeps
-     its id from preset to preset, so it is seen to move, not to be replaced. */
+  /* a preset: its rows from top to bottom; the steps of one row (two at most) run side by side.
+     A step keeps its id from preset to preset, so it is seen to move, not to be replaced. */
   var PRESETS = [
     { id: 'light', label: 'Light', rows: [['seed'], ['b1', 'f1'], ['s1']] },
     { id: 'medium', label: 'Medium', rows: [['seed'], ['b1', 'f1'], ['s1', 'd1'], ['b2']] },
-    { id: 'heavy', label: 'Heavy', rows: [['seed'], ['b1', 'f1', 'd1'], ['s1'], ['b2', 'f2'], ['s2']] }
+    { id: 'heavy', label: 'Heavy', rows: [['seed'], ['d1'], ['b1', 'f1'], ['b2', 'f2'], ['s1']] }
   ];
   function kindOf(id) { return id === 'seed' ? 'seed' : { b: 'back', f: 'fwd', s: 'sem', d: 'db' }[id.charAt(0)]; }
   function presetOf(id) { return PRESETS.filter(function (p) { return p.id === id; })[0]; }
@@ -51,7 +52,7 @@
      that go on after each; the last count is the papers kept. Medium is the page's example:
      its totals are read from OK.DATA. */
   function search(key) { return D.searches.filter(function (s) { return s.key === key; })[0].found; }
-  var FOUND = { b1: 3480, f1: 2960, d1: search('db'), s1: search('sem'), b2: 1770, f2: 1540, s2: 2390 };
+  var FOUND = { b1: 3480, f1: 2960, d1: search('db'), s1: search('sem'), b2: 1770, f2: 1540 };
   var LIBRARY = {
     'Year': { setting: '2015 or later' },
     'Citations': { setting: 'At least 5 a year' },
@@ -64,7 +65,7 @@
   var RECORD = {
     light: { found: 11070, merged: 1730, filters: ['Year', 'Citations', 'Venue', 'Keywords', 'Title criteria', 'Abstract criteria'], pass: [6400, 4670, 3990, 1430, 480, 245] },
     medium: { found: D.found, merged: D.found - D.deduped, filters: ['Year', 'Venue', 'Keywords', 'Title criteria', 'Abstract criteria', 'Full-text criteria'], pass: [8500, 7300, 2600, 900, 380, D.kept] },
-    heavy: { found: 18880, merged: 3880, filters: ['Year', 'Citations', 'Keywords', 'Title criteria', 'Abstract criteria', 'Full-text criteria'], pass: [10280, 7500, 2700, 930, 400, 237] }
+    heavy: { found: 16490, merged: 3090, filters: ['Year', 'Citations', 'Keywords', 'Title criteria', 'Abstract criteria', 'Full-text criteria'], pass: [9180, 6700, 2650, 920, 395, 230] }
   };
   /* the most papers that reach the filters in any preset: the longest bar, so one length means one count in every preset */
   var MOST = Math.max.apply(null, PRESETS.map(function (P) { return RECORD[P.id].found - RECORD[P.id].merged; }));
@@ -72,37 +73,39 @@
   var PLACES = Math.max.apply(null, PRESETS.map(function (P) { return RECORD[P.id].filters.length; }));
 
   /* The two arrangements. Wide: pipeline and filters side by side, the pipeline spread over the
-     height the filters take. Narrow: one column, the filters under the pipeline.
-     card(n): the card of a step that stands in a row of n; pad, gap: inside a ground;
-     px: the line through the pipeline; top: the first card's top.
-     Wide: cross: the line's run under the pipeline's foot; gx: the line's rise between the
-     columns; fl: the filter cards' left edge; first: the first filter card's top under top.
-     Narrow: the line falls straight through everything; step: row to row; beads: the found
-     paper and the merged duplicates on the line, under the pipeline's foot; first: the first
-     filter card's top under the foot.
+     height the filters take; step cards and filter cards share one width, the widest any of
+     them needs. Narrow: one column, the filters under the pipeline.
+     ch: a step card's height; pad, gap: inside a ground; top: the first card's top.
+     Wide: cross: the line's run under the pipeline's foot; air: the clear room on each side of
+     the line's rise between the columns; first: the first filter card's top under top.
+     Narrow: cw: a step card's width; the line falls straight through everything; step: row to
+     row; beads: the found paper and the merged duplicates on the line, under the pipeline's
+     foot; first: the first filter card's top under the foot.
      FLOW: the pale bar across the line above a filter: its thickness, the room between two
      filter cards in whose middle it lies, and its length, which is head for no papers and grows
      evenly to most for MOST, so that the smallest count is still a bar and equal differences
      are equal lengths. END: from the last filter card down to the middle of the kept paper. */
-  var ROOMY = { id: 'roomy', cw: 255, ch: 80 }, SLIM = { id: 'slim', cw: 167, ch: 80 }, MINI = { id: 'mini', cw: 99, ch: 86 };
-  var FLOW = { h: 10, gap: 20, head: 12, most: 130 }, END = 46.5;
-  var WIDE = { card: function (n) { return n > 2 ? SLIM : ROOMY; }, pad: 9, gap: 9, px: 268.5, top: 40, cross: 62.5, gx: 565.5, fl: 594, first: 38 };
-  var NARROW = { narrow: true, card: function () { return MINI; }, vw: 325, pad: 7, gap: 7, px: 162.5, top: 40, step: 24, beads: [31, 79], first: 150 };
+  var FLOW = { h: 10, gap: 20, head: 12, most: 130 }, END = 42.5;
+  var WIDE = { ch: 80, pad: 9, gap: 9, top: 40, cross: 62.5, air: 22.5, first: 38 };
+  var NARROW = { narrow: true, vw: 325, cw: 150, ch: 82, pad: 7, gap: 7, top: 40, step: 24, beads: [31, 79], first: 150 };
 
   /* a filter card's height: one row for a rule, a second row for a query, the lines of a prompt under the name */
-  function tall(x) { return x.prompt ? 40 + 16 * x.prompt.length : x.query ? 66 : 40; }
+  function tall(x) { return x.prompt ? 41 + 16 * x.prompt.length : x.query ? 67 : 40; }
 
-  /** Returns where the rows, cards and line pieces of a preset stand: { rows, at, fmt, stubs, bottom }. span (wide): the height the rows are spread over. */
-  function arrange(P, G, span) {
-    var fmts = P.rows.map(function (r) { return G.card(r.length); });
-    var hs = P.rows.map(function (r, i) { return fmts[i].ch + (r.length > 1 ? 2 * G.pad : 0); });
+  /**
+   * Returns where the rows, cards and line pieces of a preset stand: { rows, at, stubs, bottom }.
+   * cw: a step card's width; px: the line through the pipeline; span (wide): the height the
+   * rows are spread over.
+   */
+  function arrange(P, G, cw, px, span) {
+    var hs = P.rows.map(function (r) { return G.ch + (r.length > 1 ? 2 * G.pad : 0); });
     var sum = hs.reduce(function (a, b) { return a + b; }, 0);
     var step = G.narrow ? G.step : (span - sum) / (hs.length - 1), y = G.top, prev = 0;
-    var out = { rows: [], at: {}, fmt: {}, stubs: [] };
+    var out = { rows: [], at: {}, stubs: [] };
     P.rows.forEach(function (ids, i) {
-      var n = ids.length, F = fmts[i], in_ = n > 1 ? G.pad : 0, w = n * F.cw + (n - 1) * G.gap + 2 * in_, x = G.px - w / 2, yy = Math.round(y);
+      var n = ids.length, in_ = n > 1 ? G.pad : 0, w = n * cw + (n - 1) * G.gap + 2 * in_, x = px - w / 2, yy = Math.round(y);
       out.rows.push({ x: x, y: yy, w: w, h: hs[i], group: n > 1 });
-      ids.forEach(function (id, k) { out.at[id] = { x: x + in_ + k * (F.cw + G.gap), y: yy + in_ }; out.fmt[id] = F; });
+      ids.forEach(function (id, k) { out.at[id] = { x: x + in_ + k * (cw + G.gap), y: yy + in_ }; });
       if (i) out.stubs.push({ y1: prev, y2: yy });
       prev = yy + hs[i];
       y += hs[i] + step;
@@ -112,20 +115,20 @@
   }
 
   /**
-   * Returns a step card's markup in one of the three card formats, drawn from its own top left
-   * corner. The papers the step found stand in the card's top right corner in every format; only
-   * the roomy card has room for what the step does.
+   * Returns a step card's markup, drawn from its own top left corner; cw: its width. Wide: the
+   * icon and the name on the first line; on the second, what the step does at the left and the
+   * papers it found at the right. Narrow: the name on two lines beside the icon, the papers it
+   * found under them at the right. Step names and filter names are set in the kit's task type.
    */
-  function card(id, F) {
-    var kind = kindOf(id), K = KINDS[kind], seed = kind === 'seed', mini = F === MINI, in_ = mini ? 10 : 13, i;
-    var s = '<rect class="card" x=".5" y=".5" width="' + (F.cw - 1) + '" height="' + (F.ch - 1) + '" rx="12.5"/>';
+  function card(id, G, cw) {
+    var kind = kindOf(id), K = KINDS[kind], seed = kind === 'seed', mini = G.narrow, in_ = mini ? 10 : 13, y2 = mini ? 68.5 : 64.5, i;
+    var s = '<rect class="card" x=".5" y=".5" width="' + (cw - 1) + '" height="' + (G.ch - 1) + '" rx="12.5"/>';
     if (seed) for (i = 0; i < 3; i++) s += mini ? OK.paper(17.5 + i * 19, 23, 15, 20, { seed: true }) : OK.paper(21 + i * 20.5, 28, 16, 21, { seed: true });
     else s += mini ? OK.tile(10, 10, 26, kind) : OK.tile(13, 13, 30, kind);
-    if (FOUND[id]) s += '<text class="cnt" x="' + (F.cw - in_) + '" y="' + (mini ? 27.5 : 33) + '" text-anchor="end">' + fmt(FOUND[id]) + '</text>';
-    if (mini) (seed ? [K.name.join(' ')] : K.name).forEach(function (l, k) { s += '<text class="ba-name" x="9.5" y="' + ((seed ? 63 : 56) + k * 18) + '">' + l + '</text>'; });
-    else if (F === ROOMY) s += '<text class="ba-name" x="' + (seed ? 81 : 54) + '" y="33.5">' + K.name.join(' ') + '</text><text class="note" x="13" y="64.5">' + K.does + '</text>';
-    else s += '<text class="ba-name" x="12.5" y="64.5">' + K.name.join(' ') + '</text>';
-    return s;
+    if (FOUND[id]) s += '<text class="cnt" x="' + (cw - in_) + '" y="' + y2 + '" text-anchor="end">' + fmt(FOUND[id]) + '</text>';
+    if (!mini) return s + '<text class="task" x="' + (seed ? 81 : 54) + '" y="35">' + K.name.join(' ') + '</text><text class="note" x="13" y="' + y2 + '">' + K.does + '</text>';
+    if (seed) return s + '<text class="task" x="9.5" y="' + y2 + '">' + K.name.join(' ') + '</text>';
+    return s + K.name.map(function (l, k) { return '<text class="task" x="45" y="' + (26 + k * 22) + '">' + l + '</text>'; }).join('');
   }
 
   /** Returns the picture's title for one preset: the steps row by row with what each found, then the filters with what each passes on. */
@@ -158,17 +161,23 @@
     function width(str, cls) { probe.setAttribute('class', cls); probe.textContent = str; return probe.getComputedTextLength(); }
     function group(parent, html) { var g = OK.svg('g', {}, parent); if (html) g.innerHTML = html; return g; }
 
-    /* ---- measures: a filter card is as wide as a roomy step card, or as its widest content
-            needs; its width is odd, so that the line through its middle is sharp ---- */
-    var tags = {}, fw = ROOMY.cw, x;
+    /* ---- measures: wide, step cards and filter cards share the width the widest of them needs;
+            narrow, a filter card takes what the widest filter needs. A card's width is odd, so
+            that the line through its middle is sharp ---- */
+    var tags = {}, need = 0, x;
+    function odd(w) { w = Math.ceil(w); return w + 1 - w % 2; }
     for (k in LIBRARY) {
       x = LIBRARY[k];
-      if (x.prompt) x.shown = x.prompt.map(function (l, i) { return (i ? '' : '“') + l + (i < x.prompt.length - 1 ? '' : '”'); });
+      if (x.prompt) x.shown = x.prompt.map(function (l, i) { return (i ? '' : '\u201c') + l + (i < x.prompt.length - 1 ? '' : '\u201d'); });
       else tags[k] = Math.ceil(width(x.setting || x.query, 'ba-set')) + 18;
-      fw = Math.max(fw, 26 + (x.prompt ? Math.max.apply(null, x.shown.map(function (l) { return width(l, 'ba-set'); })) : x.query ? tags[k] : width(k, 'ba-name') + 12 + tags[k]));
+      need = Math.max(need, 26 + (x.prompt ? Math.max.apply(null, x.shown.map(function (l) { return width(l, 'ba-set'); })) : x.query ? tags[k] : width(k, 'task') + 12 + tags[k]));
     }
-    fw = Math.ceil(fw); fw += 1 - fw % 2;
-    var c = G.cross, fl = narrow ? G.px - fw / 2 : G.fl, fx = fl + fw / 2;   // the filter cards' left edge; the line through them
+    // a step card holds its icon and name, and under them what it does, a gap and its count
+    if (!narrow) for (k in KINDS) need = Math.max(need, (k === 'seed' ? 94 : 67) + width(KINDS[k].name.join(' '), 'task'), 34 + width(KINDS[k].does, 'note') + width('0,000', 'cnt'));
+    var fw = odd(need), cw = narrow ? G.cw : fw;         // a filter card's width; a step card's width
+    var px = narrow ? G.vw / 2 : cw + G.gap / 2 + G.pad;  // the line through the pipeline: the middle of a row of two
+    var gx = 2 * px + G.air;                              // wide: the line's rise between the columns
+    var c = G.cross, fl = narrow ? px - fw / 2 : gx + G.air, fx = fl + fw / 2;   // the filter cards' left edge; the line through them
     var t0 = narrow ? G.first : G.top + G.first, arch = G.top + 1.5;       // the first filter card's top; wide: the line's turn over to the filters
     var vw = narrow ? G.vw : fl + fw;
     /** Returns where the filters of a record stand in the column: { y: each card's top, row: the middle of the bar above each, kept: the middle of the kept paper }. */
@@ -184,10 +193,10 @@
       var FOUND_W = 'found', MERGED_W = 'duplicates merged', b1, b2, lab;
       if (narrow) {
         // both papers stand on the line as it falls, their counts beside them
-        b1 = { x: G.px, y: G.beads[0] }; b2 = { x: G.px, y: G.beads[1] };
-        d.a = OK.svg('path', { class: 'lead cut', pathLength: 1, d: 'M' + G.px + ',-.5 V' + (b1.y - 13.5) }, gTail);
-        d.m = OK.svg('path', { class: 'lead cut', pathLength: 1, d: 'M' + G.px + ',' + (b1.y + 13.5) + ' V' + (b2.y - 18.5) }, gTail);
-        d.b1 = OK.svg('path', { class: 'lead cut', pathLength: 1, d: 'M' + G.px + ',' + (b2.y + 13.5) + ' V' + (t0 + 0.5) }, gTail);
+        b1 = { x: px, y: G.beads[0] }; b2 = { x: px, y: G.beads[1] };
+        d.a = OK.svg('path', { class: 'lead cut', pathLength: 1, d: 'M' + px + ',-.5 V' + (b1.y - 13.5) }, gTail);
+        d.m = OK.svg('path', { class: 'lead cut', pathLength: 1, d: 'M' + px + ',' + (b1.y + 13.5) + ' V' + (b2.y - 18.5) }, gTail);
+        d.b1 = OK.svg('path', { class: 'lead cut', pathLength: 1, d: 'M' + px + ',' + (b2.y + 13.5) + ' V' + (t0 + 0.5) }, gTail);
         lab = function (b, word) {
           var g = OK.svg('g', {}, gTail);
           var num = OK.svg('text', { class: 'cnt', x: b.x + 22, y: b.y - 2.5 }, g);
@@ -198,11 +207,11 @@
         // both papers stand on the run under the pipeline, their counts above them; the three
         // gaps beside and between the two labels are equal. The run ends in the turn up to the rise.
         var w1 = Math.max(width('00,000', 'cnt'), width(FOUND_W, 'note')), w2 = Math.max(width('0,000', 'cnt'), width(MERGED_W, 'note'));
-        var x0 = G.px + 1.5, room = (G.gx - 1.5 - x0 - w1 - w2) / 3;
+        var x0 = px + 1.5, room = (gx - 1.5 - x0 - w1 - w2) / 3;
         b1 = { x: Math.round(x0 + room + w1 / 2) + 0.5, y: c }; b2 = { x: Math.round(x0 + 2 * room + w1 + w2 / 2) + 0.5, y: c };
-        d.a = OK.svg('path', { class: 'lead cut', pathLength: 1, d: 'M' + G.px + ',-.5 V' + (c - R) + ' A' + R + ',' + R + ' 0 0 0 ' + (G.px + R) + ',' + c + ' H' + (b1.x - 11) }, gTail);
+        d.a = OK.svg('path', { class: 'lead cut', pathLength: 1, d: 'M' + px + ',-.5 V' + (c - R) + ' A' + R + ',' + R + ' 0 0 0 ' + (px + R) + ',' + c + ' H' + (b1.x - 11) }, gTail);
         d.m = OK.svg('path', { class: 'lead cut', pathLength: 1, d: 'M' + (b1.x + 11) + ',' + c + ' H' + (b2.x - 16) }, gTail);
-        d.b1 = OK.svg('path', { class: 'lead cut', pathLength: 1, d: 'M' + (b2.x + 11) + ',' + c + ' H' + (G.gx - R) + ' A' + R + ',' + R + ' 0 0 0 ' + G.gx + ',' + (c - R) }, gTail);
+        d.b1 = OK.svg('path', { class: 'lead cut', pathLength: 1, d: 'M' + (b2.x + 11) + ',' + c + ' H' + (gx - R) + ' A' + R + ',' + R + ' 0 0 0 ' + gx + ',' + (c - R) }, gTail);
         lab = function (b, word) {
           var g = OK.svg('g', {}, gTail);
           var num = OK.svg('text', { class: 'cnt', x: b.x, y: b.y - 34.5, 'text-anchor': 'middle' }, g);
@@ -223,7 +232,7 @@
     if (!narrow) {
       // the rise from the run up to the turn (as long as the pipeline is tall), and the turn over to the first filter
       d.rise = OK.svg('path', { class: 'lead cut ba-hang', pathLength: 1 }, gCol);
-      d.arch = OK.svg('path', { class: 'lead cut', pathLength: 1, d: 'M' + G.gx + ',' + (arch + R) + ' A' + R + ',' + R + ' 0 0 1 ' + (G.gx + R) + ',' + arch + ' H' + (fx - R) + ' A' + R + ',' + R + ' 0 0 1 ' + fx + ',' + (arch + R) + ' V' + (t0 + 0.5) }, gCol);
+      d.arch = OK.svg('path', { class: 'lead cut', pathLength: 1, d: 'M' + gx + ',' + (arch + R) + ' A' + R + ',' + R + ' 0 0 1 ' + (gx + R) + ',' + arch + ' H' + (fx - R) + ' A' + R + ',' + R + ' 0 0 1 ' + fx + ',' + (arch + R) + ' V' + (t0 + 0.5) }, gCol);
     }
     // the line through the filters, behind their cards, so that it holds while one filter takes another's place
     d.fall = OK.svg('path', { class: 'lead cut ba-hang', pathLength: 1 }, gCol);
@@ -300,9 +309,9 @@
      * quotation marks, line by line.
      */
     function fcard(name) {
-      var x = LIBRARY[name], s = '<rect class="card" x=".5" y=".5" width="' + (fw - 1) + '" height="' + (tall(x) - 1) + '" rx="12.5"/><text class="ba-name" x="12.5" y="25.5">' + name + '</text>';
-      if (x.prompt) return s + x.shown.map(function (l, i) { return '<text class="ba-set" x="13" y="' + (45 + i * 16) + '">' + l + '</text>'; }).join('');
-      var tx = x.query ? 13 : fw - 13 - tags[name], ty = x.query ? 35 : 9;
+      var x = LIBRARY[name], s = '<rect class="card" x=".5" y=".5" width="' + (fw - 1) + '" height="' + (tall(x) - 1) + '" rx="12.5"/><text class="task" x="12.4" y="27">' + name + '</text>';
+      if (x.prompt) return s + x.shown.map(function (l, i) { return '<text class="ba-set" x="13" y="' + (46 + i * 16) + '">' + l + '</text>'; }).join('');
+      var tx = x.query ? 13 : fw - 13 - tags[name], ty = x.query ? 36 : 9;
       return s + '<rect class="ba-tag" x="' + tx + '" y="' + ty + '" width="' + tags[name] + '" height="22" rx="7"/><text class="ba-set" x="' + (tx + 9) + '" y="' + (ty + 15.3) + '">' + (x.setting || x.query) + '</text>';
     }
     /**
@@ -357,7 +366,7 @@
     function set(id, moving) {
       var P = presetOf(id), rec = RECORD[id], col = column(rec), old = moving ? cur : null;
       // wide: the run under the pipeline lies at the height of the kept paper, and the pipeline is spread down to it
-      var L = arrange(P, G, col.kept - c - G.top), foot = narrow ? L.bottom : col.kept - c, key;
+      var L = arrange(P, G, cw, px, col.kept - c - G.top), foot = narrow ? L.bottom : col.kept - c, key;
       settle();
       gGhost.textContent = '';
       title.textContent = describe(P);
@@ -368,7 +377,7 @@
       hang(d.fall, 'M' + fx + ',' + t0 + ' V' + (col.kept - 19), col.kept - 19 - t0, old && old.col.kept - 19 - t0);
       if (old && old.col.kept < col.kept) rv.from(gKept, [{ transform: 'translate(0,' + old.col.kept + 'px)' }, { transform: 'translate(0,' + col.kept + 'px)' }], 0, 520);
       gKept.style.transform = 'translate(0,' + col.kept + 'px)';
-      if (!narrow) hang(d.rise, 'M' + G.gx + ',' + (arch + R) + ' V' + (foot + c - R), foot + c - arch - 2 * R, old && old.foot + c - arch - 2 * R);
+      if (!narrow) hang(d.rise, 'M' + gx + ',' + (arch + R) + ' V' + (foot + c - R), foot + c - arch - 2 * R, old && old.foot + c - arch - 2 * R);
       // grounds and line pieces are drawn again; the cards that stay travel
       Array.prototype.slice.call(gGround.childNodes).forEach(function (e) { if (old) leave(e, 180); else e.remove(); });
       gStub.textContent = '';
@@ -376,24 +385,16 @@
       L.rows.forEach(function (r) {
         d.grounds.push(r.group ? OK.svg('rect', { class: 'ground', x: r.x, y: r.y, width: r.w, height: r.h, rx: 12.5 + G.pad }, gGround) : null);
       });
-      L.stubs.forEach(function (s) { d.stubs.push(OK.svg('path', { class: 'lead cut', pathLength: 1, d: 'M' + G.px + ',' + (s.y1 - 0.5) + ' V' + (s.y2 + 0.5) }, gStub)); });
+      L.stubs.forEach(function (s) { d.stubs.push(OK.svg('path', { class: 'lead cut', pathLength: 1, d: 'M' + px + ',' + (s.y1 - 0.5) + ' V' + (s.y2 + 0.5) }, gStub)); });
       for (key in cards) if (!L.at[key]) { if (old) leave(cards[key].g, 180); else cards[key].g.remove(); delete cards[key]; }
       P.rows.forEach(function (ids) {
         ids.forEach(function (key) {
-          var cd = cards[key], at = L.at[key], F = L.fmt[key];
+          var cd = cards[key], at = L.at[key];
           if (!cd) {
             cd = cards[key] = { g: OK.svg('g', {}, gCards) };
-            cd.in = group(cd.g, card(key, F));
+            cd.in = group(cd.g, card(key, G, cw));
             d.fresh.push(cd.in);
-          } else {
-            if (old) rv.from(cd.g, [{ transform: 'translate(' + cd.at.x + 'px,' + cd.at.y + 'px)' }, { transform: 'translate(' + at.x + 'px,' + at.y + 'px)' }], 0, 520);
-            if (cd.fmt !== F) {                          // the same step in another card: one fades out as the other fades in
-              if (old) fadeOut(cd.in, 200); else cd.in.remove();
-              cd.in = group(cd.g, card(key, F));
-              if (old) rv.fade(cd.in, 120, 320);
-            }
-          }
-          cd.fmt = F;
+          } else if (old) rv.from(cd.g, [{ transform: 'translate(' + cd.at.x + 'px,' + cd.at.y + 'px)' }, { transform: 'translate(' + at.x + 'px,' + at.y + 'px)' }], 0, 520);
           cd.at = at; put(cd.g, at);
         });
       });
@@ -454,8 +455,8 @@
       return b;
     });
     set(first, false);
-    var F3 = G.card(3), W3 = 3 * F3.cw + 2 * G.gap + 2 * G.pad;
-    sw.style.right = f((1 - (G.px + W3 / 2) / vw) * 100) + '%';
+    // the switch ends where a row of two ends
+    sw.style.right = f((1 - 2 * px / vw) * 100) + '%';
     return { vw: vw, set: set, play: play, current: function () { return cur.id; }, destroy: settle };
   }
 
