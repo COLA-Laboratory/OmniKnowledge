@@ -1,0 +1,28 @@
+/* The Build section: the text beside one frame that holds the pipeline and the filters.
+   --ba-text and --ba-pic are the two columns' shares (set by build.js from what it measured),
+   so that at a 1280 column the picture is shown at its own size. Under 1200 the text stands
+   above the frame; under 880 build.js draws the one-column picture. */
+.ba-wrap{display:grid;grid-template-columns:minmax(0,var(--ba-text,290fr)) minmax(0,var(--ba-pic,924fr));column-gap:44px;align-items:start}
+.ba-text{padding-top:29.5px}
+.ba-text .sec-p{margin-top:24px;text-wrap:pretty}
+.ba-frame{padding:32px}
+.ba-stage{position:relative}
+.ba-svg{width:100%;height:auto}
+.ba-l{display:block}
+.pic .ba-tag{fill:var(--tint)}
+.pic .ba-set{font-size:12.5px;font-weight:500;letter-spacing:-.003em;fill:var(--t2)}
+.pic .ba-no{font-family:var(--mono);font-size:13px;font-weight:500;fill:#fff}
+.pic .ba-switch{position:absolute;top:0;right:0;margin-top:-3px}
+
+@media(max-width:1200px){
+  .ba-wrap{grid-template-columns:minmax(0,1fr);row-gap:32px}
+  .ba-text{padding-top:0}
+  .ba-l{display:inline}
+  .ba-stage{max-width:858px;margin-inline:auto}
+}
+@media(max-width:880px){
+  .ba-wrap{row-gap:28px}
+  .ba-text .sec-p{margin-top:16px}
+  .ba-frame{padding:20px 12px 24px}
+  .ba-stage{max-width:440px}
+}

@@ -1,0 +1,71 @@
+/* The drawing language: the tokens and classes every picture on the page is drawn with. A
+   picture is any element with class "pic"; README.md says what each class is for. Nothing here
+   knows about the page around a picture. */
+@font-face{font-family:"Hanken";src:url(assets/hanken.woff2) format("woff2");font-weight:100 900;font-display:swap}
+
+.pic{
+  --ink:#0b0b0c; --paper:#ffffff; --y:#ffe62e; --y-pale:#fff3a1;
+  --t2:#55554f; --t3:#77776f;
+  --hair:#e7e7e1; --hair2:#d2d2cb; --tint:#f5f5f1;
+  --q:#9d9d96; --out:#d3d3cd; --bar:#c9c9c2;
+  --disp:"Hanken","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --text:"Hanken","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --mono:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+  --ease:cubic-bezier(.2,.7,.2,1);
+  color:var(--ink);font-family:var(--text);
+}
+.pic svg{display:block;overflow:visible}
+.pic svg text{font-family:var(--disp);fill:var(--ink)}
+
+/* ---- marks (SVG) ---- */
+.pic .edge{fill:none;stroke:var(--ink);stroke-opacity:.46;stroke-width:.8}          /* a citation: thin, straight */
+.pic .dot{fill:var(--y);stroke:var(--ink);stroke-width:.8}                          /* a paper in number */
+.pic .ring{fill:var(--paper);stroke:var(--ink);stroke-width:1.2}                    /* a seed paper in the network: ring + core */
+.pic .core{fill:var(--ink)}
+.pic .ground{fill:var(--tint)}                                                      /* the pale ground a topic stands on */
+.pic .lead{fill:none;stroke:var(--ink);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}   /* the pipeline line */
+.pic .lead.cut{stroke-linecap:butt}
+.pic .port{fill:var(--ink)}
+.pic .wire{fill:none;stroke:var(--ink);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round} /* an evidence line */
+.pic .mark{fill:var(--y)}                                                           /* the yellow marker behind a number or word */
+.pic .card{fill:var(--paper);stroke:var(--hair2);stroke-width:1}
+.pic .rule{stroke:var(--hair);stroke-width:1}
+.pic .tile{fill:var(--ink)}
+.pic .ic{fill:none;stroke:#fff;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.pic .ic .f{fill:#fff;stroke:none}
+.pic .chain{fill:none;stroke:var(--ink);stroke-width:1.25}
+.pic .maybe{fill:none;stroke:#a3a39c;stroke-width:1.9;stroke-linecap:round;stroke-dasharray:.1 4.4}
+.pic .box{fill:var(--paper);stroke:#a3a39c;stroke-width:1.2}
+.pic .box.on{stroke:var(--ink)}
+.pic .tick{fill:none;stroke:var(--ink);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.pic .axis{fill:none;stroke:#a3a39c;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round}
+.pic .pt{fill:var(--ink)}
+
+/* ---- type (SVG text) ---- */
+.pic .note{font-family:var(--text);font-size:12.5px;font-weight:400;fill:var(--t3)}
+.pic .ask{font-size:32px;font-weight:600;letter-spacing:-.03em}
+.pic .lab{font-size:14px;font-weight:600;letter-spacing:-.005em}
+.pic .cnt{font-family:var(--mono);font-size:13px;font-weight:500;letter-spacing:-.02em}
+.pic .row{font-size:12.5px;font-weight:500;letter-spacing:-.003em}
+.pic .no{font-family:var(--mono);font-size:12px;font-weight:500;fill:#fff}
+.pic .topic{font-size:14.5px;font-weight:600;letter-spacing:-.012em}
+.pic .topic .c{font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:-.02em;fill:var(--t2)}
+.pic .task{font-size:20px;font-weight:600;letter-spacing:-.022em}
+.pic .qm{font-size:19px;font-weight:600}
+
+/* ---- the same type for HTML inside a picture ---- */
+.pic .k-note{font:400 12.5px/1.4 var(--text);color:var(--t3)}
+.pic .k-lab{font:600 14px/1.3 var(--disp);letter-spacing:-.005em}
+.pic .k-row{font:500 12.5px/1.3 var(--disp);letter-spacing:-.003em}
+.pic .k-cnt{font:500 13px/1 var(--mono);letter-spacing:-.02em}
+.pic .k-topic{font:600 14.5px/1.3 var(--disp);letter-spacing:-.012em}
+.pic .k-task{font:600 20px/1.15 var(--disp);letter-spacing:-.022em}
+.pic .k-mark{background:var(--y);padding:1px 5px;margin:0 -1px}
+
+/* ---- the one switch (Light / Medium / Heavy, Citation network / Semantic map): words in a
+        row, the chosen one on the yellow marker. No boxes, no pills. ---- */
+.pic .k-switch{display:inline-flex;align-items:center;gap:6px}
+.pic .k-switch button{appearance:none;border:0;background:none;margin:0;padding:3px 7px;font:600 14px/1.3 var(--disp);letter-spacing:-.005em;color:var(--t3);cursor:pointer;border-radius:0;transition:color .16s var(--ease),background-color .16s var(--ease)}
+.pic .k-switch button:hover{color:var(--ink)}
+.pic .k-switch button[aria-pressed="true"]{color:var(--ink);background:var(--y)}
+.pic .k-switch button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}

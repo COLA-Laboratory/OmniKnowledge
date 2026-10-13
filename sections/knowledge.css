@@ -1,0 +1,62 @@
+/* The Knowledge section. kit.css owns the marks and the type; this file places the row above the
+   map, the buttons that lie over the task cards, and says how a card looks before and after its
+   task is chosen. */
+.ka{position:relative}
+.ka-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px 24px;padding:30px 32px 0}
+.ka-top .k-switch{margin-left:-7px}
+.ka .ka-count{margin:0;display:flex;align-items:baseline;gap:26px;white-space:nowrap}
+.ka .ka-count .k-cnt{display:inline-block;min-width:3ch;text-align:right;font-variant-numeric:tabular-nums}
+.ka .ka-count .k-mark{min-width:0;padding:2px 5px}
+.ka-stage{position:relative}
+.ka-stage svg{width:100%;height:auto}
+/* the reading starts when this, the lower part of the map, comes into the window */
+.ka-seen{position:absolute;left:0;right:0;top:30%;height:22%;pointer-events:none}
+
+/* a task card is pressed through a button that lies over it */
+.ka .ka-hit{position:absolute;z-index:1;appearance:none;margin:0;padding:0;border:0;background:none;border-radius:12px;cursor:pointer}
+.ka .ka-hit:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.ka .ka-edge{transition:stroke .16s var(--ease)}
+.ka .ka-hit:nth-of-type(1):hover ~ svg .ka-task[data-k="0"][data-on="0"] .ka-edge,
+.ka .ka-hit:nth-of-type(2):hover ~ svg .ka-task[data-k="1"][data-on="0"] .ka-edge,
+.ka .ka-hit:nth-of-type(3):hover ~ svg .ka-task[data-k="2"][data-on="0"] .ka-edge,
+.ka .ka-hit:nth-of-type(4):hover ~ svg .ka-task[data-k="3"][data-on="0"] .ka-edge{stroke:var(--q)}
+.ka .ka-task[data-on="1"] .ka-edge{stroke:var(--ink)}
+
+/* the marks of a task's drawing, before and after the reading */
+.ka .ka-b{fill:var(--bar)}
+.ka .ka-s{fill:var(--ink)}
+.ka .ka-t,.ka .ka-late,.ka .ka-chosen{opacity:0}
+.ka .ka-ask{fill:var(--t2)}
+.ka .ka-task[data-on="1"] .ka-k{fill:var(--ink)}
+.ka .ka-task[data-on="1"] .ka-bx{stroke:var(--ink)}
+.ka .ka-task[data-on="1"] .ka-t,.ka .ka-task[data-on="1"] .ka-late,.ka .ka-task[data-on="1"] .ka-chosen{opacity:1}
+.ka .ka-task[data-on="1"] .ka-ph{opacity:0}
+.ka .ka-chosen{transition:opacity .16s var(--ease)}
+
+/* a cited paper, in an output and on the map: a plain dot before the reading, its numbered mark
+   after; the one under the pointer and its twin take a heavier outline */
+.ka .ka-num{font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:-.02em;fill:var(--ink)}
+.ka .ka-cite .dot,.ka .ka-marks .dot{transition:stroke-width .12s var(--ease)}
+.ka .ka-hot .dot{stroke-width:2.2}
+.ka .ka-c1{opacity:0}
+.ka .ka-task[data-on="1"] .ka-c1{opacity:1}
+.ka .ka-task[data-on="1"] .ka-c0{opacity:0}
+/* one's own result on the axes of a plot */
+.ka .ka-own{fill:var(--paper);stroke:var(--ink);stroke-width:1.7}
+/* a paper that holds something relevant: ringed in ink on a white halo */
+.ka .ka-halo{fill:var(--paper)}
+.ka .ka-ring{fill:var(--y);stroke:var(--ink);stroke-width:1.6}
+/* the front of the reading and a citation mark on its way to the text: seen only while the reading plays */
+.ka .ka-front{stroke:var(--ink);stroke-width:1.5;opacity:0}
+.ka .ka-fly{opacity:0}
+
+/* before the section arrives nothing has been read */
+.ka-wait .ka-marks,.ka-wait .ka-count{visibility:hidden}
+
+/* a phone: the chosen task alone under the map, the four names under it */
+.ka .ka-pick{display:none}
+.ka-tall .ka-top{padding:18px 16px 0}
+.ka-tall .ka-count{flex-wrap:wrap;gap:4px 18px}
+.ka-tall .ka-hit{display:none}
+.ka-tall .ka-task[data-on="0"]{display:none}
+.ka-tall .ka-pick{display:flex;flex-wrap:wrap;gap:6px 10px;padding:14px 16px 18px}
