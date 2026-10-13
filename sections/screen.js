@@ -292,7 +292,7 @@
   /** Fills root with the section (heading, text and picture) and returns { destroy() }. */
   function mount(root) {
     var id = 'sc-t' + (++uid);
-    root.innerHTML = '<div class="sec-head"><h2 class="sec-h">Cost-effective screening that keeps ambitious research topics within budget</h2>' +
+    root.innerHTML = '<div class="sec-head"><h2 class="sec-h">Screening that scales within your budget</h2>' +
       '<p class="sec-p">Rule checks on year, citations, venue and keywords cost almost nothing and remove most papers. A language model reads only the titles and abstracts that remain, so the cost stays within budget as the search grows.</p></div>' +
       '<div class="frame pic sc-pic"><svg class="sc-svg" role="img" aria-labelledby="' + id + '"></svg></div>';
     var svg = root.querySelector('svg'), narrow = window.matchMedia('(max-width: 800px)'), R = OK.reveal(), d = null, arrived = false, gone = false;
