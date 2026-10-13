@@ -1,9 +1,8 @@
 /* The Search section: three ways of searching, each drawn at work on the kit's papers, and what
-   each contributes to the 14,950 candidates. Two versions share the three drawings and differ in
-   how the counts are shown: "a" as pale bands as wide as what each search found, standing on one
-   ground; "b" as counted papers, one for every 250, standing on one ground.
+   each contributes to the 14,950 candidates, shown as pale bands as wide as what each search
+   found, standing on one ground.
    On a wide window the section is one drawing; on a narrow one each search is its own drawing
-   and the counts follow. The page shows "a". README.md owns the drawing language. */
+   and the counts follow. README.md owns the drawing language. */
 (function () {
   'use strict';
   var OK = window.OK, f = OK.f, D = OK.DATA;
@@ -13,8 +12,7 @@
   var TOP = 36, TILE = 26;                          // a column's title: its top, the size of its tile
   var NOTE = 96;                                    // the baseline of the quiet words above a drawing
   var Y1 = 372, MID = 242;                          // a drawing: its foot, and the height its seed stands at
-  var SEED = [30, 39], NEAR = [22, 29], FAR = [16, 21], SMALL = [14, 18], UNIT = [16, 21];   // paper sizes
-  var PER = 250;                                    // version b: the papers one counted paper stands for
+  var SEED = [30, 39], NEAR = [22, 29], FAR = [16, 21], SMALL = [14, 18];   // paper sizes
   var R = 16;                                       // the one corner radius of a ground
 
   function el(tag, attrs, parent, text) { return OK.svg(tag, attrs, parent, text); }
@@ -258,8 +256,8 @@
   function bandWidth(n, full) { return Math.round(full * n / D.searches[0].found / 2) * 2; }
 
   /**
-   * Version a on a wide window: under each drawing a band as wide as what its search found,
-   * the three standing on one ground that carries the total.
+   * Draws the counts on a wide window: under each drawing a band as wide as what its search
+   * found, the three standing on one ground that carries the total. Returns { bottom, play }.
    */
   function bands(svg, cols, x0, x1, top, uid) {
     var mid = top + 52, bottom = mid + 72, d = { counts: [] };
@@ -279,47 +277,6 @@
     };
   }
 
-  /** Returns how many counted papers stand for n papers. */
-  function units(n) { return Math.round(n / PER); }
-  /**
-   * Draws one search's counted papers in rows of eleven from (x, y): the count, then the rows.
-   * Returns { count, papers: [g], bottom }.
-   */
-  function tally(parent, x, y, n) {
-    var o = { papers: [] }, k, per = 11, dx = UNIT[0] + 10, dy = UNIT[1] + 9;
-    o.count = group(parent, '<text class="sr-count" x="' + x + '" y="' + (y + 15) + '">' + OK.fmt(n) + '<tspan class="note" dx="8">papers</tspan></text>');
-    for (k = 0; k < units(n); k++) o.papers.push(group(parent, paper(x + UNIT[0] / 2 + (k % per) * dx, y + 31 + UNIT[1] / 2 + Math.floor(k / per) * dy, UNIT)));
-    o.bottom = y + 31 + Math.ceil(units(n) / per) * dy - 9;
-    return o;
-  }
-  function playTally(rv, o, t) {
-    rv.arrive(o.count, t);
-    // the papers come down into their rows one after another, as they are counted
-    o.papers.forEach(function (g, k) { rv.from(g, [{ opacity: 0, transform: 'translateY(-16px)' }, { opacity: 1, transform: 'translateY(0)' }], t + 120 + k * 18, 360); });
-    return t + 120 + o.papers.length * 18 + 360;
-  }
-  /**
-   * Version b on a wide window: one ground; on it, under each drawing, that search's papers
-   * counted in rows, and the total where the rows end.
-   */
-  function counted(svg, cols, x0, x1, top) {
-    var pad = 24, d = { tallies: [] }, bottom = top;
-    d.ground = el('rect', { x: x0, y: top, width: x1 - x0, height: 10, rx: R, class: 'ground' }, svg);
-    cols.forEach(function (B, i) { var o = tally(svg, B.x + pad, top + pad, D.searches[i].found); d.tallies.push(o); bottom = Math.max(bottom, o.bottom); });
-    bottom += pad;
-    d.ground.setAttribute('height', bottom - top);
-    d.total = total(svg, x1 - pad, bottom - pad, 'end');
-    return {
-      bottom: bottom,
-      play: function (rv, t) {
-        var end = t;
-        rv.fade(d.ground, t, 420);
-        d.tallies.forEach(function (o, i) { end = Math.max(end, playTally(rv, o, t + 150 + i * 260)); });
-        rv.arrive(d.total, end - 200, 480);
-      }
-    };
-  }
-
   /* ---------- the section ---------- */
   var uidN = 0;
   function picture(frame, w, h, text) {
@@ -333,18 +290,18 @@
     sem: 'Semantic Search: a seed paper in a field of papers, the nearest in meaning taken',
     db: 'Database Search: a query, an index of papers, and the papers whose words match it'
   };
-  function sums(version) {
+  function sums() {
     var each = D.searches.map(function (s) { return s.name + ' ' + OK.fmt(s.found); }).join(', ');
-    return 'Papers found: ' + each + '. Together ' + OK.fmt(D.found) + ' candidates' + (version === 'b' ? '; one small paper stands for ' + PER + '.' : '.');
+    return 'Papers found: ' + each + '. Together ' + OK.fmt(D.found) + ' candidates.';
   }
 
   /** The wide window: one drawing, three equal columns, the counts under them. */
-  function wide(frame, version, rv) {
-    var W = 1278, X0 = 39, GUT = 48, svg = picture(frame, W, 620, D.searches.map(function (s) { return SAYS[s.key]; }).join('. ') + '. ' + sums(version));
+  function wide(frame, rv) {
+    var W = 1278, X0 = 39, GUT = 48, svg = picture(frame, W, 620, D.searches.map(function (s) { return SAYS[s.key]; }).join('. ') + '. ' + sums());
     var cols = D.searches.map(function (s, i) { return { x: X0 + i * (COLW + GUT), w: COLW }; });
     var titles = [], plays = [], low;
     D.searches.forEach(function (s, i) { titles.push(title(svg, cols[i].x, s)); plays.push(DRAW[s.key](group(svg), cols[i])); });
-    low = (version === 'a' ? bands(svg, cols, X0, W - X0, Y1 + 32, svg.uid) : counted(svg, cols, X0, W - X0, Y1 + 32));
+    low = bands(svg, cols, X0, W - X0, Y1 + 32, svg.uid);
     svg.setAttribute('viewBox', '0 0 ' + W + ' ' + (low.bottom + X0));
     OK.onArrive(svg, function () {
       var end = 0;
@@ -353,54 +310,40 @@
     });
   }
 
-  /** The narrow window: each search its own drawing, its counted papers under it (version b); then the counts together. */
-  function narrow(frame, version, rv) {
+  /** The narrow window: each search its own drawing; then the counts together. */
+  function narrow(frame, rv) {
     var W = 348, X0 = 20, B = { x: X0, w: W - 2 * X0 };
     D.searches.forEach(function (s) {
-      var svg = picture(frame, W, Y1 + 16, SAYS[s.key]), t = title(svg, B.x, s), play = DRAW[s.key](group(svg), B), o = null;
-      if (version === 'b') {
-        o = tally(svg, B.x, Y1 + 26, s.found);
-        svg.setAttribute('viewBox', '0 0 ' + W + ' ' + (o.bottom + 28));
-      }
-      OK.onArrive(svg, function () { rv.arrive(t, 0); var end = play(rv, 150); if (o) playTally(rv, o, end - 500); });
+      var svg = picture(frame, W, Y1 + 16, SAYS[s.key]), t = title(svg, B.x, s), play = DRAW[s.key](group(svg), B);
+      OK.onArrive(svg, function () { rv.arrive(t, 0); play(rv, 150); });
     });
-    var last = picture(frame, W, 100, sums(version)), d = {};
-    if (version === 'a') {
-      // the first band stands on the ground's left edge, as on a wide window; the others in the middle of their thirds
-      var third = B.w / 3, list = D.searches.map(function (s, i) { var w = bandWidth(s.found, 100), c = i ? Math.round(B.x + (i + 0.5) * third) : B.x + w / 2; return { x0: c - w / 2, x1: c + w / 2, c: c }; });
-      d.heads = list.map(function (b, i) { return group(last, OK.tile(b.c - 11, 12, 22, D.searches[i].key) + '<text class="cnt" x="' + b.c + '" y="54" text-anchor="middle">' + OK.fmt(D.searches[i].found) + '</text>'); });
-      d.ground = el('path', { d: comb(list, 66, 106, B.x, B.x + B.w, 186, R / 2), class: 'ground' }, last);
-      d.total = total(last, W / 2, 157, 'middle');
-      last.setAttribute('viewBox', '0 0 ' + W + ' 214');
-    } else {
-      d.heads = [];
-      d.ground = el('rect', { x: B.x, y: 8, width: B.w, height: 80, rx: R, class: 'ground' }, last);
-      d.total = total(last, W / 2, 59, 'middle');
-      last.setAttribute('viewBox', '0 0 ' + W + ' 116');
-    }
+    var last = picture(frame, W, 100, sums()), d = {};
+    // the first band stands on the ground's left edge, as on a wide window; the others in the middle of their thirds
+    var third = B.w / 3, list = D.searches.map(function (s, i) { var w = bandWidth(s.found, 100), c = i ? Math.round(B.x + (i + 0.5) * third) : B.x + w / 2; return { x0: c - w / 2, x1: c + w / 2, c: c }; });
+    d.heads = list.map(function (b, i) { return group(last, OK.tile(b.c - 11, 12, 22, D.searches[i].key) + '<text class="cnt" x="' + b.c + '" y="54" text-anchor="middle">' + OK.fmt(D.searches[i].found) + '</text>'); });
+    d.ground = el('path', { d: comb(list, 66, 106, B.x, B.x + B.w, 186, R / 2), class: 'ground' }, last);
+    d.total = total(last, W / 2, 157, 'middle');
+    last.setAttribute('viewBox', '0 0 ' + W + ' 214');
     OK.onArrive(last, function () {
       d.heads.forEach(function (g, i) { rv.arrive(g, i * 110); });
       rv.fade(d.ground, 250, 480); rv.arrive(d.total, 560, 480);
     });
   }
 
-  function mount(version) {
-    return function (root) {
-      var headBox = OK.h('div', { class: 'sec-head' }, root);
-      OK.h('h2', { class: 'sec-h sr-h' }, headBox, HEAD);
-      OK.h('p', { class: 'sec-p' }, headBox, TEXT);
-      var frame = OK.h('div', { class: 'frame pic sr-pic' }, root), rv = OK.reveal(), mq = window.matchMedia('(max-width: 900px)');
-      function draw() {
-        rv.cancel();
-        frame.textContent = '';
-        frame.classList.toggle('sr-narrow', mq.matches);
-        (mq.matches ? narrow : wide)(frame, version, rv);
-      }
-      draw();
-      mq.addEventListener('change', draw);
-      return { destroy: function () { mq.removeEventListener('change', draw); rv.cancel(); } };
-    };
+  function mount(root) {
+    var headBox = OK.h('div', { class: 'sec-head' }, root);
+    OK.h('h2', { class: 'sec-h sr-h' }, headBox, HEAD);
+    OK.h('p', { class: 'sec-p' }, headBox, TEXT);
+    var frame = OK.h('div', { class: 'frame pic sr-pic' }, root), rv = OK.reveal(), mq = window.matchMedia('(max-width: 900px)');
+    function draw() {
+      rv.cancel();
+      frame.textContent = '';
+      frame.classList.toggle('sr-narrow', mq.matches);
+      (mq.matches ? narrow : wide)(frame, rv);
+    }
+    draw();
+    mq.addEventListener('change', draw);
+    return { destroy: function () { mq.removeEventListener('change', draw); rv.cancel(); } };
   }
-  OK.section('search', 'a', { label: 'Bands', mount: mount('a') });
-  OK.section('search', 'b', { label: 'Counted papers', mount: mount('b') });
+  OK.section('search', 'a', { label: 'Bands', mount: mount });
 })();

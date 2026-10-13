@@ -1,6 +1,5 @@
 /* Mounts each section registered with OK.section into the element that names it
-   (data-section). A section owns everything inside its element; where a file registers more
-   than one version of a section, the page shows the first. */
+   (data-section). A section owns everything inside its element. */
 (function () {
   'use strict';
   var OK = window.OK;

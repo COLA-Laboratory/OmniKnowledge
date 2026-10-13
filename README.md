@@ -20,9 +20,6 @@ from `file://`. The example question, papers and counts on it are illustrative.
 | `assets/` | The pictures' typeface (Hanken Grotesk, SIL Open Font License), the icon and the link preview image |
 | `tools/shot.mjs` | Captures the page or one part of it as a PNG |
 
-`sections/search.js` and `sections/screen.js` each register more than one version of their
-section; the page shows the first (`a`).
-
 ## The drawing language
 
 Every picture is drawn with the kit, so that a paper, a sheet and the network are the same
