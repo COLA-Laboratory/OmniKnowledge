@@ -1,5 +1,5 @@
 /* The page around the pictures: navigation, first screen, the frame a picture stands in, the
-   heading and text of a section, questions, closing. Pictures bring their own styles (kit.css
+   heading and text of a section, questions, footer. Pictures bring their own styles (kit.css
    and each section's file); nothing here reaches into one. */
 :root{
   color-scheme:light;
@@ -59,7 +59,7 @@ h1{font-family:var(--pg-display);font-size:clamp(32px,3.95vw,56px);line-height:1
 .sec-p{font-size:17px;line-height:1.42;letter-spacing:-.011em;color:var(--pg-muted);max-width:500px;text-wrap:pretty}
 .sec-head .sec-p{justify-self:end}
 
-/* questions, closing, footer */
+/* questions, footer */
 .faq{margin-top:128px;border-top:1px solid var(--pg-line);padding-top:64px;display:grid;grid-template-columns:1fr 1.4fr;gap:80px}
 .faq details{border-bottom:1px solid var(--pg-line);padding:22px 0}
 .faq details:first-child{padding-top:0}
@@ -68,9 +68,6 @@ h1{font-family:var(--pg-display);font-size:clamp(32px,3.95vw,56px);line-height:1
 .faq summary svg{width:20px;height:20px;flex-shrink:0;transform:rotate(90deg);transition:transform .2s var(--pg-ease)}
 .faq details[open] summary svg{transform:rotate(-90deg)}
 .faq details p{font-size:16px;line-height:1.45;margin-top:14px;max-width:590px;color:var(--pg-muted)}
-.closing{padding:64px 60px;background:var(--pg-accent);border-radius:10px;margin-top:96px;display:flex;align-items:center;justify-content:space-between;gap:40px}
-.closing h2{font-family:var(--pg-display);font-size:48px;line-height:1.06;font-weight:600;letter-spacing:-.03em}
-.closing p{margin-top:18px;color:var(--pg-accent-ink)}
 .footer{margin-top:64px;padding:28px 0;border-top:1px solid var(--pg-line);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 24px;font-size:14px;color:var(--pg-muted)}
 .footer .brand{color:var(--pg-ink);font-size:19px}
 .footer .brand svg{width:24px;height:24px}
@@ -90,8 +87,6 @@ h1{font-family:var(--pg-display);font-size:clamp(32px,3.95vw,56px);line-height:1
   .nav-links{display:none}
   .sec-head,.faq{grid-template-columns:1fr}
   .sec-head .sec-p{justify-self:start}
-  .closing{flex-direction:column;align-items:flex-start;padding:40px 28px}
-  .closing h2{font-size:36px}
 }
 @media(max-width:600px){
   .wrap{width:calc(100% - 40px)}

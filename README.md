@@ -12,11 +12,11 @@ from `file://`. The example question, papers and counts on it are illustrative.
 | Path | Owns |
 |---|---|
 | `index.html` | The page's text and the order of its sections |
-| `page.css` | Everything around the pictures: navigation, first screen, the frame a picture stands in, section headings, questions, closing, footer |
+| `page.css` | Everything around the pictures: navigation, first screen, the frame a picture stands in, section headings, questions, footer |
 | `page.js` | Mounts each section into the element that names it (`data-section`) |
 | `kit.css`, `kit.js` | The drawing language: tokens, classes and the shared objects (`window.OK`) every picture is drawn with; the example data (`OK.DATA`) |
 | `hero.js`, `hero.css` | The first picture, in two compositions: wide, and tall for windows of 880 px and under (the threshold lives in `hero.js`) |
-| `sections/<name>.js`, `.css` | One section each: `features`, `build`, `search`, `screen`, `knowledge`. A file registers itself with `OK.section(name, id, { label, mount })` and prefixes its own classes (`ft-`, `ba-`, `sr-`, `sc-`, `ka-`). Where a file registers more than one version of its section, the page shows the first |
+| `sections/<name>.js`, `.css` | One section each, in page order: `features`, `search`, `screen`, `build` (the pipeline), `knowledge`. A file registers itself with `OK.section(name, id, { label, mount })` and prefixes its own classes (`ft-`, `ba-`, `sr-`, `sc-`, `ka-`). |
 | `assets/` | The pictures' typeface (Hanken Grotesk, SIL Open Font License), the icon and the link preview image |
 | `tools/shot.mjs` | Captures the page or one part of it as a PNG |
 
@@ -26,8 +26,9 @@ Every picture is drawn with the kit, so that a paper, a sheet and the network ar
 objects from the first screen to the last.
 
 - **Colour.** Ink `#0b0b0c`, white, one yellow `#ffe62e` (the marker behind a number or word, a
-  kept paper, the dots of the network), the pale ground `--tint` and the greys in `kit.css`. No
-  second hue, gradient, shadow or glow.
+  kept paper, the dots of the network), its pale `--y-pale` for a quantity that tapers into the
+  kept papers, the pale ground `--tint` and the greys in `kit.css`. No second hue, gradient,
+  shadow or glow.
 - **Type.** Inside a picture Hanken, with mono for counts, at the kit's sizes; nothing under
   12.5 px, no uppercase labels, no decorative numbering. A number appears only when it counts
   something. Around the pictures the page is set in Inter Tight (headings) and Inter (text).
