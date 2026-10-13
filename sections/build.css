@@ -3,22 +3,26 @@
    picture's own width (all set by build.js from what it measured), so that at a 1280 column
    the picture is shown at its own size. Under 1200 the text stands above the frame; under 880
    build.js draws the one-column picture. */
-.ba-wrap{display:grid;grid-template-columns:minmax(0,var(--ba-text,359fr)) minmax(0,var(--ba-pic,877fr));column-gap:44px;align-items:start}
+.ba-wrap{display:grid;grid-template-columns:minmax(0,var(--ba-text,321fr)) minmax(0,var(--ba-pic,915fr));column-gap:44px;align-items:start}
 .ba-text{padding-top:29.5px}
 .ba-text .sec-p{margin-top:24px;text-wrap:pretty}
-/* the two notes under the text: icon, title, a line or two, on the text's left edge */
-.ba-notes{display:grid;gap:28px;margin-top:40px}
-.ba-ico{display:block;width:24px;height:24px;margin-bottom:12px}
-.ba-note-h{font:600 17px/1.3 var(--pg-font);letter-spacing:-.011em;color:var(--pg-ink)}
-.ba-note-p{margin-top:6px;font-size:15px;line-height:1.42;color:var(--pg-muted);max-width:340px;text-wrap:pretty}
+/* the two notes under the text: an icon beside a title, then a line or two on the text's left edge */
+.ba-notes{display:grid;gap:26px;margin-top:36px}
+.ba-note-h{display:flex;align-items:center;gap:10px;font:600 17px/24px var(--pg-font);letter-spacing:-.011em;color:var(--pg-ink)}
+.ba-ico{flex:none;width:24px;height:24px}
+.ba-note-p{margin-top:8px;font-size:15px;line-height:1.42;color:var(--pg-muted);max-width:340px;text-wrap:pretty}
 .ba-frame{padding:32px}
 .ba-stage{position:relative}
 .ba-svg{width:100%;height:auto}
 .ba-l{display:block}
+/* one size for the names of search steps and of filters */
+.pic .ba-name{font-size:16px;font-weight:600;letter-spacing:-.012em}
 .pic .ba-tag{fill:var(--tint)}
 .pic .ba-set{font-size:12.5px;font-weight:500;letter-spacing:-.003em;fill:var(--t2)}
 /* the papers that reach a filter: a bar across the line in the pale of the kept papers' yellow, opening and closing about the line */
 .pic .ba-flow{fill:var(--y-pale);transform-box:fill-box;transform-origin:50% 50%}
+/* a piece of line whose top end stays where it is while its length changes */
+.pic .ba-hang{transform-box:fill-box;transform-origin:50% 0}
 .pic .ba-switch{position:absolute;top:0;right:0;margin-top:-3px}
 
 @media(max-width:1200px){
@@ -27,7 +31,7 @@
   .ba-l{display:inline}
   .ba-s{display:block}
   .ba-notes{grid-template-columns:repeat(2,minmax(0,340px));gap:40px;margin-top:28px}
-  .ba-stage{max-width:var(--ba-own,811px);margin-inline:auto}
+  .ba-stage{max-width:var(--ba-own,849px);margin-inline:auto}
 }
 @media(max-width:880px){
   .ba-wrap{row-gap:28px}
