@@ -1,11 +1,12 @@
 /* The Build section: the section's text on the left, and in one frame a vertical pipeline of
-   search steps beside the six filters. The 3 px line runs down through the steps, turns under
+   search steps beside the filters. The 3 px line runs down through the steps, turns under
    the pipeline, rises between the two columns and comes down through the filters. The picture
    is also the record of a run: every search step carries the papers it found; on the line under
    the pipeline stand the total found and the duplicates merged. A filter is a card the line
-   passes through, with its name and its setting: beside the line above it stands the count that
-   arrives, beside the card lie the papers it removed, pale, with their count, and the count
-   that goes on stands under it, down to the papers kept on the yellow marker.
+   passes through, with its name and, on a pale tag, its setting. Under each card the line shows
+   what happened there: on its left the count that goes on, on its right the papers the filter
+   removed, a pale bar leaving the line with its count; the papers kept end the line on the
+   yellow marker.
    A parallel group is one pale ground with its steps side by side; the line passes through it.
    The finished picture is the DOM; reveal and preset changes are animations laid over it.
    README.md owns the drawing language; this file owns only this section. */
@@ -13,7 +14,7 @@
   'use strict';
   var OK = window.OK, D = OK.DATA, f = OK.f, fmt = OK.fmt, R = 16, count = 0;
 
-  /* the heading: two sentences, each in the two lines it takes beside the frame */
+  /* the heading: its sentences, each as the lines it takes beside the frame */
   var HEAD = [['Pipelines', 'you can', 'build, monitor', 'and audit']];
   var TEXT = 'A platform for knowledge retrieval pipelines. Choose the searches and set what each filter requires; every search then reports the papers it found, and every filter the papers it removed.';
 
@@ -36,32 +37,36 @@
   function presetOf(id) { return PRESETS.filter(function (p) { return p.id === id; })[0]; }
 
   /* The record of a run, illustrative. FOUND: the papers each search step found. RECORD, per
-     preset: the papers found by all its steps, the duplicates merged, the papers each of the six
-     filters removed in order, and the papers kept. Medium is the page's example, so whatever
+     preset: the papers found by all its steps, the duplicates merged, the papers each filter
+     removed, in the order of OK.DATA.filters, and the papers kept. Medium is the page's example, so whatever
      OK.DATA holds of it is read from there. */
   function search(key) { return D.searches.filter(function (s) { return s.key === key; })[0].found; }
   var FOUND = { b1: 3480, f1: 2960, d1: search('db'), s1: search('sem'), b2: 1770, f2: 1540, s2: 2390 };
   var RECORD = {
-    light: { found: 11070, merged: 1730, removed: [2940, 1730, 680, 2560, 950, 318], kept: 162 },
+    light: { found: 11070, merged: 1730, removed: [2940, 1730, 680, 2560, 950, 235, 83], kept: 162 },
     medium: { found: D.found, merged: D.found - D.deduped, removed: D.filters.map(function (x, i) { return (i ? D.filters[i - 1].pass : D.deduped) - x.pass; }), kept: D.kept },
-    heavy: { found: 18880, merged: 3880, removed: [4720, 2780, 1090, 4110, 1510, 553], kept: 237 }
+    heavy: { found: 18880, merged: 3880, removed: [4720, 2780, 1090, 4110, 1510, 433, 120], kept: 237 }
   };
-  /* the most papers that reach the filters in any preset: the longest bar, so one length means one count in every preset */
-  var MOST = Math.max.apply(null, PRESETS.map(function (P) { return RECORD[P.id].found - RECORD[P.id].merged; }));
+  /* the most papers one filter removes in any preset: the longest pale bar, so one length means one count in every preset */
+  var MOST = Math.max.apply(null, PRESETS.map(function (P) { return Math.max.apply(null, RECORD[P.id].removed); }));
 
   /* The two arrangements. Wide: pipeline and filters side by side, the pipeline spread over a
      fixed height. Narrow: one column, the filters under the pipeline.
      card(n): the card of a step that stands in a row of n; pad, gap: inside a ground;
-     px: the line through the pipeline; top: the first card's top; pitch: filter to filter;
-     flow: the length of the bar that stands for the most papers (MOST).
+     px: the line through the pipeline; top: the first card's top; pitch: filter to filter.
      Wide: cross: the line's run under the pipeline's foot; gx: the line's rise between the
      columns; fl: the filter cards' left edge; first: the first filter card's top under top.
      Narrow: the line falls straight through everything; beads: the found paper and the merged
      duplicates on it, under the pipeline's foot; first: the first filter card's top under the
-     foot. FH: a filter card's height. */
-  var ROOMY = { id: 'roomy', cw: 240, ch: 80 }, SLIM = { id: 'slim', cw: 157, ch: 80 }, MINI = { id: 'mini', cw: 99, ch: 80 }, FH = 56;
-  var WIDE = { card: function (n) { return n > 2 ? SLIM : ROOMY; }, pad: 9, gap: 9, px: 253.5, top: 40, span: 510, cross: 62.5, gx: 539.5, fl: 572, first: 48, pitch: 85, flow: 130 };
-  var NARROW = { narrow: true, card: function () { return MINI; }, vw: 325, pad: 7, gap: 7, px: 162.5, top: 40, step: 24, beads: [31, 79], first: 152, pitch: 85, flow: 120 };
+     foot.
+     FW, FH: a filter card's width (more when a setting needs it) and height. OUT: the pale
+     bar of removed papers: its thickness, how far under a card it starts, and its length, which
+     is head for no papers and grows evenly to most for MOST, so that the smallest count is
+     still a bar and equal differences are equal lengths. */
+  var ROOMY = { id: 'roomy', cw: 240, ch: 80 }, SLIM = { id: 'slim', cw: 157, ch: 80 }, MINI = { id: 'mini', cw: 99, ch: 80 };
+  var FW = 271, FH = 64, OUT = { h: 14, drop: 6, head: 16, most: 88 };
+  var WIDE = { card: function (n) { return n > 2 ? SLIM : ROOMY; }, pad: 9, gap: 9, px: 253.5, top: 40, span: 642, cross: 62.5, gx: 539.5, fl: 572, first: 44, pitch: 90 };
+  var NARROW = { narrow: true, card: function () { return MINI; }, vw: 325, pad: 7, gap: 7, px: 162.5, top: 40, step: 24, beads: [31, 79], first: 152, pitch: 90 };
 
   /** Returns where the rows, cards and line pieces of a preset stand: { rows, at, fmt, stubs, bottom }. */
   function arrange(P, G) {
@@ -105,7 +110,7 @@
       steps += ids.length;
       return ids.map(function (id) { return KINDS[kindOf(id)].name.join(' ') + (FOUND[id] ? ' (found ' + fmt(FOUND[id]) + ' papers)' : ''); }).join(' beside ');
     });
-    return 'A search pipeline of ' + steps + ' steps and the record of its run. From top to bottom: ' + rows.join('; then ') + '. Together the searches found ' + fmt(rec.found) + ' papers; ' + fmt(rec.merged) + ' duplicates were merged, so ' + fmt(left) + ' papers reached the filters. The line passes through six filters in order, each shown with its setting, the papers it removed and the papers that went on: ' +
+    return 'A search pipeline of ' + steps + ' steps and the record of its run. From top to bottom: ' + rows.join('; then ') + '. Together the searches found ' + fmt(rec.found) + ' papers; ' + fmt(rec.merged) + ' duplicates were merged, so ' + fmt(left) + ' papers reached the filters. The line passes through ' + D.filters.length + ' filters in order, each shown with its setting, the papers it removed and the papers that went on: ' +
       D.filters.map(function (x, i) { left -= rec.removed[i]; return x.name + ', ' + x.setting + (x.model ? ' (read by a language model)' : '') + ', removed ' + fmt(rec.removed[i]) + ', ' + fmt(left) + ' went on'; }).join('; ') + '. ' + fmt(rec.kept) + ' papers were kept.';
   }
 
@@ -129,15 +134,17 @@
     var B = narrow ? 0 : G.top + G.span;                // the pipeline's foot in the picture (narrow: the tail is moved to it)
     // a criterion a language model reads is the user's sentence, so it stands in quotation marks
     var fs = D.filters.map(function (x) { return { name: x.name, set: x.model ? '“' + x.setting + '”' : x.setting }; });
-    // a filter card is as wide as the longest setting, and odd, so that the line through its middle is sharp
-    var FW = Math.ceil(Math.max.apply(null, fs.map(function (x) { return width(x.set, 'ba-set'); }))) + 26;
-    FW += 1 - FW % 2;
-    var c = G.cross, fl = narrow ? G.px - FW / 2 : G.fl, fx = fl + FW / 2, sx = fl + FW + 10;   // the filter cards' left edge; the line through them; the left edge of what they removed
+    // a setting stands on a pale tag; a filter card holds the widest tag, and its width is odd, so that the line through its middle is sharp
+    fs.forEach(function (x) { x.tw = Math.ceil(width(x.set, 'ba-set')) + 18; });
+    var fw = Math.max(FW, Math.max.apply(null, fs.map(function (x) { return x.tw; })) + 26);
+    fw += 1 - fw % 2;
+    var c = G.cross, fl = narrow ? G.px - fw / 2 : G.fl, fx = fl + fw / 2;   // the filter cards' left edge; the line through them
     var t0 = narrow ? G.first : G.top + G.first - B, arch = G.top + 1.5 - B;
-    fs.forEach(function (x, i) { x.y = t0 + i * G.pitch; });
+    // under a card, the middle of the pale bar: the height at which that filter's two counts stand
+    fs.forEach(function (x, i) { x.y = t0 + i * G.pitch; x.row = x.y + FH + OUT.drop + OUT.h / 2; });
     // the kept paper ends the line; wide, it stands at the height of the found paper
-    var keptY = narrow ? fs[fs.length - 1].y + FH + 47.5 : c, tip = keptY - 19;
-    var vw = narrow ? G.vw : sx + Math.ceil(Math.max(width('0,000', 'cnt'), width('removed', 'note'))), tailH = keptY + 13;
+    var keptY = narrow ? fs[fs.length - 1].y + FH + 56.5 : c, tip = keptY - 19;
+    var vw = narrow ? G.vw : fl + fw, tailH = keptY + 13;
     (function tail() {
       var FOUND_W = 'found', MERGED_W = 'duplicates merged', b1, b2, lab;
       if (narrow) {
@@ -168,6 +175,8 @@
           return { g: g, num: num };
         };
       }
+      // what the filters removed lies under the line's pieces, so that each bar meets the line cleanly
+      var gOut = OK.svg('g', {}, gTail);
       // the line through the filters: a piece from each card to the next, and from the last to the arrowhead
       d.falls = fs.map(function (x, i) {
         var y1 = x.y + FH - 0.5, y2 = i < fs.length - 1 ? fs[i + 1].y + 0.5 : tip;
@@ -179,21 +188,21 @@
       var l1 = lab(b1, FOUND_W); d.foundN = l1.g; n.found = l1.num;
       d.merged = group(gTail, OK.paper(b2.x - 5, b2.y - 5, 15, 20, { pale: true }) + OK.paper(b2.x, b2.y, 15, 20));
       var l2 = lab(b2, MERGED_W); d.mergedN = l2.g; n.merged = l2.num;
-      // the heads of the two columns: the filters, and what they removed
+      // the head of the filters, and the name of what leaves them
       var hy = narrow ? t0 - 34 : 14 - B;
       d.fLab = OK.svg('text', { class: 'lab', x: narrow ? 0 : fl, y: hy }, gTail, 'Filter');
       d.rLab = OK.svg('text', { class: 'note', x: vw, y: hy, 'text-anchor': 'end' }, gTail, 'removed');
-      // a filter: above it, across the line, the papers that arrive; the card; beside the card the papers it removed
-      n.arrives = []; n.removed = []; d.outs = []; d.flows = [];
+      // a filter: left of the line above it, the papers that arrive; the card with its name and
+      // its setting; under it, right of the line, the papers it removed
+      n.arrives = []; n.removed = []; d.outs = [];
       d.rows = fs.map(function (x) {
-        d.flows.push(OK.svg('rect', { class: 'ba-flow', y: x.y - 18.5, height: 8, rx: 2 }, gTail));
-        n.arrives.push(OK.svg('text', { class: 'cnt', y: x.y - 10 }, gTail));
-        var s = '<rect class="card" x="' + (fl + 0.5) + '" y="' + (x.y + 0.5) + '" width="' + (FW - 1) + '" height="' + (FH - 1) + '" rx="12.5"/>';
-        s += '<text class="lab" x="' + (fl + 13) + '" y="' + (x.y + 23) + '">' + x.name + '</text><text class="ba-set" x="' + (fl + 13) + '" y="' + (x.y + 41.5) + '">' + x.set + '</text>';
-        var g = group(gTail, s);
-        d.outs.push(OK.svg('rect', { class: 'ba-out', x: sx, y: x.y + 14, height: 8, rx: 2 }, g));
-        n.removed.push(OK.svg('text', { class: 'cnt', x: sx, y: x.y + 41.5 }, g));
-        return g;
+        n.arrives.push(OK.svg('text', { class: 'cnt', x: fx - 9, y: f(x.row - G.pitch + 4.6), 'text-anchor': 'end' }, gTail));
+        d.outs.push(OK.svg('path', { class: 'ba-out' }, gOut));
+        n.removed.push(OK.svg('text', { class: 'cnt', y: f(x.row + 4.6) }, gTail));
+        var s = '<rect class="card" x="' + (fl + 0.5) + '" y="' + (x.y + 0.5) + '" width="' + (fw - 1) + '" height="' + (FH - 1) + '" rx="12.5"/>';
+        s += '<text class="task" x="' + (fl + 12.4) + '" y="' + (x.y + 24) + '">' + x.name + '</text>';
+        s += '<rect class="ba-tag" x="' + (fl + 13) + '" y="' + (x.y + 32) + '" width="' + x.tw + '" height="22" rx="7"/><text class="ba-set" x="' + (fl + 22) + '" y="' + (x.y + 47.3) + '">' + x.set + '</text>';
+        return group(gTail, s);
       });
       d.kept = group(gTail, OK.paper(fx, keptY, 18, 23.5, { kept: true }));
       d.keptN = OK.svg('g', {}, gTail);
@@ -222,12 +231,12 @@
     }
     /* ends every roll and every animation, so that the DOM alone shows */
     function settle() { rolls.forEach(function (end) { end(); }); rolls = []; rv.cancel(); }
-    /* a bar's length for a count of papers: even, so that a bar across the line has sharp ends */
-    function len(v) { return Math.max(2, 2 * Math.round(v / MOST * G.flow / 2)); }
-    /** Gives a bar its length; seen: true when the change is to be seen, the bar then growing or shrinking from the length it had. */
-    function stretch(bar, w, seen) {
-      if (seen) rv.from(bar, [{ transform: 'scaleX(' + (Number(bar.getAttribute('width')) / w) + ')' }, { transform: 'scaleX(1)' }], 0, 520);
-      bar.setAttribute('width', w);
+    /* the pale bar's length for a count of removed papers (see OUT) */
+    function len(v) { return Math.round(OUT.head + (OUT.most - OUT.head) * v / MOST); }
+    /* a bar of length w that leaves the line under filter i: square where it meets the line, round at its far end */
+    function bar(i, w) {
+      var x = fx + 1, y = fs[i].row - OUT.h / 2, r = 3;
+      return 'M' + x + ',' + y + ' H' + (x + w - r) + ' A' + r + ',' + r + ' 0 0 1 ' + (x + w) + ',' + (y + r) + ' V' + (y + OUT.h - r) + ' A' + r + ',' + r + ' 0 0 1 ' + (x + w - r) + ',' + (y + OUT.h) + ' H' + x + ' Z';
     }
     /** Fills in the record of one preset; old: the record on show when the change is to be seen. */
     function report(rec, old) {
@@ -235,15 +244,15 @@
       write(n.found, rec.found, old && old.found);
       write(n.merged, rec.merged, old && old.merged);
       rec.removed.forEach(function (v, i) {
-        // what arrives: a bar across the line, as long as the papers are many, and its count at the bar's end
-        var w = Math.max(4, len(left)), num = n.arrives[i], x = fx + w / 2 + 8;
-        write(num, left, was);
-        if (old) rv.from(num, [{ transform: 'translateX(' + (Number(num.getAttribute('x')) - x) + 'px)' }, { transform: 'translateX(0)' }], 0, 520);
-        num.setAttribute('x', x);
-        stretch(d.flows[i], w, !!old); d.flows[i].setAttribute('x', fx - w / 2);
-        // what the filter removed: a pale bar of the same measure, beside the card
-        write(n.removed[i], v, old && old.removed[i]);
-        stretch(d.outs[i], len(v), !!old);
+        var w = len(v), num = n.removed[i], x = fx + 1 + w + 7;
+        write(n.arrives[i], left, was);
+        // the bar grows or shrinks from the length it had, and its count travels with its end
+        write(num, v, old && old.removed[i]);
+        if (old) {
+          rv.from(d.outs[i], [{ transform: 'scaleX(' + (len(old.removed[i]) / w) + ')' }, { transform: 'scaleX(1)' }], 0, 520);
+          rv.from(num, [{ transform: 'translateX(' + (len(old.removed[i]) - w) + 'px)' }, { transform: 'translateX(0)' }], 0, 520);
+        }
+        d.outs[i].setAttribute('d', bar(i, w)); num.setAttribute('x', x);
         left -= v; if (old) was -= old.removed[i];
       });
       write(n.kept, rec.kept, old && old.kept);
@@ -311,7 +320,7 @@
       }
     }
 
-    /** Plays the reveal: the pipeline row by row along the line, the two counts under it, then the line down through the filters, each with what arrives and then what it removed. */
+    /** Plays the reveal: the pipeline row by row along the line, the two counts under it, then the line down through the filters, each followed by what it removed. */
     function play() {
       settle();
       if (OK.still) return;
@@ -330,14 +339,14 @@
       t += 180;
       rv.stroke(d.b1, t, narrow ? 300 : 760); t += narrow ? 220 : 620;
       rv.arrive(d.fLab, t - 120); rv.fade(d.rLab, t - 40, 320);
-      // the line falls at one speed; each filter arrives as the line reaches it
+      // the line falls at one speed; each filter arrives as the line reaches it, then what it removed leaves the line
       var run = tip - t0, at = function (y) { return t + 780 * (y - t0) / run; };
       d.rows.forEach(function (g, i) {
         var F = d.falls[i];
-        rv.from(d.flows[i], [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], at(fs[i].y) - 120, 420);
-        rv.fade(n.arrives[i], at(fs[i].y) - 40, 320);
+        rv.fade(n.arrives[i], at(fs[i].y) - 160, 320);
         rv.arrive(g, at(fs[i].y) - 40, 380);
-        rv.from(d.outs[i], [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], at(fs[i].y) + 140, 520);
+        rv.from(d.outs[i], [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], at(fs[i].row), 520);
+        rv.fade(n.removed[i], at(fs[i].row) + 260, 320);
         F.e.style.strokeDasharray = '1';
         rv.from(F.e, [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], at(F.y1), 780 * (F.y2 - F.y1) / run, 'linear');
       });

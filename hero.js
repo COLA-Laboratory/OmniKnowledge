@@ -1,5 +1,5 @@
 /* The hero: the 3 px line joins five things. The question; one small card that lists the three
-   searches; one small card that lists the six filters as a numbered pipeline; the map of the 212
+   searches; one small card that lists the seven filters as a numbered pipeline; the map of the 212
    kept papers, its four topics packed into one body; the four tasks, each tied by an evidence
    line to a paper on the side of the map that faces it.
    It has two compositions: the wide one, read from left to right, and the tall one, read from
@@ -16,8 +16,8 @@
   var LX = 7.5, AX = 272.5;                         // the line: its run down the left edge, and the height at which it crosses the picture
   var COL = 44;                                     // the left edge the question, the seeds and the Search card share
   var GAP = 66;                                     // along the line: card to card, and card to arrowhead; a bead stands in the middle of each
-  var SC = { x: COL, y: 199.5, w: 151, h: 146 };    // the card of searches
-  var FC = { x: SC.x + SC.w + GAP, y: 199.5, w: 139, h: 146 };   // the card of filters
+  var SC = { x: COL, y: 193.5, w: 151, h: 158 };    // the card of searches
+  var FC = { x: SC.x + SC.w + GAP, y: 193.5, w: 139, h: 158 };   // the card of filters
   var TIP = FC.x + FC.w + GAP + 5;                  // where the line's arrowhead ends, at the map
   var CAP = 10.5;                                   // the height of a capital in a topic's name
   // the middle of each topic's round ground; Growth's height follows from Oxidative's and
@@ -25,7 +25,7 @@
   var AT = [{ cx: 583.5, cy: 291.5 }, { cx: 663, cy: 115 }, { cx: 850.5 }, { cx: 752 }];
   var XA = 1022, X0 = 1038, DW = 88, XN = 1146;     // a task: the dot its line ends in, its drawing (left edge, width), its name
   var ROW = 15;                                     // a task drawing has three rows, this far apart
-  var TITLE = 'From a research question and three seed papers, three searches (citation tracing, semantic search, database search) find 14,950 papers; six filters in a row (year, citations, venue, keywords, title criteria, abstract criteria) keep 212. The 212 stand as one citation network in four topics, and four tasks rest on it: literature review, hypothesis generation, experiment planning and results interpretation, each tied by a line to a paper it cites.';
+  var TITLE = 'From a research question and three seed papers, three searches (citation tracing, semantic search, database search) find 14,950 papers; seven filters in a row (year, citations, venue, keywords, title criteria, abstract criteria, full-text criteria) keep 212. The 212 stand as one citation network in four topics, and four tasks rest on it: literature review, hypothesis generation, experiment planning and results interpretation, each tied by a line to a paper it cites.';
 
   function el(tag, attrs, parent, text) {
     var e = document.createElementNS(NS, tag);
@@ -144,7 +144,7 @@
     db: '<rect x="2.6" y="2.8" width="14.8" height="4.6" rx="2.3"/><path d="M6.6 11h10.2M6.6 14.2h10.2M6.6 17.4h6.4"/><circle class="f" cx="3.4" cy="11" r="1"/><circle class="f" cx="3.4" cy="14.2" r="1"/><circle class="f" cx="3.4" cy="17.4" r="1"/>'
   };
   var SEARCHES = [['cite', 'Citation tracing'], ['sem', 'Semantic Search'], ['db', 'Database Search']];
-  var FILTERS = ['Year', 'Citations', 'Venue', 'Keywords', 'Title criteria', 'Abstract criteria'];
+  var FILTERS = ['Year', 'Citations', 'Venue', 'Keywords', 'Title criteria', 'Abstract criteria', 'Full-text criteria'];
   var INSET = 13;                                   // a card's edge to what stands in it
 
   /* a card: its outer edge is the box it is given, the hairline inside it */
@@ -198,12 +198,12 @@
     // what the searches found, on the line between the two cards
     bead(SC.x + SC.w + GAP / 2, false, '14,950', 'found', d, 'found', gTop);
 
-    // 3. the filters: one card, six names in a row one after another
+    // 3. the filters: one card, seven names in a row one after another
     d.fLab = el('text', { x: FC.x - 0.9, y: FC.y - 11.5, class: 'lab' }, gTop, 'Filter');
     d.fCard = el('g', {}, gTop);
     card(FC, d.fCard);
-    var DX = FC.x + INSET + 8, FY = function (i) { return AX + (i - 2.5) * 22; };
-    d.chain = el('path', { d: 'M' + DX + ',' + FY(0) + ' V' + FY(5), class: 'chain', pathLength: 1 }, gTop);
+    var DX = FC.x + INSET + 8, FY = function (i) { return AX + (i - 3) * 20.5; };
+    d.chain = el('path', { d: 'M' + DX + ',' + FY(0) + ' V' + FY(6), class: 'chain', pathLength: 1 }, gTop);
     FILTERS.forEach(function (name, i) {
       var g = el('g', {}, gTop);
       el('circle', { cx: DX, cy: FY(i), r: 8, class: 'port' }, g);
@@ -300,9 +300,9 @@
     var Z = TALL, S = Z.s, G = MAP.topics.map(function (T) { return ground(T.nodes); });
     var L = { ask: [48, 79, 110], seeds: 147, shelf: 180.5, papers: [], links: [] };
     L.sc = { x: Z.x0, y: 216, w: Z.x1 - Z.x0, h: Z.ch };
-    L.fc = { x: Z.x0, y: L.sc.y + Z.ch + Z.gap, w: L.sc.w, h: Z.ch };
+    L.fc = { x: Z.x0, y: L.sc.y + Z.ch + Z.gap, w: L.sc.w, h: Z.ch + 22 };   // four rows of filters, where the searches take three
     L.found = L.sc.y + Z.ch + Z.gap / 2;
-    L.kept = L.fc.y + Z.ch + Z.gap / 2;
+    L.kept = L.fc.y + L.fc.h + Z.gap / 2;
     L.top = L.kept + 48;                             // the first ground's top, under the arrowhead
     L.tip = L.top - 12;
     var at = L.at = Z.at.map(function (cx, t) { return { cx: cx, r: G[t].r * S + PAD }; });
@@ -380,14 +380,14 @@
     });
     beadTall(L.found, false, '14,950', 'found', d, 'found', gTop);
 
-    // 3. the filters: one card, the six names in two runs of three
+    // 3. the filters: one card, the seven names in two runs, four and three
     d.fLab = el('text', { x: FC.x - 0.9, y: FC.y - 11.5, class: 'lab' }, gTop, 'Filter');
     d.fCard = el('g', {}, gTop);
     card(FC, d.fCard);
-    var DX = [FC.x + INSET + 8, FC.x + FC.w / 2 + INSET + 8], FY = function (i) { return FC.y + 18 + (i % 3) * 22; };
-    DX.forEach(function (x) { d.chains.push(el('path', { d: 'M' + x + ',' + FY(0) + ' V' + FY(2), class: 'chain', pathLength: 1 }, gTop)); });
+    var DX = [FC.x + INSET + 8, FC.x + FC.w / 2 + INSET + 8], FY = function (i) { return FC.y + 18 + (i % 4) * 22; };
+    DX.forEach(function (x, c) { d.chains.push(el('path', { d: 'M' + x + ',' + FY(0) + ' V' + FY(c ? 2 : 3), class: 'chain', pathLength: 1 }, gTop)); });
     FILTERS.forEach(function (name, i) {
-      var g = el('g', {}, gTop), x = DX[i < 3 ? 0 : 1];
+      var g = el('g', {}, gTop), x = DX[i < 4 ? 0 : 1];
       el('circle', { cx: x, cy: FY(i), r: 8, class: 'port' }, g);
       el('text', { x: x, y: FY(i) + 4.3, 'text-anchor': 'middle', class: 'no' }, g, String(i + 1));
       el('text', { x: x + 18.5, y: FY(i) + 4.5, class: 'row' }, g, name);

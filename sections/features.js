@@ -80,10 +80,10 @@
   }
 
   var ITEMS = [
-    { name: 'Comprehensive', to: '#search', text: 'Triangulated search reaches papers by citation, by semantics and by keyword.' },
-    { name: 'Quality-controlled', to: '#screen', text: 'Every paper meets the same criteria, in the same order.' },
-    { name: 'Affordable', to: '#screen', text: 'Rule checks come first. A language model reads only what is left.' },
-    { name: 'Transparent', to: '#build', text: 'Every paper found, merged or removed is counted where it happened.' }
+    { name: 'Comprehensive', to: '#search', text: 'Triangulated search combines citations, semantics and keywords to deliver the most complete picture of your field.' },
+    { name: 'Rigorous', to: '#screen', text: 'A rich library of customizable criteria, from metadata rules to model judgment, holds every paper to your standard.' },
+    { name: 'Cost-effective', to: '#screen', text: 'Tiered screening spends where it counts, keeping even the most ambitious survey within budget.' },
+    { name: 'Trustworthy', to: '#build', text: 'Transparent search and screening pipelines, with a fully auditable record of every decision, keep you in control.' }
   ];
   // for every item, its drawing and what the drawing shows in words
   var DRAW = [

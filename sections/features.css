@@ -13,7 +13,7 @@
 .ft-name{font-family:var(--pg-display);font-size:21px;font-weight:600;letter-spacing:-.02em;line-height:1.2}
 .ft-name span{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:6px;text-decoration-color:#c5c6ba;transition:text-decoration-color .2s var(--pg-ease)}
 .ft-item:hover .ft-name span,.ft-item:focus-visible .ft-name span{text-decoration-color:var(--pg-ink)}
-.ft-text{margin-top:12px;font-size:15px;line-height:1.42;color:var(--pg-muted);max-width:250px;transition:color .2s var(--pg-ease)}
+.ft-text{margin-top:12px;font-size:15px;line-height:1.42;color:var(--pg-muted);max-width:285px;text-wrap:pretty;transition:color .2s var(--pg-ease)}
 .ft-item:hover .ft-text{color:var(--pg-ink)}
 @media(max-width:1160px){.ft-row{grid-template-columns:1fr 1fr;gap:44px 40px}}
 @media(max-width:800px){.ft-row{gap:40px 28px;margin-top:48px;padding:36px 0}}

@@ -419,7 +419,8 @@ window.OK.map = (function () {
       { name: 'Venue', reads: 'the venue', setting: 'Peer-reviewed, no preprints', pass: 5300, model: false },
       { name: 'Keywords', reads: 'words in title and abstract', setting: 'microplastic* OR nanoplastic*', pass: 1900, model: false },
       { name: 'Title criteria', reads: 'the title', setting: 'Studies a freshwater fish species', pass: 650, model: true },
-      { name: 'Abstract criteria', reads: 'the abstract', setting: 'Reports an exposure experiment', pass: 212, model: true }
+      { name: 'Abstract criteria', reads: 'the abstract', setting: 'Reports an exposure experiment', pass: 320, model: true },
+      { name: 'Full-text criteria', reads: 'the full text', setting: 'Reports dose and duration', pass: 212, model: true }
     ],
     kept: 212,
     tasks: ['Literature review', 'Hypothesis generation', 'Experiment planning', 'Results interpretation']
