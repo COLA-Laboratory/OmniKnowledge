@@ -16,21 +16,27 @@
     else m += '<path class="tick" d="M' + f(cx - 2.2 * k) + ',' + f(cy - 2.2 * k) + ' l' + f(4.4 * k) + ',' + f(4.4 * k) + ' M' + f(cx + 2.2 * k) + ',' + f(cy - 2.2 * k) + ' l' + f(-4.4 * k) + ',' + f(4.4 * k) + '"/>';
     return m;
   }
-  function dot(x, y, r) { return '<circle class="dot" cx="' + f(x) + '" cy="' + f(y) + '" r="' + r + '"/>'; }
-  function text(cls, x, y, str, anchor) { return '<text class="' + cls + '" x="' + f(x) + '" y="' + f(y) + '"' + (anchor ? ' text-anchor="' + anchor + '"' : '') + '>' + str + '</text>'; }
+  /** Returns one word as a bar from x, w long, its middle on y; ink: set in ink instead of grey. */
+  function bar(x, y, w, ink, h) {
+    h = h || 5;
+    return '<rect x="' + f(x) + '" y="' + f(y - h / 2) + '" width="' + f(w) + '" height="' + h + '" rx="' + f(h / 2) + '" fill="' + (ink ? '#0b0b0c' : '#c9c9c2') + '"/>';
+  }
+  /** Returns a word on the yellow marker: an ink bar from x, w long, its middle on y. */
+  function marked(x, y, w, h) {
+    h = h || 5;
+    return '<rect class="mark" x="' + f(x - 3) + '" y="' + f(y - h / 2 - 3.5) + '" width="' + f(w + 6) + '" height="' + f(h + 7) + '"/>' + bar(x, y, w, true, h);
+  }
 
   /* ---------- Comprehensive ---------- */
-  /* a sum. Each way of searching finds some papers and misses others; under the rule, none is missing */
+  /* the same papers after one, two and three ways of searching: the gaps close */
   function comprehensive() {
-    var FOUND = [[0, 1, 3, 4, 6], [1, 2, 5, 6], [2, 4, 7]], N = 8, X0 = 42, DX = 22, ROWS = [15, 38, 61], RULE = 75.5, SUM = 88.5, T = 18, RD = 5.2, k;
-    var parts = D.searches.map(function (S, i) {
-      var s = OK.tile(0, ROWS[i] - T / 2, T, S.key);
-      for (k = 0; k < N; k++) s += FOUND[i].indexOf(k) >= 0 ? dot(X0 + k * DX, ROWS[i], RD) : '<circle class="ft-miss" cx="' + (X0 + k * DX) + '" cy="' + ROWS[i] + '" r="1.7"/>';
+    var T = 16, ROWS = [14, 48.5, 83], X0 = 74, DX = 25, N = 7, FOUND = [[0, 1, 3, 5], [0, 1, 2, 3, 5, 6], [0, 1, 2, 3, 4, 5, 6]];
+    return ROWS.map(function (y, r) {
+      var s = '', k;
+      for (k = 0; k <= r; k++) s += OK.tile(k * 19, y - T / 2, T, D.searches[k].key);
+      for (k = 0; k < N; k++) s += FOUND[r].indexOf(k) >= 0 ? OK.paper(X0 + k * DX, y, 15, 20, { kept: true }) : '<rect class="ft-gone" x="' + f(X0 + k * DX - 7.5) + '" y="' + (y - 10) + '" width="15" height="20" rx="2"/>';
       return s;
     });
-    var sum = '<path class="chain" d="M0,' + RULE + ' H' + (X0 + (N - 1) * DX + RD + 3) + '"/>';
-    for (k = 0; k < N; k++) sum += dot(X0 + k * DX, SUM, RD);
-    return parts.concat([sum]);
   }
 
   /* ---------- Quality-controlled ---------- */
@@ -43,40 +49,54 @@
     }));
   }
 
-  /* ---------- Affordable ---------- */
+  /* ---------- Cost-effective ---------- */
   var THICK = 5.6;                                  // a coin's edge
-  /**
-   * Returns a coin lying flat, seen from a little above: its upper face is an ellipse round
-   * (cx, y), rx wide. ghost: a coin that is not paid, in dotted outline.
-   */
-  function coin(cx, y, rx, ghost) {
-    var ry = rx * 0.4, cls = ghost ? 'ft-ghost' : 'ft-coin';
-    return '<path class="' + cls + '" d="M' + f(cx - rx) + ',' + f(y) + ' v' + THICK + ' a' + rx + ',' + f(ry) + ' 0 0 0 ' + (2 * rx) + ',0 v' + (-THICK) + '"/><ellipse class="' + cls + '" cx="' + f(cx) + '" cy="' + f(y) + '" rx="' + rx + '" ry="' + f(ry) + '"/>' +
-      (ghost ? '' : '<ellipse class="ft-mint" cx="' + f(cx) + '" cy="' + f(y) + '" rx="' + f(rx - 4.6) + '" ry="' + f(ry - 1.9) + '"/>');
+  /** Returns a coin lying flat, seen from a little above: its upper face is an ellipse round (cx, y), rx wide. */
+  function coin(cx, y, rx) {
+    var ry = rx * 0.4;
+    return '<path class="ft-coin" d="M' + f(cx - rx) + ',' + f(y) + ' v' + THICK + ' a' + rx + ',' + f(ry) + ' 0 0 0 ' + (2 * rx) + ',0 v' + (-THICK) + '"/><ellipse class="ft-coin" cx="' + f(cx) + '" cy="' + f(y) + '" rx="' + rx + '" ry="' + f(ry) + '"/>' +
+      '<ellipse class="ft-mint" cx="' + f(cx) + '" cy="' + f(y) + '" rx="' + f(rx - 4.6) + '" ry="' + f(ry - 1.9) + '"/>';
   }
-  /** Returns n coins stacked on the foot at cx. */
-  function coins(cx, n, rx, ghost) {
-    var s = '', i;
-    for (i = 0; i < n; i++) s += coin(cx, FOOT - 0.6 - rx * 0.4 - THICK * (i + 1), rx, ghost);
+  /**
+   * Returns a pile of n kept papers, each standing behind the one before: the front paper is w
+   * wide with its left edge on x and its foot on y = foot; every next one is dx to the right.
+   */
+  function pile(x, foot, n, w, dx) {
+    var h = Math.round(w * 1.3), s = '', i;
+    for (i = n - 1; i >= 0; i--) s += OK.paper(x + w / 2 + i * dx, foot - h / 2, w, h, { kept: true });
     return s;
   }
-  /* what reading every paper would cost, in dotted outline, beside what is paid */
-  function affordable() {
-    var RX = 18;
-    return [coins(RX + 1, 10, RX, true), coins(RX * 4 + 1, 1, RX)];
+  /* a balance. The pile of papers on one end outweighs the coin it cost on the other */
+  function costEffective() {
+    var CX = 116, CY = 62;
+    var beam = '<path class="lead" d="M14,' + CY + ' H218"/>' + pile(18, CY - 1.5, 7, 30, 8) + coin(196, CY - 1.5 - 6.8 - THICK, 17);
+    var prop = '<path class="ft-prop" d="M' + CX + ',' + (CY + 2) + ' L' + (CX + 15) + ',' + FOOT + ' H' + (CX - 15) + ' Z"/>';
+    return [prop, '<g transform="rotate(-9 ' + CX + ' ' + CY + ')">' + beam + '</g>'];
   }
 
-  /* ---------- Transparent ---------- */
-  /* the flow report. Every paper that was found is counted where it left */
-  function transparent() {
-    var Y = 42, PY = 78, XK = 200, TIP = 226, merged = D.found - D.deduped, removed = D.deduped - D.kept;
-    var outs = [{ x: 50, n: merged, word: 'duplicates' }, { x: 136, n: removed, word: 'removed' }];
-    var parts = ['<path class="lead cut" d="M8.5,' + Y + ' H' + TIP + '"/><path class="lead" d="M' + (TIP - 5) + ',' + (Y - 5) + ' L' + TIP + ',' + Y + ' L' + (TIP - 5) + ',' + (Y + 5) + '"/>' + OK.paper(8.5, Y, 15, 20, {}) + text('cnt', 0.5, Y - 22, OK.fmt(D.found))];
-    outs.forEach(function (o) {
-      parts.push('<path class="chain" d="M' + o.x + ',' + Y + ' V' + (PY - 11) + '"/><circle class="port" cx="' + o.x + '" cy="' + Y + '" r="4.5"/>' + OK.paper(o.x, PY, 15, 20, { pale: true }) + text('cnt', o.x + 14, PY - 1, OK.fmt(o.n)) + text('note', o.x + 14, PY + 15, o.word));
-    });
-    parts.push('<rect class="ft-gap" x="' + (XK - 11) + '" y="' + (Y - 5) + '" width="22" height="10"/>' + OK.paper(XK, Y, 15, 20, { kept: true }) + '<rect class="mark" x="' + (XK - 16) + '" y="' + (Y - 34.5) + '" width="32" height="16"/>' + text('cnt', XK, Y - 22, D.kept, 'middle'));
-    return parts;
+  /* ---------- Trustworthy ---------- */
+  /** Returns an evidence line along d that ends in a dot at (x, y). */
+  function wire(d, x, y) { return '<path class="wire" d="' + d + '"/><circle class="port" cx="' + f(x) + '" cy="' + f(y) + '" r="2.7"/>'; }
+  /* one paper between its past and its record. Behind it, the trail back to the seed it was found
+     from; before it, the decisions made on it, each tied to its line */
+  function trustworthy() {
+    var g = OK.sheetGeo(106, 12, 58, 82), t = g.title[0], a = g.abs[2], ty = t.y + t.h / 2, ay = a.y + a.h / 2;
+    var SEED = 8.5, FROM = 60;                          // where the seed and the paper this one was found from stand
+    /** Returns the height of the line of sight at x: it leaves the sheet at y = 70 and rises to the left. */
+    function sight(x) { return f(70 - (g.x - x) * 0.12); }
+    /** Returns one hop of the trail between x0 and x1, with the tile of the search that made it in the middle. */
+    function hop(x0, x1, size) {
+      var x = (x0 + x1) / 2;
+      return '<path class="edge ft-hop" d="M' + x0 + ',' + sight(x0) + ' L' + x1 + ',' + sight(x1) + '"/>' + OK.tile(f(x - size / 2), f(sight(x) - size / 2), size, 'back');
+    }
+    var sheet = OK.sheetBase(g, {}) + marked(t.x + 18, ty, t.w - 18, t.h) + marked(a.x, ay, a.w * 0.62, a.h);
+    var near = hop(FROM + 12.5, g.x, 15) + OK.paper(FROM, sight(FROM), 25, 32, {});
+    var far = hop(SEED + 7.5, FROM - 12.5, 12) + OK.paper(SEED, sight(SEED), 15, 19, { seed: true });
+    function verdict(y, state, seedNum, to) {
+      return box(182, y, state) + OK.words(194, y, 38, seedNum, 2) +
+        wire('M175,' + y + ' C169,' + y + ' 172,' + f(to[1]) + ' ' + f(to[0]) + ',' + f(to[1]), to[0], to[1]);
+    }
+    return [sheet, near, far, verdict(26, 'on', 7, [t.x + t.w + 5.5, ty]), verdict(70, 'no', 15, [a.x + a.w * 0.62 + 5.5, ay])];
   }
 
   var ITEMS = [
@@ -87,10 +107,10 @@
   ];
   // for every item, its drawing and what the drawing shows in words
   var DRAW = [
-    [comprehensive, 'Three rows of papers, one for each way of searching, each with gaps; under a rule, a row with none missing'],
+    [comprehensive, 'The same seven papers after one, two and three ways of searching: three are missing, then one, then none'],
     [controlled, 'Five papers checked against the same three criteria; four pass, one fails the second and is removed'],
-    [affordable, 'A tall stack of coins in dotted outline beside the one coin that is paid'],
-    [transparent, '14,950 papers found; 2,550 duplicates and 12,188 removed papers are counted where they leave; 212 kept']
+    [costEffective, 'A balance: the pile of papers on one end outweighs the single coin on the other'],
+    [trustworthy, 'One paper: a trail leads back from it, through the paper it was found from, to a seed paper, each hop marked with the search that made it; two decisions on it, a pass and a fail, are each tied to the line they rest on']
   ];
 
   OK.section('features', 'a', {
