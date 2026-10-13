@@ -80,7 +80,7 @@
   }
 
   var ITEMS = [
-    { name: 'Comprehensive', to: '#search', text: 'Three kinds of search, each reaching papers the other two miss.' },
+    { name: 'Comprehensive', to: '#search', text: 'Triangulated search reaches papers by citation, by meaning and by keyword.' },
     { name: 'Quality-controlled', to: '#screen', text: 'Every paper meets the same criteria, in the same order.' },
     { name: 'Affordable', to: '#screen', text: 'Rule checks come first. A language model reads only what is left.' },
     { name: 'Transparent', to: '#build', text: 'Every paper found, merged or removed is counted where it happened.' }

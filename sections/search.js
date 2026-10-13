@@ -6,8 +6,8 @@
 (function () {
   'use strict';
   var OK = window.OK, f = OK.f, D = OK.DATA;
-  var HEAD = 'Comprehensive search that catches what a single engine misses';
-  var TEXT = 'Citation tracing, semantic search and database search each reach different papers. Their results are merged into one candidate set.';
+  var HEAD = 'Triangulated search across citations, meaning and keywords';
+  var TEXT = 'Three search paradigms run as one and take the best of each. Citation tracing follows how papers build on one another, semantic search finds related work whatever its wording, and database search reaches papers no citation leads to.';
   var COLW = 368;                                   // the width the three drawings are composed for
   var TOP = 36, TILE = 26;                          // a column's title: its top, the size of its tile
   var NOTE = 96;                                    // the baseline of the quiet words above a drawing

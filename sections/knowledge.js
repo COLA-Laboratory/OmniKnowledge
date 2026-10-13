@@ -577,7 +577,7 @@
   /* ---------- the section ---------- */
   function mount(root) {
     var head = OK.h('div', { class: 'sec-head' }, root);
-    OK.h('h2', { class: 'sec-h' }, head, 'A synthesized knowledge corpus, ready to power your research');
+    OK.h('h2', { class: 'sec-h' }, head, 'A mapped knowledge corpus, ready to power your research');
     OK.h('p', { class: 'sec-p' }, head, 'The papers that pass stand as a citation network or by topic. For a literature review, a hypothesis, an experiment plan or a reading of your results, every paper is read and each statement cites its source.');
     var frame = OK.h('div', { class: 'frame pic ka' }, root), top = OK.h('div', { class: 'ka-top' }, frame);
     var sw = OK.h('div', { class: 'k-switch', role: 'group', 'aria-label': 'How the map is drawn' }, top);
