@@ -44,7 +44,9 @@ objects from the first screen to the last.
   marker.
 - **Motion.** A picture reveals itself once when it arrives (`OK.onArrive`, `OK.reveal`), in the
   order a reader takes it in. The finished state is the DOM: with reduced motion, or with
-  `?still=1`, every picture is shown complete.
+  `?still=1`, every picture is shown complete. One picture keeps moving afterwards: the last
+  section's four tasks take turns by themselves until the reader chooses one
+  (`sections/knowledge.js` owns the pause rules).
 
 ## Checking a change
 

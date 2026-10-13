@@ -2,14 +2,12 @@
    map, the buttons that lie over the task cards, and says how a card looks before and after its
    task is chosen. */
 .ka{position:relative}
-.ka-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px 24px;padding:30px 32px 0}
+.ka-top{display:flex;padding:30px 32px 0}
 .ka-top .k-switch{margin-left:-7px}
-.ka .ka-count{margin:0;display:flex;align-items:baseline;gap:26px;white-space:nowrap}
-.ka .ka-count .k-cnt{display:inline-block;min-width:3ch;text-align:right;font-variant-numeric:tabular-nums}
-.ka .ka-count .k-mark{min-width:0;padding:2px 5px}
 .ka-stage{position:relative}
 .ka-stage svg{width:100%;height:auto}
-/* the reading starts when this, the lower part of the map, comes into the window */
+/* the reading starts when this, the lower part of the map, comes into the window; the tasks
+   take turns by themselves only while it is there */
 .ka-seen{position:absolute;left:0;right:0;top:30%;height:22%;pointer-events:none}
 
 /* a task card is pressed through a button that lies over it */
@@ -51,12 +49,11 @@
 .ka .ka-fly{opacity:0}
 
 /* before the section arrives nothing has been read */
-.ka-wait .ka-marks,.ka-wait .ka-count{visibility:hidden}
+.ka-wait .ka-marks{visibility:hidden}
 
 /* a phone: the chosen task alone under the map, the four names under it */
 .ka .ka-pick{display:none}
 .ka-tall .ka-top{padding:18px 16px 0}
-.ka-tall .ka-count{flex-wrap:wrap;gap:4px 18px}
 .ka-tall .ka-hit{display:none}
 .ka-tall .ka-task[data-on="0"]{display:none}
 .ka-tall .ka-pick{display:flex;flex-wrap:wrap;gap:6px 10px;padding:14px 16px 18px}

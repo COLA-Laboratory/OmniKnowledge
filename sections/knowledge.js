@@ -5,7 +5,8 @@
    four topics, become numbered citation marks, and a copy of each mark travels down into the
    task, whose drawing is written into an output that carries the same numbers. Paper and
    citation are tied by number, as a place on a map and its entry in the legend; no line stands
-   between them.
+   between them. Left alone, the section chooses the next task by itself, round the four, until
+   the reader chooses one.
    The finished picture is the DOM; the reading is a set of animations laid over it, so ?still=1
    and reduced motion show the DOM. README.md owns the drawing language. */
 (function () {
@@ -18,6 +19,8 @@
   var BH = 6;                                       // the height of a word of an output, a little over the kit's 5 so that a mark sits well beside it
   var FLY = 'cubic-bezier(.5,0,.3,1)';              // how a citation mark travels from its paper into the text
   var T_SWEEP = 2400;                               // the time the front takes to cross the map, ms
+  var DWELL = 6000;                                 // how long a finished reading stands before the next task is chosen by itself, ms
+  var QUIET = 20000;                                // how long the rotation waits after the reader switches the map, ms
 
   /* ask: the request in the user's words; hold: how many papers hold something relevant; from:
      how many papers of each topic the output cites (as many in all as the drawing has marks). */
@@ -180,16 +183,17 @@
   /* ---------- the picture ---------- */
   /**
    * Builds the picture for one arrangement.
-   * G: WIDE or TALL; stage: the element the SVG goes into; ui: { count(read, hold, cited), waiting(bool) };
+   * G: WIDE or TALL; stage: the element the SVG goes into; ui: { waiting(bool) };
    * first: the task that is chosen from the start, or -1.
-   * Returns { choose(k), view(name), replay(), point(x, y), destroy(), cards }.
+   * Returns { choose(k), view(name), replay(), point(x, y), destroy(), cards }; choose and replay
+   * return how long the reading they start lasts, in ms (0 when nothing plays).
    */
   function Picture(G, stage, ui, first) {
     var M = G.map, svg = el('svg', { viewBox: '0 0 ' + G.W + ' ' + G.H, role: 'img', 'aria-labelledby': 'ka-title' }, stage);
     el('title', { id: 'ka-title' }, svg, 'The 212 kept papers as one map, shown as a citation network in four topics or as a semantic map of ten sub-topics. Below it four tasks: literature review, hypothesis generation, experiment planning and results interpretation. For the chosen task every paper on the map is read, the papers that hold relevant passages are ringed, and the statements of the output are tied by lines to the papers they rest on.');
     var gGround = el('g', {}, svg), gEdge = el('g', {}, svg), gDot = el('g', {}, svg), gMark = el('g', { class: 'ka-marks' }, svg);
     var gLab = el('g', {}, svg), gSub = el('g', {}, svg), gCard = el('g', {}, svg), gFly = el('g', {}, svg);
-    var state = { v: 0, view: 'net', task: 0 }, rv = OK.reveal(), kept = [], raf = 0, tw = 0, hot = -1, dead = false;
+    var state = { v: 0, view: 'net', task: 0 }, rv = OK.reveal(), kept = [], tw = 0, hot = -1, dead = false;
 
     /* -- the papers, in both views -- */
     var G0 = MAP.topics.map(function (T) { return ground(T.nodes); });
@@ -484,56 +488,47 @@
       rv.cancel();
       kept.forEach(function (a) { a.cancel(); });
       kept = [];
-      cancelAnimationFrame(raf);
       gFly.textContent = '';
-      ui.count(OK.DATA.kept, TASKS[state.task].hold, cards[state.task].cites.length);
     }
-    /** Plays the reading for the chosen task over the finished picture. */
+    /** Plays the reading for the chosen task over the finished picture; returns how long it lasts, in ms. */
     function play() {
       stop();
-      if (OK.still) return;
-      var C = cards[state.task], X0 = M.x - 6, span = M.w + 12, t0 = performance.now();
+      if (OK.still) return 0;
+      var C = cards[state.task], X0 = M.x - 6, span = M.w + 12;
       keep(front.animate([{ opacity: 1, transform: 'translateX(0px)' }, { opacity: 1, transform: 'translateX(' + span + 'px)' }], { duration: T_SWEEP, easing: 'linear' }));
-      var order = papers.slice().sort(function (p, q) { return p.x - q.x; }), held = [];
-      order.forEach(function (p) {
+      papers.forEach(function (p) {
         p.at = (p.x - X0) / span * T_SWEEP;
         keep((p.ring || p.el).animate([{ fill: INK }, { fill: INK }], { delay: p.at, duration: 300 }));
         if (!p.mark) return;
         rv.fade(p.mark.halo, p.at + 150, 220); rv.fade(p.mark.g, p.at + 150, 220);
-        held.push(p.at + 150);
       });
       // a cited paper becomes its mark once it is read; a copy of the mark then leaves it and
       // travels to its place in the text
-      var lands = [], last = T_SWEEP + 300;
+      var last = T_SWEEP + 300;
       C.cites.forEach(function (m, i) {
         var pts = along(curve(m.p, m), 24), t = m.p.at + 420, dur = 640 + pts.len * 0.55, e = el('g', { class: 'ka-fly' }, gFly);
         e.innerHTML = markAt0(i + 1);
         keep(e.animate(pts.map(function (q) { return { opacity: 1, transform: 'translate(' + f(q.x) + 'px,' + f(q.y) + 'px)' }; }), { delay: t, duration: dur, easing: FLY }));
         rv.fade(m.full, t + dur - 30, 90);
         m.stmt.forEach(function (b) { b.land = t + dur - 80; });
-        lands.push(t + dur);
         last = Math.max(last, t + dur);
       });
-      lands.sort(function (a, b) { return a - b; });
       // the text is written as the front crosses the map; the words a mark supports, as it arrives
-      var tK = last + 260;
+      var tK = last + 260, over = tK;
       C.words.forEach(function (W, i) {
         var t = W.el.land || 250 + i / Math.max(1, C.words.length - 1) * (T_SWEEP + 300);
         if (!W.key) { rv.from(W.el, [{ fill: PALE }, { fill: BAR }], t, 160); return; }
         var end = tK + 320 + (i % 5) * 30, a = t / end;
+        over = Math.max(over, end);
         rv.from(W.el, [{ fill: PALE, offset: 0 }, { fill: PALE, offset: a }, { fill: BAR, offset: Math.min(a + 0.03, 0.9) }, { fill: BAR, offset: (end - 320) / end }, { fill: INK, offset: 1 }], 0, end, 'linear');
       });
       C.late.forEach(function (e, i) {
-        if (/ka-ph/.test(e.getAttribute('class'))) keep(e.animate([{ opacity: 1 }, { opacity: 1, offset: 0.9 }, { opacity: 0 }], { duration: tK + i * 20, fill: 'backwards' }));
+        var ph = /ka-ph/.test(e.getAttribute('class'));
+        if (ph) keep(e.animate([{ opacity: 1 }, { opacity: 1, offset: 0.9 }, { opacity: 0 }], { duration: tK + i * 20, fill: 'backwards' }));
         else rv.fade(e, tK + i * 20, 320);
+        over = Math.max(over, tK + i * 20 + (ph ? 0 : 320));
       });
-      var times = order.map(function (p) { return p.at; });
-      function upTo(list, t) { var n = 0; while (n < list.length && list[n] <= t) n++; return n; }
-      (function tick() {
-        var t = performance.now() - t0;
-        ui.count(upTo(times, t), upTo(held, t), upTo(lands, t));
-        if (t < last && !dead) raf = requestAnimationFrame(tick); else ui.count(OK.DATA.kept, TASKS[state.task].hold, C.cites.length);
-      })();
+      return over;
     }
 
     /** Ends a move between the two views at once, every paper where it was going. */
@@ -549,7 +544,7 @@
       cards.forEach(function (c, i) { c.g.setAttribute('data-on', i === k ? '1' : '0'); });
       marks(k);
       ui.waiting(false);
-      play();
+      return play();
     }
     /** Shows the map as 'net' or 'sem'; every paper moves to its place, marked papers stay marked. */
     function view(name) {
@@ -567,7 +562,6 @@
 
     apply(0);
     marks(0);
-    ui.count(OK.DATA.kept, TASKS[0].hold, cards[0].cites.length);
     return {
       cards: cards, choose: choose, view: view, replay: play, point: point,
       destroy: function () { dead = true; stop(); cancelAnimationFrame(tw); }
@@ -583,23 +577,55 @@
     var sw = OK.h('div', { class: 'k-switch', role: 'group', 'aria-label': 'How the map is drawn' }, top);
     var views = [['net', 'Citation network'], ['sem', 'Semantic map']].map(function (v, i) {
       var b = OK.h('button', { type: 'button', 'aria-pressed': String(!i) }, sw, v[1]);
-      b.addEventListener('click', function () { views.forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); }); state.view = v[0]; pic.view(v[0]); });
+      b.addEventListener('click', function () { views.forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); }); state.view = v[0]; pic.view(v[0]); defer(QUIET); });
       return b;
     });
-    var count = OK.h('p', { class: 'ka-count' }, top, '<span><span class="k-cnt ka-n"></span><span class="k-note"> papers read</span></span><span><span class="k-cnt ka-n"></span><span class="k-note"> hold relevant passages</span></span><span><span class="k-cnt k-mark ka-n"></span><span class="k-note"> cited</span></span>');
-    var nums = count.querySelectorAll('.ka-n');
     var seen = OK.h('div', { class: 'ka-seen' }, frame), stage = OK.h('div', { class: 'ka-stage' }, frame), pick = OK.h('div', { class: 'k-switch ka-pick', role: 'group', 'aria-label': 'Task' }, frame);
     var state = { view: 'net', task: 0, arrived: OK.still }, pic = null, hits = [], picks = [];
     var narrow = window.matchMedia('(max-width: 760px)'), G = null;
-    var ui = {
-      count: function (read, hold, cited) { nums[0].textContent = read; nums[1].textContent = hold; nums[2].textContent = cited; },
-      waiting: function (on) { frame.classList.toggle('ka-wait', on); }
-    };
+    var ui = { waiting: function (on) { frame.classList.toggle('ka-wait', on); } };
+
+    /* The rotation: while the reader leaves the picture alone, the next task is chosen by itself
+       DWELL after a reading has finished, round the four. turn.at is the earliest moment that may
+       happen; whatever makes the rotation wait moves it later, and the one timer looks again when
+       it runs out. The rotation waits while the part of the map that starts the first reading
+       (ka-seen) is out of the window, the tab is hidden or keyboard focus is inside the frame, and
+       for DWELL after each of these ends and after the pointer last moved or pressed over the
+       frame (a pointer that only rests there does not hold it); it waits for QUIET after the
+       reader switches the map, and ends for good once the reader chooses a task. With OK.still
+       there is none. */
+    var turn = { on: !OK.still && 'IntersectionObserver' in window, at: 0, timer: 0, seen: false, sx: -1, sy: -1 }, watch = null;
+    function held() { return !state.arrived || !turn.seen || document.hidden || !!frame.querySelector(':focus-visible'); }
+    /** Keeps the rotation from choosing the next task for another ms from now. */
+    function defer(ms) {
+      if (!turn.on) return;
+      turn.at = Math.max(turn.at, performance.now() + ms);
+      if (!turn.timer) turn.timer = setTimeout(due, turn.at - performance.now());
+    }
+    /** Chooses the next task when nothing holds the rotation and its moment has come; waits out the rest when it was moved later. */
+    function due() {
+      var left = turn.at - performance.now();
+      turn.timer = 0;
+      if (!turn.on || held()) return;
+      if (left > 0) turn.timer = setTimeout(due, left);
+      else choose((state.task + 1) % TASKS.length);
+    }
+    /** Makes the rotation wait for a pointer that moves or presses over the frame; the page scrolling under a resting pointer is no move. */
+    function touched(e) {
+      if (e.type === 'pointermove' && e.screenX === turn.sx && e.screenY === turn.sy) return;
+      turn.sx = e.screenX; turn.sy = e.screenY;
+      defer(DWELL);
+    }
+    /** Starts the wait again when the tab is shown again or focus leaves the frame. */
+    function resume() { if (!document.hidden) defer(DWELL); }
 
     function pressed() {
       hits.concat(picks).forEach(function (b) { b.setAttribute('aria-pressed', String(Number(b.getAttribute('data-k')) === state.task)); });
     }
-    function choose(k) { state.task = k; pressed(); pic.choose(k); }
+    /** Chooses task k and plays its reading; the rotation waits until the reading has stood for DWELL. */
+    function choose(k) { state.task = k; pressed(); defer(pic.choose(k) + DWELL); }
+    /** The reader's own choice of task k: it stands, so the rotation ends. */
+    function byHand(k) { turn.on = false; clearTimeout(turn.timer); choose(k); }
     /** Draws the picture in the arrangement the window asks for; does nothing while that arrangement stands. */
     function build() {
       var next = narrow.matches ? TALL : WIDE;
@@ -611,12 +637,12 @@
       hits = TASKS.map(function (T, k) {
         var R = G.cards[k], b = OK.h('button', { type: 'button', class: 'ka-hit', 'data-k': k, 'aria-label': OK.DATA.tasks[k] + ': ' + T.ask }, stage);
         b.style.cssText = 'left:' + (R.x / G.W * 100) + '%;top:' + (R.y / G.H * 100) + '%;width:' + (R.w / G.W * 100) + '%;height:' + (R.h / G.H * 100) + '%';
-        b.addEventListener('click', function () { choose(k); });
+        b.addEventListener('click', function () { byHand(k); });
         return b;
       });
       picks = TASKS.map(function (T, k) {
         var b = OK.h('button', { type: 'button', 'data-k': k }, pick, OK.DATA.tasks[k]);
-        b.addEventListener('click', function () { choose(k); });
+        b.addEventListener('click', function () { byHand(k); });
         return b;
       });
       pic = Picture(G, stage, ui, state.arrived ? state.task : -1);
@@ -626,7 +652,7 @@
       if (state.view === 'sem') { var still = OK.still; OK.still = true; pic.view('sem'); OK.still = still; }
       if (state.arrived) choose(state.task);
     }
-    function replay() { if (state.arrived) pic.replay(); }
+    function replay() { if (state.arrived) defer(pic.replay() + DWELL); }
     /** Tells the picture where the pointer stands in it, so that a citation under it and its twin come out. */
     function pointer(e) {
       var box = stage.querySelector('svg').getBoundingClientRect();
@@ -639,8 +665,22 @@
     OK.onArrive(seen, function () { state.arrived = true; choose(state.task); });
     narrow.addEventListener('change', build);
     window.addEventListener('ok:replay', replay);
+    if (turn.on) {
+      watch = new IntersectionObserver(function (es) { turn.seen = es[es.length - 1].isIntersecting; if (turn.seen) defer(DWELL); }, { threshold: 0.3 });
+      watch.observe(seen);
+      document.addEventListener('visibilitychange', resume);
+      frame.addEventListener('focusout', resume);
+      frame.addEventListener('pointermove', touched);
+      frame.addEventListener('pointerdown', touched);
+    }
     return {
-      destroy: function () { narrow.removeEventListener('change', build); window.removeEventListener('ok:replay', replay); if (pic) pic.destroy(); }
+      destroy: function () {
+        turn.on = false; clearTimeout(turn.timer);
+        if (watch) watch.disconnect();
+        document.removeEventListener('visibilitychange', resume);
+        narrow.removeEventListener('change', build); window.removeEventListener('ok:replay', replay);
+        if (pic) pic.destroy();
+      }
     };
   }
 

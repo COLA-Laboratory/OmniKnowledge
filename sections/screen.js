@@ -114,14 +114,22 @@
       o.quiet += bar(x, y + 12, WIDE * 0.62, THICK, 'sc-quiet');
       for (var i = 0; i < 5; i++) o.read += bar(x, y + 24.5 + i * 7.5, WIDE * (i === 4 ? 0.55 : 1), THIN, 'sc-ink');
     },
-    /* the whole text: both columns of a page, from its top to its foot */
+    /* the whole paper: a page of its body in two columns, a section's heading and text beside a figure and the text under it */
     'the full text': function (o, x, y) {
-      var col = (WIDE - 7) / 2, ENDS = [{ 3: 0.6 }, { 1: 0.45, 6: 0.75 }];   // a column's length; per column, the lines a paragraph ends on and how far each runs
-      ENDS.forEach(function (ends, c) {
-        for (var i = 0; i < 7; i++) o.read += bar(x + c * (col + 7), y + 9.5 + i * 7.5, col * (ends[i] || 1), THIN, 'sc-ink');
-      });
+      var col = (WIDE - 7) / 2, x2 = x + col + 7, i;
+      o.read += bar(x, y + 11, col * 0.45, THICK, 'sc-ink');
+      for (i = 0; i < 5; i++) o.read += bar(x, y + 22 + i * 7.5, col * (i === 4 ? 0.6 : 1), THIN, 'sc-ink');
+      o.read += figure(x2, y + 8, col, 27.5);
+      for (i = 0; i < 2; i++) o.read += bar(x2, y + 44.5 + i * 7.5, col * (i ? 0.7 : 1), THIN, 'sc-ink');
     }
   };
+  /** Returns a figure of the paper, w by h with its top left corner at x, y: a block in ink with a plot in white, its points rising. */
+  function figure(x, y, w, h) {
+    var x0 = x + 6.5, y0 = y + h - 6.5, s = '<rect class="sc-ink" x="' + f(x) + '" y="' + f(y) + '" width="' + f(w) + '" height="' + h + '" rx="2.5"/>';
+    s += '<path class="sc-plot" d="M' + f(x0) + ',' + f(y + 5.5) + ' V' + f(y0) + ' H' + f(x + w - 5.5) + '"/>';
+    [[6, 4], [11.5, 6.5], [16.5, 9.5], [21.5, 13]].forEach(function (p) { s += '<circle class="sc-pt" cx="' + f(x0 + p[0]) + '" cy="' + f(y0 - p[1]) + '" r="1.6"/>'; });
+    return s;
+  }
   /** Returns the four corner ticks of an icon with its top left corner at x, y. */
   function corners(x, y) {
     var e = 0.75, t = TICK - e, x1 = x + BW - e, y1 = y + BH - e;   // the stroke's outer edge stands on the icon's box
@@ -227,9 +235,9 @@
       names(byModel) + ' are read by a language model and cost ' + listed(byModel.map(function (F) { return COINS[F.reads]; })) + ' coins for a paper. ' +
       D.kept + ' are kept. One paper icon stands for ' + UNIT + ' papers.';
   }
-  /** Draws a plan into svg and returns the parts the reveal moves. */
+  /** Draws a plan into svg and returns the parts the reveal moves. d.level: the filters stand side by side, so their papers can travel from one to the next. */
   function draw(svg, P, titleId) {
-    var d = { segs: [], cols: [], groups: [] };
+    var d = { segs: [], cols: [], groups: [], level: !P.dot };
     svg.textContent = '';
     svg.setAttribute('viewBox', '0 0 ' + P.W + ' ' + f(P.H));
     svg.style.aspectRatio = P.W + ' / ' + f(P.H);
@@ -251,7 +259,7 @@
     });
 
     P.cols.forEach(function (c, k) {
-      var F = D.filters[k], o = { rows: [], out: [], cost: [] }, i, t = '';
+      var F = D.filters[k], o = { rows: [], slots: [], passed: [], out: [], cost: [] }, i, t = '';
       o.name = g(gTop, text('task', c.name, 0, F.name));
       c.lines.forEach(function (l, i) { t += text('sc-set', c.set, i * SET_LH, l); });
       o.set = g(gTop, t);
@@ -262,17 +270,20 @@
       // what one paper costs here
       coins(k, c.cost.x, c.cost.foot).forEach(function (p) { o.cost.push(g(gTop, p)); });
       o.node = OK.svg('circle', { class: 'port', cx: f(c.node.x), cy: f(c.node.y), r: f(c.node.r) }, gOver);
-      // the papers that reach this filter, in rows; the ones it removes are pale papers under an ink paper that leaves
+      // the papers that reach this filter, in rows. A slot holds one paper as the filter leaves it: in ink when it
+      // passes, pale when it is removed, yellow when it is kept; over a pale or a yellow one lies the ink paper it arrived as
       var rows = Math.ceil(c.n / c.pile.per), last = k === N - 1, lead = c.pile.mid ? Math.floor((c.n - c.pass) / 2) : 0;
       var px = c.pile.mid ? c.node.x - ((c.n - 1) * c.pile.dx) / 2 : c.pile.x + IW / 2;
       for (i = 0; i < rows; i++) o.rows.push(g(gTop));
       for (i = 0; i < c.n; i++) {
         var r = Math.floor(i / c.pile.per), x = px + (i % c.pile.per) * c.pile.dx, y = c.pile.y + IH / 2 + r * ROW;
-        if (i >= lead && i < lead + c.pass) { g(o.rows[r], counted(x, y, { kept: last })); continue; }
-        g(o.rows[r], counted(x, y, { pale: true }));
-        var leaving = g(o.rows[r], counted(x, y));
-        leaving.setAttribute('opacity', 0);
-        o.out.push(leaving);
+        var passes = i >= lead && i < lead + c.pass, slot = { e: g(o.rows[r], counted(x, y, passes ? { kept: last } : { pale: true })), x: x, y: y, row: r };
+        o.slots.push(slot);
+        if (passes) o.passed.push(slot);
+        if (passes && !last) continue;
+        var arrived = g(slot.e, counted(x, y));
+        arrived.setAttribute('opacity', 0);
+        o.out.push(arrived);
       }
       // how many pass; after the last filter, the number the picture ends on
       if (last) {
@@ -287,8 +298,13 @@
     return d;
   }
 
-  /* ---------- the reveal: left to right, the order a reader takes it in ---------- */
-  var T0 = 350, EVERY = 520;
+  /* ---------- the reveal: left to right, the order a reader takes it in ----------
+     A filter's turn begins EVERY after the one before it. SETTLED into its turn its papers stand
+     under its node; then it gives its verdict (the removed papers go pale) and its count shows.
+     Side by side (d.level), the papers that passed travel on to the next filter and are its
+     papers: every slot of a filter starts where the paper it holds stood at the filter before,
+     which keeps its own copy in ink. Under one another, a filter's papers arrive where they stand. */
+  var T0 = 350, EVERY = 520, SETTLED = 480, TRAVEL = 300;
   /** Lets an SVG element grow from its own middle. */
   function pop(R, e, delay, dur) {
     e.style.transformBox = 'fill-box'; e.style.transformOrigin = 'center';
@@ -312,9 +328,15 @@
       else R.fade(o.read, t + 280, 300);
       o.cost.forEach(function (p, i) { R.arrive(p, t + (o.slow ? 620 : 420) + i * 70, 320); });
       pop(R, o.node, t + 100, 260);
-      o.rows.forEach(function (r, i) { R.arrive(r, t + 160 + i * 28, 320); });
-      o.out.forEach(function (e, i) { R.from(e, [{ opacity: 1 }, { opacity: 0 }], t + 620 + i * 300 / o.out.length, 320); });
-      if (k < d.cols.length - 1) R.fade(o.count, t + 700, 360); else R.arrive(o.count, t + 1000, 480);
+      var from = d.level && k ? d.cols[k - 1].passed : null, each = Math.min(28, (SETTLED - 360) / Math.max(1, o.rows.length - 1));
+      if (from) o.slots.forEach(function (s, j) {
+        var there = 'translate(' + f(from[j].x - s.x) + 'px,' + f(from[j].y - s.y) + 'px)';
+        // hidden until it leaves, a row a moment after the row above it
+        R.from(s.e, [{ opacity: 0, transform: there }, { opacity: 1, transform: there, offset: 0.01 }, { opacity: 1, transform: 'translate(0,0)' }], t + SETTLED - TRAVEL + s.row * 12, TRAVEL);
+      });
+      else o.rows.forEach(function (r, i) { R.arrive(r, t + 60 + i * each, 300); });
+      o.out.forEach(function (e, i) { R.from(e, [{ opacity: 1 }, { opacity: 0 }], t + SETTLED + 20 + i * 60 / o.out.length, 220); });
+      if (k < d.cols.length - 1) R.fade(o.count, t + SETTLED + 120, 320); else R.arrive(o.count, t + 1000, 480);
     });
   }
 

@@ -1,5 +1,5 @@
 /* The Search section: three ways of searching, each drawn at work on the kit's papers, and what
-   each contributes to the 14,950 candidates, shown as pale bands as wide as what each search
+   each contributes to the 14,950 papers found, shown as pale bands as wide as what each search
    found, standing on one ground.
    On a wide window the section is one drawing; on a narrow one each search is its own drawing
    and the counts follow. README.md owns the drawing language. */
@@ -231,11 +231,13 @@
   function total(parent, x, y, anchor) {
     var t = el('text', { x: f(x), y: y, 'text-anchor': anchor, class: 'sr-sum' }, parent);
     el('tspan', {}, t, OK.fmt(D.found));
-    el('tspan', { class: 'sr-unit', dx: 12 }, t, 'candidates');
+    el('tspan', { class: 'sr-unit', dx: 12 }, t, 'papers found in this example');
     return t;
   }
   /** Returns a count centred on x. */
-  function countAt(parent, x, y, n) { return el('text', { x: f(x), y: y, 'text-anchor': 'middle', class: 'sr-count' }, parent, OK.fmt(n)); }
+  function countAt(parent, x, y, n) {
+    return group(parent, '<text class="sr-count" x="' + f(x) + '" y="' + (y - 7) + '" text-anchor="middle">' + OK.fmt(n) + '</text><text class="note" x="' + f(x) + '" y="' + (y + 10) + '" text-anchor="middle">papers</text>');
+  }
   /**
    * Returns the outline of the bands' ground: one band per search rising from one ground.
    * bands: [{ x0, x1 }] left to right; top: the bands' top; mid: where they meet the ground;
@@ -292,7 +294,7 @@
   };
   function sums() {
     var each = D.searches.map(function (s) { return s.name + ' ' + OK.fmt(s.found); }).join(', ');
-    return 'Papers found: ' + each + '. Together ' + OK.fmt(D.found) + ' candidates.';
+    return 'Papers found in this example: ' + each + '. Together ' + OK.fmt(D.found) + ' papers.';
   }
 
   /** The wide window: one drawing, three equal columns, the counts under them. */
@@ -320,7 +322,7 @@
     var last = picture(frame, W, 100, sums()), d = {};
     // the first band stands on the ground's left edge, as on a wide window; the others in the middle of their thirds
     var third = B.w / 3, list = D.searches.map(function (s, i) { var w = bandWidth(s.found, 100), c = i ? Math.round(B.x + (i + 0.5) * third) : B.x + w / 2; return { x0: c - w / 2, x1: c + w / 2, c: c }; });
-    d.heads = list.map(function (b, i) { return group(last, OK.tile(b.c - 11, 12, 22, D.searches[i].key) + '<text class="cnt" x="' + b.c + '" y="54" text-anchor="middle">' + OK.fmt(D.searches[i].found) + '</text>'); });
+    d.heads = list.map(function (b, i) { return group(last, OK.tile(b.c - 11, 12, 22, D.searches[i].key) + '<text x="' + b.c + '" y="54" text-anchor="middle"><tspan class="cnt">' + OK.fmt(D.searches[i].found) + '</tspan><tspan class="note" dx="4">papers</tspan></text>'); });
     d.ground = el('path', { d: comb(list, 66, 106, B.x, B.x + B.w, 186, R / 2), class: 'ground' }, last);
     d.total = total(last, W / 2, 157, 'middle');
     last.setAttribute('viewBox', '0 0 ' + W + ' 214');

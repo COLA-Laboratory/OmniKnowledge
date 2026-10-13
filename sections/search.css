@@ -23,7 +23,7 @@
 .sr-pic .sr-bar{fill:var(--bar)}
 
 /* counts: each search's, and the total the section ends on */
-.sr-pic .sr-count{font-family:var(--mono);font-size:20px;font-weight:500;letter-spacing:-.03em}
+.sr-pic .sr-count{font-family:var(--mono);font-size:18px;font-weight:500;letter-spacing:-.03em}
 .sr-pic .sr-sum{font-size:32px;font-weight:600;letter-spacing:-.03em}
 .sr-pic .sr-sum .sr-unit{font-family:var(--disp);font-size:14.5px;font-weight:600;letter-spacing:-.012em;fill:var(--t2)}
 .sr-pic .sr-pour{transform-box:fill-box;transform-origin:50% 0}

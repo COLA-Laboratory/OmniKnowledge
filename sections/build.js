@@ -4,9 +4,10 @@
    filters. The picture is also the record of a run: every search step carries the papers it
    found; on the line under the pipeline stand the total found and the duplicates merged. At
    most two steps stand side by side, and every step card has one width and one layout. A
-   filter is a card the line passes through, as tall as the filter is heavy: a rule on a paper's
-   record takes one row, a query a second row, a criterion a language model reads the lines of
-   its prompt. Above each card a pale bar lies across the line, as long as the papers that reach
+   filter is a card the line passes through: its name, and what the user set in it on one pale
+   field. Filters differ only in how much the field holds, so a card is as tall as its filter is
+   heavy: a rule on a paper's record takes one row, a query a second row, a criterion a language
+   model reads the lines of its prompt. Above each card a pale bar lies across the line, as long as the papers that reach
    the filter are many, with their count at its end; the bars shorten down the column to the
    papers kept, on the yellow marker. Each preset has its own steps and its own filters, chosen
    from one library, and the picture is as tall as its filters make it.
@@ -60,7 +61,7 @@
     'Keywords': { query: 'microplastic* OR nanoplastic*' },
     'Title criteria': { prompt: ['Does the title describe a study', 'of a freshwater fish species?'] },
     'Abstract criteria': { prompt: ['Does the abstract report an exposure', 'experiment with micro- or nanoplastics', 'and a measured effect on the fish?'] },
-    'Full-text criteria': { prompt: ['Does the paper state particle size,', 'dose and exposure duration, include', 'an unexposed control group and report', 'its outcomes with statistics?'] }
+    'Full-text criteria': { prompt: ['Does the paper state particle size,', 'dose and exposure duration, include', 'an unexposed control group and', 'report its outcomes with statistics?'] }
   };
   var RECORD = {
     light: { found: 11070, merged: 1730, filters: ['Year', 'Citations', 'Venue', 'Keywords', 'Title criteria', 'Abstract criteria'], pass: [6400, 4670, 3990, 1430, 480, 245] },
@@ -84,13 +85,18 @@
      FLOW: the pale bar across the line above a filter: its thickness, the room between two
      filter cards in whose middle it lies, and its length, which is head for no papers and grows
      evenly to most for MOST, so that the smallest count is still a bar and equal differences
-     are equal lengths. END: from the last filter card down to the middle of the kept paper. */
+     are equal lengths. END: from the last filter card down to the middle of the kept paper.
+     FIELD: the pale field that holds what the user set in a filter: its text's inset from its
+     left and right edges, the height of a field of one line, and line to line. */
   var FLOW = { h: 10, gap: 20, head: 12, most: 130 }, END = 42.5;
-  var WIDE = { ch: 80, pad: 9, gap: 9, top: 40, cross: 62.5, air: 22.5, first: 38 };
-  var NARROW = { narrow: true, vw: 325, cw: 150, ch: 82, pad: 7, gap: 7, top: 40, step: 24, beads: [31, 79], first: 150 };
+  var FIELD = { pad: 8, h: 22, lead: 15 };
+  var WIDE = { ch: 80, pad: 9, gap: 9, top: 40, cross: 62.5, air: 18.5, first: 38 };
+  var NARROW = { narrow: true, vw: 325, cw: 150, ch: 80, pad: 7, gap: 7, top: 40, step: 24, beads: [31, 79], first: 150 };
 
-  /* a filter card's height: one row for a rule, a second row for a query, the lines of a prompt under the name */
-  function tall(x) { return x.prompt ? 41 + 16 * x.prompt.length : x.query ? 67 : 40; }
+  /* what the user set in a filter, as the lines its field shows */
+  function lines(x) { return x.prompt || [x.setting || x.query]; }
+  /* a filter card's height: one row when the field stands beside the name (a rule); otherwise the name, and under it the field with its lines */
+  function tall(x) { return x.setting ? 40 : 40 + FIELD.h + (lines(x).length - 1) * FIELD.lead; }
 
   /**
    * Returns where the rows, cards and line pieces of a preset stand: { rows, at, stubs, bottom }.
@@ -118,17 +124,17 @@
    * Returns a step card's markup, drawn from its own top left corner; cw: its width. Wide: the
    * icon and the name on the first line; on the second, what the step does at the left and the
    * papers it found at the right. Narrow: the name on two lines beside the icon, the papers it
-   * found under them at the right. Step names and filter names are set in the kit's task type.
+   * found under them at the right. Step names and filter names share one size (ba-name).
    */
   function card(id, G, cw) {
-    var kind = kindOf(id), K = KINDS[kind], seed = kind === 'seed', mini = G.narrow, in_ = mini ? 10 : 13, y2 = mini ? 68.5 : 64.5, i;
+    var kind = kindOf(id), K = KINDS[kind], seed = kind === 'seed', mini = G.narrow, in_ = mini ? 10 : 13, y2 = mini ? 66.5 : 64.5, i;
     var s = '<rect class="card" x=".5" y=".5" width="' + (cw - 1) + '" height="' + (G.ch - 1) + '" rx="12.5"/>';
     if (seed) for (i = 0; i < 3; i++) s += mini ? OK.paper(17.5 + i * 19, 23, 15, 20, { seed: true }) : OK.paper(21 + i * 20.5, 28, 16, 21, { seed: true });
     else s += mini ? OK.tile(10, 10, 26, kind) : OK.tile(13, 13, 30, kind);
     if (FOUND[id]) s += '<text class="cnt" x="' + (cw - in_) + '" y="' + y2 + '" text-anchor="end">' + fmt(FOUND[id]) + '</text>';
-    if (!mini) return s + '<text class="task" x="' + (seed ? 81 : 54) + '" y="35">' + K.name.join(' ') + '</text><text class="note" x="13" y="' + y2 + '">' + K.does + '</text>';
-    if (seed) return s + '<text class="task" x="9.5" y="' + y2 + '">' + K.name.join(' ') + '</text>';
-    return s + K.name.map(function (l, k) { return '<text class="task" x="45" y="' + (26 + k * 22) + '">' + l + '</text>'; }).join('');
+    if (!mini) return s + '<text class="ba-name" x="' + (seed ? 81 : 54) + '" y="34">' + K.name.join(' ') + '</text><text class="note" x="13" y="' + y2 + '">' + K.does + '</text>';
+    if (seed) return s + '<text class="ba-name" x="9.5" y="' + y2 + '">' + K.name.join(' ') + '</text>';
+    return s + K.name.map(function (l, k) { return '<text class="ba-name" x="45" y="' + (25 + k * 20) + '">' + l + '</text>'; }).join('');
   }
 
   /** Returns the picture's title for one preset: the steps row by row with what each found, then the filters with what each passes on. */
@@ -164,16 +170,17 @@
     /* ---- measures: wide, step cards and filter cards share the width the widest of them needs;
             narrow, a filter card takes what the widest filter needs. A card's width is odd, so
             that the line through its middle is sharp ---- */
-    var tags = {}, need = 0, x;
+    var fields = {}, need = 0;
     function odd(w) { w = Math.ceil(w); return w + 1 - w % 2; }
-    for (k in LIBRARY) {
-      x = LIBRARY[k];
-      if (x.prompt) x.shown = x.prompt.map(function (l, i) { return (i ? '' : '\u201c') + l + (i < x.prompt.length - 1 ? '' : '\u201d'); });
-      else tags[k] = Math.ceil(width(x.setting || x.query, 'ba-set')) + 18;
-      need = Math.max(need, 26 + (x.prompt ? Math.max.apply(null, x.shown.map(function (l) { return width(l, 'ba-set'); })) : x.query ? tags[k] : width(k, 'task') + 12 + tags[k]));
-    }
-    // a step card holds its icon and name, and under them what it does, a gap and its count
-    if (!narrow) for (k in KINDS) need = Math.max(need, (k === 'seed' ? 94 : 67) + width(KINDS[k].name.join(' '), 'task'), 34 + width(KINDS[k].does, 'note') + width('0,000', 'cnt'));
+    // a filter's field: its lines (a prompt stands in quotation marks; the opening one hangs in the field's inset) and the width its text needs
+    for (k in LIBRARY) (function (name, x) {
+      var ls = lines(x).map(function (l, i, all) { return l + (x.prompt && i === all.length - 1 ? '\u201d' : ''); });
+      var w = Math.ceil(Math.max.apply(null, ls.map(function (l) { return width(l, 'ba-set'); }))) + 2 * FIELD.pad;
+      fields[name] = { lines: ls, w: w };
+      need = Math.max(need, 26 + w + (x.setting ? width(name, 'ba-name') + 12 : 0));
+    })(k, LIBRARY[k]);
+    // a step card holds its icon and name, and under them what it does, a clear gap and its count
+    if (!narrow) for (k in KINDS) need = Math.max(need, (k === 'seed' ? 94 : 67) + width(KINDS[k].name.join(' '), 'ba-name'), 38 + width(KINDS[k].does, 'note') + width('0,000', 'cnt'));
     var fw = odd(need), cw = narrow ? G.cw : fw;         // a filter card's width; a step card's width
     var px = narrow ? G.vw / 2 : cw + G.gap / 2 + G.pad;  // the line through the pipeline: the middle of a row of two
     var gx = 2 * px + G.air;                              // wide: the line's rise between the columns
@@ -303,16 +310,18 @@
       write(n.kept, rec.pass[rec.pass.length - 1], old && old.pass[old.pass.length - 1]);
     }
     /**
-     * Returns a filter card's markup, drawn from its own top left corner. A rule: the name and,
-     * on the same row, its setting on a pale tag at the card's right. A query: the name, then
-     * the query on its tag. A criterion a language model reads: the name, then the prompt in
-     * quotation marks, line by line.
+     * Returns a filter card's markup, drawn from its own top left corner: the name, and what
+     * the user set on one pale field that ends at the card's right inset. A rule's field is as
+     * wide as its text and stands beside the name; a query's or a prompt's field stands under
+     * the name, as wide as the card allows and as tall as its lines.
      */
     function fcard(name) {
-      var x = LIBRARY[name], s = '<rect class="card" x=".5" y=".5" width="' + (fw - 1) + '" height="' + (tall(x) - 1) + '" rx="12.5"/><text class="task" x="12.4" y="27">' + name + '</text>';
-      if (x.prompt) return s + x.shown.map(function (l, i) { return '<text class="ba-set" x="13" y="' + (46 + i * 16) + '">' + l + '</text>'; }).join('');
-      var tx = x.query ? 13 : fw - 13 - tags[name], ty = x.query ? 36 : 9;
-      return s + '<rect class="ba-tag" x="' + tx + '" y="' + ty + '" width="' + tags[name] + '" height="22" rx="7"/><text class="ba-set" x="' + (tx + 9) + '" y="' + (ty + 15.3) + '">' + (x.setting || x.query) + '</text>';
+      var x = LIBRARY[name], F = fields[name], beside = !!x.setting, h = tall(x);
+      var w = beside ? F.w : fw - 26, bx = fw - 13 - w, by = beside ? 9 : 31, tx = bx + FIELD.pad;
+      var s = '<rect class="card" x=".5" y=".5" width="' + (fw - 1) + '" height="' + (h - 1) + '" rx="12.5"/><text class="ba-name" x="12.5" y="' + (beside ? 26 : 24) + '">' + name + '</text>';
+      s += '<rect class="ba-tag" x="' + bx + '" y="' + by + '" width="' + w + '" height="' + (h - by - 9) + '" rx="7"/>';
+      if (x.prompt) s += '<text class="ba-set" x="' + tx + '" y="' + (by + 15.3) + '" text-anchor="end">\u201c</text>';
+      return s + F.lines.map(function (l, i) { return '<text class="ba-set" x="' + tx + '" y="' + f(by + 15.3 + i * FIELD.lead) + '">' + l + '</text>'; }).join('');
     }
     /**
      * Shows the filters of one record, each at its height in the column col. seen: true when the
