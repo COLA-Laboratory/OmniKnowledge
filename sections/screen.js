@@ -3,8 +3,7 @@
    of what the filter looks at (six icons of one size: four corner ticks around the part of a
    paper that is read, in ink) and, over the icon, what one paper costs there. Under a node the
    papers that reach the filter are counted in paper icons (one for 200 papers; the ones it
-   removes stay as pale papers). Two versions are registered and differ only in how the cost is
-   drawn: a, coins; b, a block of counted units. README.md owns the drawing language. */
+   removes stay as pale papers). README.md owns the drawing language. */
 (function () {
   'use strict';
   var OK = window.OK, D = OK.DATA, f = OK.f;
@@ -122,22 +121,10 @@
     return '<path class="' + cls + '" d="M' + f(cx - CR) + ',' + f(y) + ' v' + CE + ' a' + CR + ',' + f(ry) + ' 0 0 0 ' + (2 * CR) + ',0 v' + (-CE) + '"/><ellipse class="' + cls + '" cx="' + f(cx) + '" cy="' + f(y) + '" rx="' + CR + '" ry="' + f(ry) + '"/>' +
       (ghost ? '' : '<ellipse class="sc-mint" cx="' + f(cx) + '" cy="' + f(y) + '" rx="' + f(CR - 3.8) + '" ry="' + f(ry - 1.6) + '"/>');
   }
-  /** Version a. Returns the coins one paper costs at filter k, stacked (a coin for four units); where nothing is paid, one coin in dotted outline. */
+  /** Returns the coins one paper costs at filter k, stacked (a coin for four units); where nothing is paid, one coin in dotted outline. */
   function coins(k, cx, foot) {
     var n = Math.round(READS[k] / 4), out = [], i;
     for (i = 0; i < Math.max(n, 1); i++) out.push(coin(cx, foot - 0.6 - CR * 0.4 - CE * (i + 1), !n));
-    return out;
-  }
-  var U = 6.5, UG = 1.5;                            // a unit, and the room between two
-  /** Version b. Returns the units one paper costs at filter k as a square block, row by row; where nothing is read, one grey unit. */
-  function units(k, cx, foot) {
-    var n = Math.max(1, Math.round(Math.sqrt(READS[k]))), w = n * U + (n - 1) * UG, out = [], r, c, s;
-    var x0 = Math.round(cx * 2 - w) / 2;            // on a half pixel, so every unit's edges are sharp
-    for (r = 0; r < n; r++) {
-      s = '';
-      for (c = 0; c < n; c++) s += '<rect class="' + (READS[k] ? 'sc-unit' : 'sc-unit sc-none') + '" x="' + f(x0 + c * (U + UG)) + '" y="' + f(foot - U - r * (U + UG)) + '" width="' + U + '" height="' + U + '" rx="1"/>';
-      out.push(s);
-    }
     return out;
   }
 
@@ -170,7 +157,6 @@
         c.node = { x: LX, y: y + 9, r: 5.5 }; c.name = { x: X, y: y + 16 }; c.set = { x: X, y: y + 36 };
         c.box = { x: X, y: y + 54 };
         c.cost = { x: X + BW + 44, foot: c.box.y + BH };
-        c.note = { x: c.cost.x + 30, y: c.cost.foot };
         c.count = { x: X, y: c.box.y + BH + 36 };   // the papers are counted under the icon
         c.pile = { x: X, y: c.count.y + 14, per: 16, dx: IW + 4 };
         if (k === 5) { c.count.y += 16; c.pile.y += 22; }
@@ -188,7 +174,6 @@
       var ax = Math.round(a0 + k * step);
       c.box = { x: ax - BW / 2, y: TOP };
       c.cost = { x: ax, foot: FOOT };
-      c.note = { x: ax - 30, y: FOOT, end: true };
       c.name = { x: ax, y: NAME, mid: true };
       c.set = { x: ax, y: NAME + 22, mid: true };
       c.node = { x: ax, y: LY, r: 5.5 };
@@ -209,16 +194,16 @@
   }
 
   /* ---------- drawing ---------- */
-  /** Draws a plan into svg, the cost in the way V draws it, and returns the parts the reveal moves. */
-  function draw(svg, P, titleId, V) {
+  /** Draws a plan into svg and returns the parts the reveal moves. */
+  function draw(svg, P, titleId) {
     var d = { segs: [], cols: [], groups: [] };
     svg.textContent = '';
     svg.setAttribute('viewBox', '0 0 ' + P.W + ' ' + f(P.H));
     svg.style.aspectRatio = P.W + ' / ' + f(P.H);
     OK.svg('title', { id: titleId }, svg, 'The ' + OK.fmt(D.deduped) + ' candidate papers pass six filters in order: ' +
       D.filters.map(function (F) { return F.name + ' looks at ' + F.reads + ' (' + F.setting + ') and ' + OK.fmt(F.pass) + ' pass'; }).join('; ') +
-      '. Each filter has an icon of the same size that shows what it looks at. The first four are checked by rule and cost almost nothing for a paper; the last two are read by a language model, and ' + V.says +
-      ' ' + D.kept + ' are kept. One paper icon stands for ' + UNIT + ' papers.');
+      '. Each filter has an icon of the same size that shows what it looks at. The first four are checked by rule and cost almost nothing for a paper; the last two are read by a language model, and a paper costs one coin where only its title is read and a stack of six where its abstract is read. ' +
+      D.kept + ' are kept. One paper icon stands for ' + UNIT + ' papers.');
     var gLine = g(svg), gTop = g(svg), gOver = g(svg);
 
     // the pipeline line: one stretch to each filter's node
@@ -245,8 +230,7 @@
       o.icon = g(gTop, I.quiet + I.frame);
       o.read = g(gTop, I.read);
       // what one paper costs here
-      V.cost(k, c.cost.x, c.cost.foot).forEach(function (p) { o.cost.push(g(gTop, p)); });
-      if (V.note && k === V.note.k) o.note = g(gTop, '<text class="note" x="' + f(c.note.x) + '" y="' + f(c.note.y - 0.5) + '"' + (c.note.end ? ' text-anchor="end"' : '') + '>' + V.note.says + '</text>');
+      coins(k, c.cost.x, c.cost.foot).forEach(function (p) { o.cost.push(g(gTop, p)); });
       o.node = OK.svg('circle', { class: 'port', cx: f(c.node.x), cy: f(c.node.y), r: f(c.node.r) }, gOver);
       // the papers that reach this filter, in rows; the ones it removes are pale papers under an ink paper that leaves
       var rows = Math.ceil(c.n / c.pile.per), last = k === 5, lead = c.pile.mid ? Math.floor((c.n - c.pass) / 2) : 0;
@@ -297,7 +281,6 @@
       if (o.slow) R.from(o.read, [{ clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0 0 0)' }], t + 260, 700);
       else R.fade(o.read, t + 280, 300);
       o.cost.forEach(function (p, i) { R.arrive(p, t + (o.slow ? 620 : 420) + i * 70, 320); });
-      if (o.note) R.fade(o.note, t + 700, 360);
       pop(R, o.node, t + 100, 260);
       o.rows.forEach(function (r, i) { R.arrive(r, t + 160 + i * 28, 320); });
       o.out.forEach(function (e, i) { R.from(e, [{ opacity: 1 }, { opacity: 0 }], t + 620 + i * 300 / o.out.length, 320); });
@@ -306,30 +289,25 @@
   }
 
   /* ---------- the section ---------- */
-  /** Returns the mount of one version. V: { cost(k, cx, foot): the parts of a cost, says: the cost in words, note: { k, says } or null }. */
-  function section(V) {
-    return function (root) {
-      var id = 'sc-t' + (++uid);
-      root.innerHTML = '<div class="sec-head"><h2 class="sec-h">Cheap checks first. The language model reads what is left.</h2>' +
-        '<p class="sec-p">Year, citations, venue and keywords cost almost nothing to check and remove most papers. Only the titles and abstracts that remain go to a language model, so the cost is spent on papers that may belong.</p></div>' +
-        '<div class="frame pic sc-pic"><svg class="sc-svg" role="img" aria-labelledby="' + id + '"></svg></div>';
-      var svg = root.querySelector('svg'), narrow = window.matchMedia('(max-width: 800px)'), R = OK.reveal(), d = null, arrived = false, gone = false;
-      function render() {
-        R.cancel();
-        root.querySelector('.sc-pic').classList.toggle('sc-stack', narrow.matches);
-        d = draw(svg, plan(narrow.matches), id, V);
-        if (arrived) play(R, d);
-      }
-      function replay() { if (arrived) play(R, d); }
-      render();
-      OK.onArrive(svg, function () { if (gone) return; arrived = true; play(R, d); });
-      narrow.addEventListener('change', render);
-      window.addEventListener('ok:replay', replay);
-      return { destroy: function () { gone = true; R.cancel(); narrow.removeEventListener('change', render); window.removeEventListener('ok:replay', replay); } };
-    };
+  /** Fills root with the section (heading, text and picture) and returns { destroy() }. */
+  function mount(root) {
+    var id = 'sc-t' + (++uid);
+    root.innerHTML = '<div class="sec-head"><h2 class="sec-h">Cost-effective screening that scales with relevance, not volume</h2>' +
+      '<p class="sec-p">Rule checks on year, citations, venue and keywords cost almost nothing and remove most papers. A language model reads only the titles and abstracts that remain.</p></div>' +
+      '<div class="frame pic sc-pic"><svg class="sc-svg" role="img" aria-labelledby="' + id + '"></svg></div>';
+    var svg = root.querySelector('svg'), narrow = window.matchMedia('(max-width: 800px)'), R = OK.reveal(), d = null, arrived = false, gone = false;
+    function render() {
+      R.cancel();
+      root.querySelector('.sc-pic').classList.toggle('sc-stack', narrow.matches);
+      d = draw(svg, plan(narrow.matches), id);
+      if (arrived) play(R, d);
+    }
+    function replay() { if (arrived) play(R, d); }
+    render();
+    OK.onArrive(svg, function () { if (gone) return; arrived = true; play(R, d); });
+    narrow.addEventListener('change', render);
+    window.addEventListener('ok:replay', replay);
+    return { destroy: function () { gone = true; R.cancel(); narrow.removeEventListener('change', render); window.removeEventListener('ok:replay', replay); } };
   }
-  OK.section('screen', 'a', { label: 'Cost in coins', mount: section({ cost: coins, note: null,
-    says: 'a paper costs one coin where only its title is read and a stack of six where its abstract is read.' }) });
-  OK.section('screen', 'b', { label: 'Cost in units', mount: section({ cost: units, note: { k: 5, says: 'cost per paper' },
-    says: 'the cost of a paper is a block of units, small where only its title is read and several times larger where its abstract is read.' }) });
+  OK.section('screen', 'a', { label: 'Cost in coins', mount: mount });
 })();

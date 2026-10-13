@@ -17,9 +17,7 @@
 .sc-pic .sc-by{font-family:var(--text);font-size:13.5px;font-weight:500;fill:var(--t2)}           /* "cited by" before the count */
 .sc-pic .sc-jn{font-family:var(--text);font-size:13.5px;font-weight:600;letter-spacing:-.005em}   /* the start of a venue's name */
 
-/* what one paper costs: a coin (a), a coin that is not paid, a unit (b), a unit where nothing is read */
+/* what one paper costs: a coin, and a coin that is not paid */
 .sc-pic .sc-coin{fill:var(--y);stroke:var(--ink);stroke-width:1.25;stroke-linejoin:round}
 .sc-pic .sc-mint{fill:none;stroke:var(--ink);stroke-width:.9}
 .sc-pic .sc-ghost{fill:var(--paper);stroke:var(--q);stroke-width:1.8;stroke-linecap:round;stroke-dasharray:.1 3.9}
-.sc-pic .sc-unit{fill:var(--ink)}
-.sc-pic .sc-unit.sc-none{fill:var(--q)}

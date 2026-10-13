@@ -6,8 +6,8 @@
 (function () {
   'use strict';
   var OK = window.OK, f = OK.f, D = OK.DATA;
-  var HEAD = 'Three searches find what one would miss.';
-  var TEXT = 'Citation tracing follows references and citing papers. Semantic search takes the papers closest in meaning. Database search matches your keywords. Their results are merged into one candidate set.';
+  var HEAD = 'Comprehensive search that catches what a single engine misses';
+  var TEXT = 'Citation tracing, semantic search and database search each reach different papers. Their results are merged into one candidate set.';
   var COLW = 368;                                   // the width the three drawings are composed for
   var TOP = 36, TILE = 26;                          // a column's title: its top, the size of its tile
   var NOTE = 96;                                    // the baseline of the quiet words above a drawing

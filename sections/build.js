@@ -14,8 +14,8 @@
   var OK = window.OK, D = OK.DATA, f = OK.f, fmt = OK.fmt, R = 16, count = 0;
 
   /* the heading: two sentences, each in the two lines it takes beside the frame */
-  var HEAD = [['You set', 'every step.'], ['You can check', 'every count.']];
-  var TEXT = 'Choose which searches run and in what order, and what each filter requires. After a run, every search shows the papers it found and every filter the papers it removed.';
+  var HEAD = [['Pipelines', 'you can', 'build, monitor', 'and audit']];
+  var TEXT = 'A platform for knowledge retrieval pipelines. Choose the searches and set what each filter requires; every search then reports the papers it found, and every filter the papers it removed.';
 
   /* a kind of step: its name (split where a small card breaks it) and what it does */
   var KINDS = {
