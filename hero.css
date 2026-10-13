@@ -1,1 +1,5 @@
-/* The first picture's own marks and arrangement, beside the kit's (kit.css). Prefix: hr-. */
+/* The first picture's own marks and arrangement, beside the kit's (kit.css). Prefix: hr-.
+   hero.js sets hr-tall on the frame while the tall composition stands in it. */
+.pic .hr-ask{font-size:26px}
+.hero-figure .hr-tall{padding:24px 12px 28px}
+.hero-figure .hr-tall svg{max-width:400px;margin-inline:auto}

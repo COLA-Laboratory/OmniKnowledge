@@ -15,7 +15,7 @@ from `file://`. The example question, papers and counts on it are illustrative.
 | `page.css` | Everything around the pictures: navigation, first screen, the frame a picture stands in, section headings, questions, closing, footer |
 | `page.js` | Mounts each section into the element that names it (`data-section`) |
 | `kit.css`, `kit.js` | The drawing language: tokens, classes and the shared objects (`window.OK`) every picture is drawn with; the example data (`OK.DATA`) |
-| `hero.js` | The first picture |
+| `hero.js`, `hero.css` | The first picture, in two compositions: wide, and tall for windows of 880 px and under (the threshold lives in `hero.js`) |
 | `sections/<name>.js`, `.css` | One section each: `features`, `build`, `search`, `screen`, `knowledge`. A file registers itself with `OK.section(name, id, { label, mount })` and prefixes its own classes (`ft-`, `ba-`, `sr-`, `sc-`, `ka-`) |
 | `assets/` | The pictures' typeface (Hanken Grotesk, SIL Open Font License), the icon and the link preview image |
 | `tools/shot.mjs` | Captures the page or one part of it as a PNG |
