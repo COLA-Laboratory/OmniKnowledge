@@ -80,10 +80,10 @@
   }
 
   var ITEMS = [
-    { name: 'Comprehensive', to: '#search', text: 'Three ways of searching reach what a single query misses.' },
-    { name: 'Quality-controlled', to: '#build', text: 'The same criteria, in the same order, for every paper.' },
-    { name: 'Affordable', to: '#screen', text: 'Quick checks first. A language model reads only what is left.' },
-    { name: 'Transparent', to: '#knowledge', text: 'Every decision keeps its reason, every statement its source.' }
+    { name: 'Comprehensive', to: '#search', text: 'Three kinds of search, each reaching papers the other two miss.' },
+    { name: 'Quality-controlled', to: '#screen', text: 'Every paper meets the same criteria, in the same order.' },
+    { name: 'Affordable', to: '#screen', text: 'Rule checks come first. A language model reads only what is left.' },
+    { name: 'Transparent', to: '#build', text: 'Every paper found, merged or removed is counted where it happened.' }
   ];
   // for every item, its drawing and what the drawing shows in words
   var DRAW = [

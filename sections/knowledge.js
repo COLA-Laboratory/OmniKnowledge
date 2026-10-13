@@ -577,8 +577,8 @@
   /* ---------- the section ---------- */
   function mount(root) {
     var head = OK.h('div', { class: 'sec-head' }, root);
-    OK.h('h2', { class: 'sec-h' }, head, 'A map of the field,<br>ready to be put to work.');
-    OK.h('p', { class: 'sec-p' }, head, 'See the papers that passed as a citation network or by topic. Then have every one of them read for the task in front of you.');
+    OK.h('h2', { class: 'sec-h' }, head, 'A map of the literature,<br>read in full for each task.');
+    OK.h('p', { class: 'sec-p' }, head, 'The papers that passed stand as a citation network or by topic. Choose a task and every one of them is read for it; each statement in the result cites the papers it rests on.');
     var frame = OK.h('div', { class: 'frame pic ka' }, root), top = OK.h('div', { class: 'ka-top' }, frame);
     var sw = OK.h('div', { class: 'k-switch', role: 'group', 'aria-label': 'How the map is drawn' }, top);
     var views = [['net', 'Citation network'], ['sem', 'Semantic map']].map(function (v, i) {

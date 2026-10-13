@@ -38,12 +38,13 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 
 /* the first screen: the headline's last baseline carries the buttons beside it */
 .hero{padding-top:64px}
-.hero-heading{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:80px;align-items:end}
-h1{font-family:var(--pg-display);font-size:clamp(46px,5.2vw,76px);line-height:1.03;font-weight:600;letter-spacing:-.024em}
-.highlight{color:var(--pg-accent-ink);background:linear-gradient(transparent 68%,var(--pg-accent) 68%,var(--pg-accent) 95%,transparent 95%)}
-.hero-aside{max-width:440px;padding-bottom:.2em;font-size:clamp(46px,5.2vw,76px);line-height:1}
-.hero-aside p{font-size:20px;line-height:1.38;letter-spacing:-.011em;color:var(--pg-ink)}
-.actions{display:flex;flex-wrap:wrap;gap:14px 24px;margin-top:24px;align-items:center}
+.hero-heading{display:grid;grid-template-columns:minmax(0,1.85fr) minmax(0,1fr);gap:64px;align-items:end}
+h1{font-family:var(--pg-display);font-size:clamp(32px,3.95vw,56px);line-height:1.05;font-weight:600;letter-spacing:-.024em}
+.highlight{color:var(--pg-accent-ink);background:linear-gradient(transparent 68%,var(--pg-accent) 68%,var(--pg-accent) 95%,transparent 95%);-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.hero-aside{max-width:440px;padding-bottom:.2em;font-size:clamp(32px,3.95vw,56px);line-height:1}
+.hero-aside p{font-size:18px;line-height:1.38;letter-spacing:-.011em;color:var(--pg-ink);text-wrap:balance}
+.actions{display:flex;flex-wrap:wrap;gap:14px 24px;margin-top:16px;align-items:center}
+.actions .button{min-height:42px;padding:9px 16px}
 .hero-figure{margin-top:48px}
 .hero-figure .frame{padding:22px 12px}
 .hero-figure svg{display:block;width:100%;height:auto;aspect-ratio:1280/400}
@@ -78,13 +79,15 @@ h1{font-family:var(--pg-display);font-size:clamp(46px,5.2vw,76px);line-height:1.
 
 @media(max-width:1100px){
   .wrap{width:calc(100% - 64px)}
-  .hero-heading,.sec-head{gap:24px 40px}
+  .sec-head{gap:24px 40px}
+  .hero-heading{grid-template-columns:1fr;gap:20px}
+  h1{font-size:clamp(38px,5.6vw,56px)}
+  .hero-aside{max-width:520px;padding-bottom:0;font-size:17px}
   .sec{padding-top:96px}
 }
 @media(max-width:800px){
   .nav-links{display:none}
-  .hero-heading,.sec-head,.faq{grid-template-columns:1fr}
-  .hero-aside{padding-bottom:0;font-size:17px}
+  .sec-head,.faq{grid-template-columns:1fr}
   .sec-head .sec-p{justify-self:start}
   .closing{flex-direction:column;align-items:flex-start;padding:40px 28px}
   .closing h2{font-size:36px}
@@ -92,8 +95,9 @@ h1{font-family:var(--pg-display);font-size:clamp(46px,5.2vw,76px);line-height:1.
 @media(max-width:600px){
   .wrap{width:calc(100% - 40px)}
   .hero{padding-top:40px}
-  h1{font-size:43px}
-  .hero-aside p{font-size:19px}
+  h1{font-size:38px}
+  h1 br.wide{display:none}
+  .hero-aside p{font-size:18px}
   .sec{padding-top:72px}
   .sec-h{font-size:32px}
   .sec-p{font-size:16px}
