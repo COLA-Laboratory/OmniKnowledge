@@ -51,13 +51,13 @@
   /* ---------- the icons ----------
      Every icon is a view of BW by BH onto the same paper, between four corner ticks: what the
      filter looks at is in ink, the rest of the paper around it is quiet. The paper, from its
-     top: a venue line; a title of two lines; a line of authors and year; a line of citations;
-     its text. A view shows four of these lines, or more of the text. One measure for all: a line
+     top: a venue line; a title of two lines; a line of authors and year; its text; at its foot,
+     a line of citations. A view shows a few of these lines, or more of the text. One measure for all: a line
      of the title is THICK, every other line THIN, both set IN from the icon's edge; the words
      every paper prints alike ("Journal of", "cited by") and the numbers are type, any other
      word is a bar, as everywhere in the kit. */
   var THICK = 6, THIN = 4, IN = 10, WIDE = BW - 2 * IN, SPACE = 4.5;   // WIDE: a full line; SPACE: between two words
-  var VENUE = [33, 12, 26], AUTHORS = [20, 9], YEAR = 18, CITED = [26, 12, 14];   // the lengths of the words of a paper's record
+  var VENUE = [33, 12, 26], AUTHORS = [20, 9], YEAR = 18;   // the lengths of the words of a paper's record
 
   /** Returns one bar of text: from x, centred on height cy, w long and h thick. */
   function bar(x, cy, w, h, cls) {
@@ -77,17 +77,16 @@
     o[read ? 'read' : 'quiet'] += bar(x, cy, WIDE, THICK, read ? 'sc-ink' : 'sc-quiet') + bar(x, cy + 11, WIDE * 0.62, THICK, read ? 'sc-ink' : 'sc-quiet');
   }
   var SHOWS = {
-    /* the year, after the authors */
+    /* the year, in the head of the paper: under the title, after the authors, before the text begins */
     'the year': function (o, x, y) {
       title(o, x, y + 11);
       words(o, x, y + 36.5, AUTHORS, THIN);
       o.read += '<text class="sc-fig" x="' + f(x + WIDE) + '" y="' + f(y + 41.8) + '" text-anchor="end">2019</text>';
-      words(o, x, y + 50.5, CITED, THIN);
+      o.quiet += bar(x, y + 50.5, WIDE, THIN, 'sc-quiet');
     },
-    /* the citation count, under authors and year */
+    /* the citation count, at the foot of the paper: under the last lines of its text */
     'the citation count': function (o, x, y) {
-      title(o, x, y + 11);
-      words(o, x, y + 36.5, AUTHORS.concat(YEAR), THIN);
+      for (var i = 0; i < 4; i++) o.quiet += bar(x, y + 10 + i * 7.5, WIDE * (i === 3 ? 0.55 : 1), THIN, 'sc-quiet');
       o.read += '<text x="' + f(x - NUDGE['sc-word']) + '" y="' + f(y + 53.8) + '"><tspan class="sc-word">cited by</tspan><tspan class="sc-fig" dx="6">48</tspan></text>';
     },
     /* the venue: a journal's name, over the title */

@@ -1,19 +1,24 @@
-/* The Build section: the text beside one frame that holds the pipeline, the filters and the
-   record of a run. Prefix: ba-. --ba-text and --ba-pic are the two columns' shares and --ba-own the
+/* The Build section: the text and its two notes beside one frame that holds the pipeline, the
+   filters and the record of a run. Prefix: ba-. --ba-text and --ba-pic are the two columns' shares and --ba-own the
    picture's own width (all set by build.js from what it measured), so that at a 1280 column
    the picture is shown at its own size. Under 1200 the text stands above the frame; under 880
    build.js draws the one-column picture. */
-.ba-wrap{display:grid;grid-template-columns:minmax(0,var(--ba-text,327fr)) minmax(0,var(--ba-pic,909fr));column-gap:44px;align-items:start}
+.ba-wrap{display:grid;grid-template-columns:minmax(0,var(--ba-text,359fr)) minmax(0,var(--ba-pic,877fr));column-gap:44px;align-items:start}
 .ba-text{padding-top:29.5px}
 .ba-text .sec-p{margin-top:24px;text-wrap:pretty}
+/* the two notes under the text: icon, title, a line or two, on the text's left edge */
+.ba-notes{display:grid;gap:28px;margin-top:40px}
+.ba-ico{display:block;width:24px;height:24px;margin-bottom:12px}
+.ba-note-h{font:600 17px/1.3 var(--pg-font);letter-spacing:-.011em;color:var(--pg-ink)}
+.ba-note-p{margin-top:6px;font-size:15px;line-height:1.42;color:var(--pg-muted);max-width:340px;text-wrap:pretty}
 .ba-frame{padding:32px}
 .ba-stage{position:relative}
 .ba-svg{width:100%;height:auto}
 .ba-l{display:block}
 .pic .ba-tag{fill:var(--tint)}
 .pic .ba-set{font-size:12.5px;font-weight:500;letter-spacing:-.003em;fill:var(--t2)}
-/* the papers a filter removed: a pale bar that leaves the line and grows away from it */
-.pic .ba-out{fill:var(--out);transform-box:fill-box;transform-origin:0 50%}
+/* the papers that reach a filter: a bar across the line in the pale of the kept papers' yellow, opening and closing about the line */
+.pic .ba-flow{fill:var(--y-pale);transform-box:fill-box;transform-origin:50% 50%}
 .pic .ba-switch{position:absolute;top:0;right:0;margin-top:-3px}
 
 @media(max-width:1200px){
@@ -21,11 +26,16 @@
   .ba-text{padding-top:0}
   .ba-l{display:inline}
   .ba-s{display:block}
-  .ba-stage{max-width:var(--ba-own,843px);margin-inline:auto}
+  .ba-notes{grid-template-columns:repeat(2,minmax(0,340px));gap:40px;margin-top:28px}
+  .ba-stage{max-width:var(--ba-own,811px);margin-inline:auto}
 }
 @media(max-width:880px){
   .ba-wrap{row-gap:28px}
   .ba-text .sec-p{margin-top:16px}
   .ba-frame{padding:20px 12px 24px}
   .ba-stage{max-width:440px}
+}
+@media(max-width:600px){
+  .ba-notes{grid-template-columns:minmax(0,1fr);gap:24px}
+  .ba-note-p{max-width:none}
 }

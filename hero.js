@@ -144,7 +144,7 @@
     db: '<rect x="2.6" y="2.8" width="14.8" height="4.6" rx="2.3"/><path d="M6.6 11h10.2M6.6 14.2h10.2M6.6 17.4h6.4"/><circle class="f" cx="3.4" cy="11" r="1"/><circle class="f" cx="3.4" cy="14.2" r="1"/><circle class="f" cx="3.4" cy="17.4" r="1"/>'
   };
   var SEARCHES = [['cite', 'Citation tracing'], ['sem', 'Semantic Search'], ['db', 'Database Search']];
-  var FILTERS = ['Year', 'Citations', 'Venue', 'Keywords', 'Title criteria', 'Abstract criteria', 'Full-text criteria'];
+  var FILTERS = OK.DATA.filters.map(function (F) { return F.name; });
   var INSET = 13;                                   // a card's edge to what stands in it
 
   /* a card: its outer edge is the box it is given, the hairline inside it */
