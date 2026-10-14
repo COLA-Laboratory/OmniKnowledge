@@ -24,7 +24,7 @@
   /* the two notes under the text: an icon (one of the kit's, or a glyph drawn like them in a 20 by 20 box) beside a title, and a line or two */
   var NOTES = [
     { icon: OK.icon.cite, title: 'Search your way', text: 'Chain backward and forward citation tracing, semantic search and database search in any order, or run them side by side.' },
-    { icon: '<rect x="3" y="3" width="14" height="14" rx="3.4"/><path d="M6.7 10.4l2.4 2.4 4.4-5.4"/>', title: 'Set your own bar', text: 'Choose from a library of criteria, from a publication year to a judgment a language model makes on the full text.' }
+    { icon: '<rect x="3" y="3" width="14" height="14" rx="3.4"/><path d="M6.7 10.4l2.4 2.4 4.4-5.4"/>', title: 'Set your own bar', text: 'Choose from a library of criteria, from a publication year to an LLM judgment on the full text.' }
   ];
 
   /* a kind of step: its name (split where the one-column card breaks it) and what it does */
@@ -146,7 +146,7 @@
     return 'A search pipeline of ' + steps + ' steps and the record of its run. From top to bottom: ' + rows.join('; then ') + '. Together the searches found ' + fmt(rec.found) + ' papers; ' + fmt(rec.merged) + ' duplicates were merged, so ' + fmt(rec.found - rec.merged) + ' papers reached the filters. The line passes through ' + rec.filters.length + ' filters in order, each shown with what was set and the papers it passes on, as a count and a bar that shortens down the column: ' +
       rec.filters.map(function (name, i) {
         var x = LIBRARY[name];
-        return name + ', ' + (x.prompt ? 'a language model asked \u201c' + x.prompt.join(' ') + '\u201d' : x.query ? 'matching ' + x.query : x.setting) + ', ' + fmt(rec.pass[i]) + ' go on';
+        return name + ', ' + (x.prompt ? 'an LLM asked \u201c' + x.prompt.join(' ') + '\u201d' : x.query ? 'matching ' + x.query : x.setting) + ', ' + fmt(rec.pass[i]) + ' go on';
       }).join('; ') + '. ' + fmt(rec.pass[rec.pass.length - 1]) + ' papers were kept.';
   }
 

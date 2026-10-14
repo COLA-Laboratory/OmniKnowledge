@@ -68,6 +68,7 @@ h1{font-family:var(--pg-display);font-size:clamp(32px,3.95vw,56px);line-height:1
 .faq summary svg{width:20px;height:20px;flex-shrink:0;transform:rotate(90deg);transition:transform .2s var(--pg-ease)}
 .faq details[open] summary svg{transform:rotate(-90deg)}
 .faq details p{font-size:16px;line-height:1.45;margin-top:14px;max-width:590px;color:var(--pg-muted)}
+.faq details p a{color:var(--pg-ink);text-decoration:underline;text-underline-offset:3px}
 .footer{margin-top:64px;padding:28px 0;border-top:1px solid var(--pg-line);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 24px;font-size:14px;color:var(--pg-muted)}
 .footer .brand{color:var(--pg-ink);font-size:19px}
 .footer .brand svg{width:24px;height:24px}

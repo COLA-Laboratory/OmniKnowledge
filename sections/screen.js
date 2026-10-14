@@ -8,7 +8,7 @@
   'use strict';
   var OK = window.OK, D = OK.DATA, f = OK.f, N = D.filters.length;
   var COINS = { 'the title': 1, 'the abstract': 3, 'the full text': 6 };   // what one paper costs where a language model reads it, keyed by D.filters[k].reads (illustrative); a rule's check costs none
-  var SAID = { false: 'Checked by rule', true: 'Read by a language model' };   // the two kinds of filter, keyed by D.filters[k].model
+  var SAID = { false: 'Checked by rule', true: 'Screened by LLM' };   // the two kinds of filter, keyed by D.filters[k].model
   var UNIT = 200;                                   // papers to one icon
   var IW = 13, IH = 17, K = 0.85, ROW = 21;         // a counted paper, and the step from one row of them to the next
   var BW = 100, BH = 64, TICK = 8;                  // a filter's icon: every one is this size; the length of a corner tick
@@ -232,7 +232,7 @@
     return 'The ' + OK.fmt(D.deduped) + ' candidate papers pass ' + N + ' filters in order: ' +
       D.filters.map(function (F) { return F.name + ' looks at ' + F.reads + ' (' + F.setting + ') and ' + OK.fmt(F.pass) + ' pass'; }).join('; ') +
       '. Each filter has an icon of the same size: a view onto a paper, with the part the filter looks at in ink. ' + names(byRule) + ' are checked by rule and cost almost nothing for a paper; ' +
-      names(byModel) + ' are read by a language model and cost ' + listed(byModel.map(function (F) { return COINS[F.reads]; })) + ' coins for a paper. ' +
+      names(byModel) + ' are screened by LLM and cost ' + listed(byModel.map(function (F) { return COINS[F.reads]; })) + ' coins for a paper. ' +
       D.kept + ' are kept. One paper icon stands for ' + UNIT + ' papers.';
   }
   /** Draws a plan into svg and returns the parts the reveal moves. d.level: the filters stand side by side, so their papers can travel from one to the next. */
@@ -345,7 +345,7 @@
   function mount(root) {
     var id = 'sc-t' + (++uid);
     root.innerHTML = '<div class="sec-head"><h2 class="sec-h">Screening that scales within your budget</h2>' +
-      '<p class="sec-p">Rule checks on year, citations, venue and keywords cost almost nothing and remove most papers. A language model reads only what remains, first titles, then abstracts, then full&nbsp;texts, so the cost stays within budget as the search grows.</p></div>' +
+      '<p class="sec-p">Rule checks on year, citations, venue and keywords cost almost nothing. They lean toward keeping a paper, since a wrong rejection cannot be undone, and leave the doubtful ones to LLM screening of titles, then abstracts, then full&nbsp;texts.</p></div>' +
       '<div class="frame pic sc-pic"><svg class="sc-svg" role="img" aria-labelledby="' + id + '"></svg></div>';
     var svg = root.querySelector('svg'), narrow = window.matchMedia('(max-width: 800px)'), R = OK.reveal(), d = null, arrived = false, gone = false;
     function render() {

@@ -101,8 +101,8 @@
 
   var ITEMS = [
     { name: 'Comprehensive', to: '#search', text: 'Triangulated search combines citations, semantics and keywords to deliver the most complete picture of your field.' },
-    { name: 'Rigorous', to: '#screen', text: 'A rich library of customizable criteria, from metadata rules to model judgment, holds every paper to your standard.' },
-    { name: 'Cost-effective', to: '#screen', text: 'Tiered screening spends where it counts, keeping even the most ambitious survey within budget.' },
+    { name: 'Rigorous', to: '#screen', text: 'Exact metadata rules and LLM screening, from title to full text, hold every paper to your criteria.' },
+    { name: 'Cost-effective', to: '#screen', text: 'Cascaded screening lets cheap rules settle the clear cases and saves LLM screening for the hard ones.' },
     { name: 'Trustworthy', to: '#build', text: 'Transparent search and screening pipelines, with a fully auditable record of every decision, keep you in control.' }
   ];
   // for every item, its drawing and what the drawing shows in words
