@@ -159,7 +159,7 @@
     var G = narrow ? NARROW : WIDE, rv = OK.reveal(), uid = 'ba-title-' + (++count), cards = {}, fcards = {}, cur = null, d = {}, n = {}, rolls = [], k;
     stage.textContent = '';
     var svg = OK.svg('svg', { class: 'ba-svg', role: 'img', 'aria-labelledby': uid }, stage);
-    var title = OK.svg('title', { id: uid }, svg);
+    var description = OK.svg('desc', { id: uid }, svg);
     var gStub = OK.svg('g', {}, svg), gTail = OK.svg('g', {}, svg), gGround = OK.svg('g', {}, svg), gGhost = OK.svg('g', {}, svg), gCards = OK.svg('g', {}, svg), gHead = OK.svg('g', {}, svg);
     // the filters' column: narrow, it hangs under the pipeline's foot with the tail; wide, it stands on its own
     var gCol = OK.svg('g', {}, narrow ? gTail : svg);
@@ -378,7 +378,7 @@
       var L = arrange(P, G, cw, px, col.kept - c - G.top), foot = narrow ? L.bottom : col.kept - c, key;
       settle();
       gGhost.textContent = '';
-      title.textContent = describe(P);
+      description.textContent = describe(P);
       d.steps.textContent = P.rows.reduce(function (s, r) { return s + r.length; }, 0) + ' steps';
       report(rec, col, old && RECORD[old.id], old && old.col);
       filters(rec, col, !!old);

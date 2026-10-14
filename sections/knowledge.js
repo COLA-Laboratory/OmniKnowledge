@@ -190,7 +190,7 @@
    */
   function Picture(G, stage, ui, first) {
     var M = G.map, svg = el('svg', { viewBox: '0 0 ' + G.W + ' ' + G.H, role: 'img', 'aria-labelledby': 'ka-title' }, stage);
-    el('title', { id: 'ka-title' }, svg, 'The 212 kept papers as one map, shown as a citation network in four topics or as a semantic map of ten sub-topics. Below it four tasks: literature review, hypothesis generation, experiment planning and results interpretation. For the chosen task every paper on the map is read, the papers that hold relevant passages are ringed, and the statements of the output are tied by lines to the papers they rest on.');
+    el('desc', { id: 'ka-title' }, svg, 'The 212 kept papers as one map, shown as a citation network in four topics or as a semantic map of ten sub-topics. Below it four tasks: literature review, hypothesis generation, experiment planning and results interpretation. For the chosen task every paper on the map is read, the papers that hold relevant passages are ringed, and the statements of the output are tied by lines to the papers they rest on.');
     var gGround = el('g', {}, svg), gEdge = el('g', {}, svg), gDot = el('g', {}, svg), gMark = el('g', { class: 'ka-marks' }, svg);
     var gLab = el('g', {}, svg), gSub = el('g', {}, svg), gCard = el('g', {}, svg), gFly = el('g', {}, svg);
     var state = { v: 0, view: 'net', task: 0 }, rv = OK.reveal(), kept = [], tw = 0, hot = -1, dead = false;

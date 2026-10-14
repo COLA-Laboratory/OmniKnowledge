@@ -241,7 +241,7 @@
     svg.textContent = '';
     svg.setAttribute('viewBox', '0 0 ' + P.W + ' ' + f(P.H));
     svg.style.aspectRatio = P.W + ' / ' + f(P.H);
-    OK.svg('title', { id: titleId }, svg, told());
+    OK.svg('desc', { id: titleId }, svg, told());
     var gLine = g(svg), gTop = g(svg), gOver = g(svg);
 
     // the pipeline line: one stretch to each filter's node

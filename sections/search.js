@@ -283,7 +283,7 @@
   var uidN = 0;
   function picture(frame, w, h, text) {
     var uid = 'sr' + (++uidN), svg = el('svg', { viewBox: '0 0 ' + w + ' ' + h, role: 'img', 'aria-labelledby': uid + '-t' }, frame);
-    el('title', { id: uid + '-t' }, svg, text);
+    el('desc', { id: uid + '-t' }, svg, text);
     svg.uid = uid;
     return svg;
   }

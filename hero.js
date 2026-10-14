@@ -162,7 +162,7 @@
   var anims = [];
   function draw() {
     pic.textContent = '';
-    el('title', { id: 'pic-t' }, pic, TITLE);
+    el('desc', { id: 'pic-t' }, pic, TITLE);
     var all = el('g', { transform: 'translate(0 ' + TOP + ')' }, pic);
     var gGround = el('g', {}, all), gEdge = el('g', {}, all), gLine = el('g', {}, all), gNode = el('g', {}, all), gTop = el('g', {}, all);
     var d = { grounds: [], labels: [], tasks: [], sRows: [], fRows: [] };
@@ -346,7 +346,7 @@
   function drawTall(L) {
     var Z = TALL, X = Z.rail, SC = L.sc, FC = L.fc;
     pic.textContent = '';
-    el('title', { id: 'pic-t' }, pic, TITLE);
+    el('desc', { id: 'pic-t' }, pic, TITLE);
     var gGround = el('g', {}, pic), gEdge = el('g', {}, pic), gLine = el('g', {}, pic), gNode = el('g', {}, pic), gTop = el('g', {}, pic);
     var d = { grounds: [], labels: [], tasks: [], sRows: [], fRows: [], chains: [], gEdge: gEdge };
     L.at.forEach(function (A) { d.grounds.push(el('circle', { cx: A.cx, cy: f(A.cy), r: f(A.r), class: 'ground' }, gGround)); });
