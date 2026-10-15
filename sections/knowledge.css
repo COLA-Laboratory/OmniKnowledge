@@ -57,3 +57,8 @@
 .ka-tall .ka-hit{display:none}
 .ka-tall .ka-task[data-on="0"]{display:none}
 .ka-tall .ka-pick{display:flex;flex-wrap:wrap;gap:6px 10px;padding:14px 16px 18px}
+
+.ka-tall .ka-stage{max-width:350px;margin-inline:auto}
+.ka-tall .task{font-size:17px}
+.ka-tall .ka-top,.ka-tall .ka-pick{max-width:382px;margin-inline:auto}
+.ka-tall .k-switch button{min-height:36px}

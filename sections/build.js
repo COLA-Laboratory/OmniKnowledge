@@ -91,7 +91,7 @@
   var FLOW = { h: 10, gap: 20, head: 12, most: 130 }, END = 42.5;
   var FIELD = { pad: 8, h: 22, lead: 15 };
   var WIDE = { ch: 80, pad: 9, gap: 9, top: 40, cross: 62.5, air: 18.5, first: 38 };
-  var NARROW = { narrow: true, vw: 325, cw: 150, ch: 80, pad: 7, gap: 7, top: 40, step: 24, beads: [31, 79], first: 150 };
+  var NARROW = { narrow: true, vw: 325, cw: 150, ch: 72, pad: 5, gap: 7, top: 48, step: 16, beads: [26, 66], first: 122 };
 
   /* what the user set in a filter, as the lines its field shows */
   function lines(x) { return x.prompt || [x.setting || x.query]; }
@@ -127,14 +127,14 @@
    * found under them at the right. Step names and filter names share one size (ba-name).
    */
   function card(id, G, cw) {
-    var kind = kindOf(id), K = KINDS[kind], seed = kind === 'seed', mini = G.narrow, in_ = mini ? 10 : 13, y2 = mini ? 66.5 : 64.5, i;
+    var kind = kindOf(id), K = KINDS[kind], seed = kind === 'seed', mini = G.narrow, in_ = mini ? 10 : 13, y2 = mini ? G.ch - 12.5 : 64.5, i;
     var s = '<rect class="card" x=".5" y=".5" width="' + (cw - 1) + '" height="' + (G.ch - 1) + '" rx="12.5"/>';
     if (seed) for (i = 0; i < 3; i++) s += mini ? OK.paper(17.5 + i * 19, 23, 15, 20, { seed: true }) : OK.paper(21 + i * 20.5, 28, 16, 21, { seed: true });
     else s += mini ? OK.tile(10, 10, 26, kind) : OK.tile(13, 13, 30, kind);
     if (FOUND[id]) s += '<text class="cnt" x="' + (cw - in_) + '" y="' + y2 + '" text-anchor="end">' + fmt(FOUND[id]) + '</text>';
     if (!mini) return s + '<text class="ba-name" x="' + (seed ? 81 : 54) + '" y="34">' + K.name.join(' ') + '</text><text class="note" x="13" y="' + y2 + '">' + K.does + '</text>';
     if (seed) return s + '<text class="ba-name" x="9.5" y="' + y2 + '">' + K.name.join(' ') + '</text>';
-    return s + K.name.map(function (l, k) { return '<text class="ba-name" x="45" y="' + (25 + k * 20) + '">' + l + '</text>'; }).join('');
+    return s + K.name.map(function (l, k) { return '<text class="ba-name" x="45" y="' + (23 + k * 18) + '">' + l + '</text>'; }).join('');
   }
 
   /** Returns the picture's title for one preset: the steps row by row with what each found, then the filters with what each passes on. */

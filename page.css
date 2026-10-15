@@ -94,13 +94,23 @@ h1{font-family:var(--pg-display);font-size:clamp(32px,3.95vw,56px);line-height:1
 }
 @media(max-width:600px){
   .wrap{width:calc(100% - 40px)}
+  html{scroll-padding-top:72px}
+  .nav{height:56px}
+  .brand{font-size:19px;gap:8px}
+  .brand svg{width:25px;height:25px}
   .nav .button{display:none}
-  .hero{padding-top:40px}
-  h1{font-size:38px}
+  .hero{padding-top:28px}
+  h1{font-size:34px;line-height:1.08}
   h1 br.wide{display:none}
-  .hero-aside p{font-size:18px}
-  .sec{padding-top:72px}
-  .sec-h{font-size:32px}
+  .hero-aside p{font-size:16px;line-height:1.45}
+  .hero-figure{margin-top:28px}
+  .sec{padding-top:52px}
+  .sec-head{gap:16px;margin-bottom:24px}
+  .sec-h{font-size:28px;line-height:1.12}
+  .faq{margin-top:52px;padding-top:32px;gap:28px}
+  .faq details{padding:18px 0}
+  .faq summary{font-size:16px;gap:16px}
+  .footer{margin-top:40px;padding-block:24px;gap:12px}
   .sec-p{font-size:16px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.faq details::details-content{transition:none}}

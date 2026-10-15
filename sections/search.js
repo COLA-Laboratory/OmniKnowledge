@@ -46,14 +46,14 @@
    * Returns play(rv, t): lays the reveal over it from time t and returns when it ends.
    */
   function cite(host, B) {
-    var cx = snap(B.x + B.w / 2, SEED[0]), cy = snap(MID, SEED[1]), s = B.w / COLW, gArc = group(host), gPap = group(host), d = { near: [], far: [] };
-    function place(p, size) { return { x: snap(cx + p[0] * s, size[0]), y: snap(cy + p[1], size[1]) }; }
+    var cx = snap(B.x + B.w / 2, SEED[0]), cy = snap(B.compact ? 182 : MID, SEED[1]), s = B.w / COLW, gArc = group(host), gPap = group(host), d = { near: [], far: [] };
+    function place(p, size) { return { x: snap(cx + p[0] * s, size[0]), y: snap(cy + p[1] * (B.compact ? 0.7 : 1), size[1]) }; }
     function arc(from, fromSize, off, to, toSize, side, cls) {
       // a paper that stands at the height the line leaves at is reached by a level line
       var x0 = from.x + side * (fromSize[0] / 2 + 4), x1 = to.x - side * (toSize[0] / 2 + 5.5), y0 = from.y + off, y1 = Math.abs(to.y - y0) < 1.5 ? y0 : to.y;
       return { line: el('path', { d: curve(x0, y0, x1, y1), class: 'sr-arc' + cls, pathLength: 1 }, gArc), head: el('path', { d: head(x1, y1, side), class: 'sr-head' + cls }, gArc) };
     }
-    d.words = TREE.map(function (T) { return note(host, T.side < 0 ? B.x : B.x + B.w, NOTE, T.word, T.side < 0 ? 'start' : 'end'); });
+    d.words = TREE.map(function (T) { return note(host, T.side < 0 ? B.x : B.x + B.w, B.compact ? 66 : NOTE, T.word, T.side < 0 ? 'start' : 'end'); });
     TREE.forEach(function (T) {
       var seed = { x: cx, y: cy }, near = T.near.map(function (p) { return place(p, NEAR); }), kids = near.map(function () { return []; });
       T.far.forEach(function (p) { kids[p[2]].push(place(p, FAR)); });
@@ -117,11 +117,11 @@
    * further from the seed than any paper with a number, and clear of the lines to the papers beyond.
    */
   function fieldOf(B, seed, named, beyond) {
-    var rnd = OK.prng(57), out = [], cols = Math.max(5, Math.round(B.w / 52)), rows = 5, cw = B.w / cols, top = NOTE + 16, ch = (Y1 - top) / rows, r, c;
+    var rnd = OK.prng(57), out = [], cols = Math.max(5, Math.round(B.w / 52)), rows = 5, cw = B.w / cols, top = (B.compact ? 66 : NOTE) + 16, bottom = B.compact ? 278 : Y1, ch = (bottom - top) / rows, r, c;
     for (r = 0; r < rows; r++) for (c = 0; c < cols; c++) {
       var x = B.x + (c + 0.5) * cw + (rnd() - 0.5) * cw * 0.56, y = top + (r + 0.5) * ch + (rnd() - 0.5) * ch * 0.56;
       x = Math.max(B.x + FAR[0] / 2, Math.min(B.x + B.w - FAR[0] / 2, x));
-      y = Math.max(top + FAR[1] / 2, Math.min(Y1 - FAR[1] / 2, y));
+      y = Math.max(top + FAR[1] / 2, Math.min(bottom - FAR[1] / 2, y));
       if (Math.hypot(x - seed.x, y - seed.y) < REACH) continue;
       if (named.some(function (p) { return Math.abs(p.x - x) < 36 && Math.abs(p.y - y) < 42; })) continue;
       if (beyond.some(function (p) { return off(x, y, seed, p) < 26; })) continue;
@@ -132,12 +132,12 @@
   }
   /** Draws semantic search into host, in the column B = { x, w }. Returns play(rv, t), as cite does. */
   function sem(host, B) {
-    var seed = { x: snap(B.x + B.w / 2, SEED[0]), y: snap(MID, SEED[1]) }, d = { taken: [], beyond: [] }, edge = B.w / 2 - FAR[0] / 2 - 1;
+    var seed = { x: snap(B.x + B.w / 2, SEED[0]), y: snap(B.compact ? 182 : MID, SEED[1]) }, d = { taken: [], beyond: [] }, edge = B.w / 2 - FAR[0] / 2 - 1;
     function place(list, size, lim) {
-      return list.map(function (p) { return { x: snap(seed.x + Math.max(-lim, Math.min(lim, p[0])), size[0]), y: snap(seed.y + p[1], size[1]), sim: p[2] }; });
+      return list.map(function (p) { return { x: snap(seed.x + Math.max(-lim, Math.min(lim, p[0])), size[0]), y: snap(seed.y + p[1] * (B.compact ? 0.7 : 1), size[1]), sim: p[2] }; });
     }
     var taken = place(ALIKE, NEAR, 1e3), beyond = place(BEYOND, FAR, edge);   // a narrow column pulls the papers beyond in to its edge
-    d.word = note(host, B.x, NOTE, 'Similarity to the seed');
+    d.word = note(host, B.x, B.compact ? 66 : NOTE, 'Similarity to the seed');
     d.field = group(host, fieldOf(B, seed, taken.concat(beyond), beyond).concat(beyond).map(function (p) { return paper(p.x, p.y, FAR, { pale: true }); }).join('') +
       taken.map(function (p) { return paper(p.x, p.y, NEAR, { pale: true }); }).join(''));
     var lines = group(host), labels = group(host);
@@ -191,20 +191,22 @@
   }
   /** Draws database search into host, in the column B = { x, w }. Returns play(rv, t), as cite does. */
   function db(host, B) {
-    var d = { rows: [] }, gx = B.x + SMALL[0] / 2, gy = GRID.top + SMALL[1] / 2, gw = (GRID.cols - 1) * GRID.dx + SMALL[0];
+    var grid = B.compact ? { cols: 5, rows: 7, dx: 28, dy: 23, top: 112, word: 97 } : GRID;
+    var baseline = B.compact ? 66 : NOTE, bottom = B.compact ? 278 : Y1;
+    var d = { rows: [] }, gx = B.x + SMALL[0] / 2, gy = grid.top + SMALL[1] / 2, gw = (grid.cols - 1) * grid.dx + SMALL[0];
     var mx = B.x + gw + Math.round(40 * B.w / COLW), room = B.x + B.w - (mx + NEAR[0] + 12), s = '', c, r;
     // the query: a lens, the words, a hairline under them
-    d.query = group(host, '<circle class="sr-lens" cx="' + (B.x + 6.5) + '" cy="' + (NOTE - 5.5) + '" r="5"/><path class="sr-lens" d="M' + (B.x + 10.2) + ',' + (NOTE - 1.8) + ' l3.8,3.8"/>');
-    var q = el('text', { x: B.x + 23, y: NOTE, class: 'lab' }, d.query);
+    d.query = group(host, '<circle class="sr-lens" cx="' + (B.x + 6.5) + '" cy="' + (baseline - 5.5) + '" r="5"/><path class="sr-lens" d="M' + (B.x + 10.2) + ',' + (baseline - 1.8) + ' l3.8,3.8"/>');
+    var q = el('text', { x: B.x + 23, y: baseline, class: 'lab' }, d.query);
     QUERY.forEach(function (w, i) { el('tspan', i === 1 ? { class: 'sr-op', dx: 5 } : i ? { dx: 5 } : {}, q, w); });
-    d.rule = el('line', { x1: B.x, x2: B.x + B.w, y1: NOTE + 13.5, y2: NOTE + 13.5, class: 'rule sr-rule', pathLength: 1 }, host);
-    d.words = [note(host, B.x, GRID.word, 'Literature index'), note(host, mx, GRID.word, 'Matches')];
-    for (r = 0; r < GRID.rows; r++) for (c = 0; c < GRID.cols; c++) s += paper(gx + c * GRID.dx, gy + r * GRID.dy, SMALL, { pale: true });
+    d.rule = el('line', { x1: B.x, x2: B.x + B.w, y1: baseline + 13.5, y2: baseline + 13.5, class: 'rule sr-rule', pathLength: 1 }, host);
+    d.words = [note(host, B.x, grid.word, 'Literature index'), note(host, mx, grid.word, 'Matches')];
+    for (r = 0; r < grid.rows; r++) for (c = 0; c < grid.cols; c++) s += paper(gx + c * grid.dx, gy + r * grid.dy, SMALL, { pale: true });
     d.index = group(host, s);
-    var step = (Y1 - GRID.top - NEAR[1]) / (MATCHES.length - 1);   // the matches stand from the index's top to its foot
+    var step = (bottom - grid.top - NEAR[1]) / (MATCHES.length - 1);   // the matches stand from the index's top to its foot
     MATCHES.forEach(function (m, i) {
-      var ix = snap(gx + m.at[0] * GRID.dx, SMALL[0]), iy = snap(gy + m.at[1] * GRID.dy, SMALL[1]);
-      var px = snap(mx + NEAR[0] / 2, NEAR[0]), py = snap(GRID.top + NEAR[1] / 2 + i * step, NEAR[1]), o = { dx: ix - px, dy: iy - py };
+      var ix = snap(gx + m.at[0] * grid.dx, SMALL[0]), iy = snap(gy + m.at[1] * grid.dy, SMALL[1]);
+      var px = snap(mx + NEAR[0] / 2, NEAR[0]), py = snap(grid.top + NEAR[1] / 2 + i * step, NEAR[1]), o = { dx: ix - px, dy: iy - py };
       o.lit = group(host, '<rect class="sr-halo" x="' + f(ix - SMALL[0] / 2 - 3.5) + '" y="' + f(iy - SMALL[1] / 2 - 3.5) + '" width="' + (SMALL[0] + 7) + '" height="' + (SMALL[1] + 7) + '" rx="2.5"/>' + paper(ix, iy, SMALL));
       o.paper = group(host, paper(px, py, NEAR));
       o.text = group(host);
@@ -314,18 +316,19 @@
 
   /** The narrow window: each search its own drawing; then the counts together. */
   function narrow(frame, rv) {
-    var W = 348, X0 = 20, B = { x: X0, w: W - 2 * X0 };
+    var W = 348, X0 = 20, B = { x: X0, w: W - 2 * X0, compact: true };
     D.searches.forEach(function (s) {
-      var svg = picture(frame, W, Y1 + 16, SAYS[s.key]), t = title(svg, B.x, s), play = DRAW[s.key](group(svg), B);
+      var svg = picture(frame, W, 294, SAYS[s.key]), t = title(svg, B.x, s), play = DRAW[s.key](group(svg), B);
+      t.setAttribute('transform', 'translate(0 -16)');
       OK.onArrive(svg, function () { rv.arrive(t, 0); play(rv, 150); });
     });
     var last = picture(frame, W, 100, sums()), d = {};
     // the first band stands on the ground's left edge, as on a wide window; the others in the middle of their thirds
     var third = B.w / 3, list = D.searches.map(function (s, i) { var w = bandWidth(s.found, 100), c = i ? Math.round(B.x + (i + 0.5) * third) : B.x + w / 2; return { x0: c - w / 2, x1: c + w / 2, c: c }; });
     d.heads = list.map(function (b, i) { return group(last, OK.tile(b.c - 11, 12, 22, D.searches[i].key) + '<text x="' + b.c + '" y="54" text-anchor="middle"><tspan class="cnt">' + OK.fmt(D.searches[i].found) + '</tspan><tspan class="note" dx="4">papers</tspan></text>'); });
-    d.ground = el('path', { d: comb(list, 66, 106, B.x, B.x + B.w, 186, R / 2), class: 'ground' }, last);
-    d.total = total(last, W / 2, 157, 'middle');
-    last.setAttribute('viewBox', '0 0 ' + W + ' 214');
+    d.ground = el('path', { d: comb(list, 66, 90, B.x, B.x + B.w, 142, R / 2), class: 'ground' }, last);
+    d.total = total(last, W / 2, 119, 'middle');
+    last.setAttribute('viewBox', '0 0 ' + W + ' 164');
     OK.onArrive(last, function () {
       d.heads.forEach(function (g, i) { rv.arrive(g, i * 110); });
       rv.fade(d.ground, 250, 480); rv.arrive(d.total, 560, 480);

@@ -25,8 +25,8 @@
     return '<text class="' + cls + '" x="' + f(at.x - (at.mid ? 0 : NUDGE[cls] || 0)) + '" y="' + f(at.y + dy) + '"' + (at.mid ? ' text-anchor="middle"' : '') + '>' + s + '</text>';
   }
   /** Returns one counted paper centred on x, y: the kit's icon drawn a size up and scaled, so its lines keep their proportion. */
-  function counted(x, y, o) {
-    return '<g transform="translate(' + f(x) + ' ' + f(y) + ') scale(' + K + ')">' + OK.paper(0, 0, IW / K, IH / K, o) + '</g>';
+  function counted(x, y, o, scale) {
+    return '<g transform="translate(' + f(x) + ' ' + f(y) + ') scale(' + (K * (scale || 1)) + ')">' + OK.paper(0, 0, IW / K, IH / K, o) + '</g>';
   }
   var ruler = null;
   /** Returns the width of a string set in a CSS font. */
@@ -177,26 +177,28 @@
     /* opens a group at filter k when its kind differs from the filter before it */
     function opens(k) { return !k || D.filters[k].model !== D.filters[k - 1].model; }
     if (stack) {
-      var y = 52, LX = 7.5, X = 28;
+      var y = 44, LX = 7.5, X = 28;
       P.dot = { x: LX, y: 15 }; P.intro = { x: X, y: 19.5 };
       for (k = 0; k < N; k++) {
         c = col(k);
         if (opens(k)) {
           var lw = widthOf(SAID[D.filters[k].model], LAB);
           P.groups.push({ k: k, says: SAID[D.filters[k].model], at: { x: X, y: y + 10 }, rule: [X + lw + 12, P.W, y + 5.5] });
-          y += 40;
+          y += 32;
         }
         c.node = { x: LX, y: y + 9, r: 5.5 }; c.name = { x: X, y: y + 16 }; c.set = { x: X, y: y + 36 };
         c.box = { x: X, y: y + 54 };
-        c.cost = { x: X + BW + 44, foot: c.box.y + BH };
-        c.count = { x: X, y: c.box.y + BH + 36 };   // the papers are counted under the icon
-        c.pile = { x: X, y: c.count.y + 14, per: 16, dx: IW + 4 };
-        if (k === N - 1) { c.count.y += 16; c.pile.y += 22; }
-        c.bottom = c.pile.y + Math.ceil(c.n / c.pile.per) * ROW - 4;
+        // Keep the inspected record and its remaining papers side by side.
+        // Only the repeated paper marks shrink; names, settings and counts keep their size.
+        c.cost = { x: X + BW + 16, foot: c.box.y + BH };
+        c.count = { x: 170, y: c.box.y + 14 };
+        c.pile = { x: 170, y: c.count.y + 14, per: 16, dx: (IW + 4) * 0.52, scale: 0.52 };
+        if (k === N - 1) { c.count.y += 18; c.pile.y += 24; }
+        c.bottom = Math.max(c.box.y + BH, c.pile.y + Math.ceil(c.n / c.pile.per) * ROW * c.pile.scale);
         P.cols.push(c);
-        y = c.bottom + 40;
+        y = c.bottom + 26;
       }
-      P.H = y - 40 + 8;
+      P.H = y - 26 + 12;
       return P;
     }
     var HEAD = 50, FOOT = 112, TOP = 126, NAME = TOP + BH + 31, LY = NAME + 22 + SET_LH + 48.5;
@@ -273,15 +275,16 @@
       // the papers that reach this filter, in rows. A slot holds one paper as the filter leaves it: in ink when it
       // passes, pale when it is removed, yellow when it is kept; over a pale or a yellow one lies the ink paper it arrived as
       var rows = Math.ceil(c.n / c.pile.per), last = k === N - 1, lead = c.pile.mid ? Math.floor((c.n - c.pass) / 2) : 0;
-      var px = c.pile.mid ? c.node.x - ((c.n - 1) * c.pile.dx) / 2 : c.pile.x + IW / 2;
+      var scale = c.pile.scale || 1;
+      var px = c.pile.mid ? c.node.x - ((c.n - 1) * c.pile.dx) / 2 : c.pile.x + IW / 2 * scale;
       for (i = 0; i < rows; i++) o.rows.push(g(gTop));
       for (i = 0; i < c.n; i++) {
-        var r = Math.floor(i / c.pile.per), x = px + (i % c.pile.per) * c.pile.dx, y = c.pile.y + IH / 2 + r * ROW;
-        var passes = i >= lead && i < lead + c.pass, slot = { e: g(o.rows[r], counted(x, y, passes ? { kept: last } : { pale: true })), x: x, y: y, row: r };
+        var r = Math.floor(i / c.pile.per), x = px + (i % c.pile.per) * c.pile.dx, y = c.pile.y + (IH / 2 + r * ROW) * scale;
+        var passes = i >= lead && i < lead + c.pass, slot = { e: g(o.rows[r], counted(x, y, passes ? { kept: last } : { pale: true }, scale)), x: x, y: y, row: r };
         o.slots.push(slot);
         if (passes) o.passed.push(slot);
         if (passes && !last) continue;
-        var arrived = g(slot.e, counted(x, y));
+        var arrived = g(slot.e, counted(x, y, null, scale));
         arrived.setAttribute('opacity', 0);
         o.out.push(arrived);
       }

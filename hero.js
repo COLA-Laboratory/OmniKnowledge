@@ -272,13 +272,13 @@
      lines pass it. */
   var TALL = {
     when: window.matchMedia('(max-width: 880px)'),  // the window in which the wide picture's text can no longer be read
-    w: 324, s: 0.42,                                // the picture's width; the map's scale
+    w: 324, s: 0.32,                                // the picture's width; the map's scale
     lx: 13.5, col: 34,                              // the line beside the question; the left edge of the question's text
     x0: 8, x1: 316,                                 // the left and right edges of the cards
     rail: 110.5,                                    // the line through the cards and the beads; the middle of the first topic
-    ch: 80, gap: 62,                                // a card's height; card to card along the line, a bead in the middle
+    ch: 80, gap: 48,                                // a card's height; card to card along the line, a bead in the middle
     at: [110.5, 226, 90.5, 217.5],                  // the middle of each topic's ground, across
-    drop: 124,                                      // from one row of tasks to the next
+    drop: 104,                                      // from one row of tasks to the next
     // the tasks, row by row, and the paper each hangs from: [topic, paper]
     tasks: [
       { name: ['Literature', 'review'], p: [2, 9], row: 0, draw: review },
@@ -298,8 +298,8 @@
    */
   function placeTall() {
     var Z = TALL, S = Z.s, G = MAP.topics.map(function (T) { return ground(T.nodes); });
-    var L = { ask: [48, 79, 110], seeds: 147, shelf: 180.5, papers: [], links: [] };
-    L.sc = { x: Z.x0, y: 216, w: Z.x1 - Z.x0, h: Z.ch };
+    var L = { ask: [40, 66, 92], seeds: 122, shelf: 152.5, papers: [], links: [] };
+    L.sc = { x: Z.x0, y: 188, w: Z.x1 - Z.x0, h: Z.ch };
     L.fc = { x: Z.x0, y: L.sc.y + Z.ch + Z.gap, w: L.sc.w, h: Z.ch + 22 };   // four rows of filters, where the searches take three
     L.found = L.sc.y + Z.ch + Z.gap / 2;
     L.kept = L.fc.y + L.fc.h + Z.gap / 2;
@@ -307,8 +307,8 @@
     L.tip = L.top - 12;
     var at = L.at = Z.at.map(function (cx, t) { return { cx: cx, r: G[t].r * S + PAD }; });
     at[0].cy = L.top + at[0].r;
-    at[2].cy = at[0].cy + at[0].r + 46 + at[2].r;    // a name of two lines between them
-    at[1].cy = at[0].cy + 113;                       // where it meets the first and the third alike
+    at[2].cy = at[0].cy + at[0].r + 38 + at[2].r;    // a name of two lines between them
+    at[1].cy = at[0].cy + 94;                       // where it meets the first and the third alike
     at[3].cy = at[1].cy + at[1].r + 28.5 + at[3].r;  // a name of one line between them
     MAP.topics.forEach(function (T, t) {
       var A = at[t];

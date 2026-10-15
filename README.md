@@ -62,3 +62,17 @@ node tools/shot.mjs phone.png "" --size=390x844 --scale=2 --full --wait=2500
 
 `--sel="[data-section=build]"` captures one section; `--motion` samples the reveal instead of
 the finished state. The tool prints horizontal overflow and any page error.
+
+## Mobile layout
+
+Narrow illustrations keep a maximum width equal to their SVG viewBox width (324–350 px),
+so a larger iPhone does not enlarge labels and make every diagram taller. Section titles
+use 28 px on phones, diagram step names 17 px, and supporting diagram text keeps the kit's
+12.5–14 px hierarchy. Compact diagrams move their marks closer together instead of scaling
+all their text down. The screening diagram puts its inspected record beside the count and
+paper marks; the four feature links use two columns.
+
+When changing a picture, check the complete page at 402×874 and 440×956 (iPhone 17 and
+17 Pro Max), plus 375 px for narrow phones. Check all three pipeline presets, both map
+views and all four tasks, with motion enabled and reduced. Compare 1280 px and 1440 px
+full-page captures against the previous desktop layout. Use WebKit as well as Chromium.

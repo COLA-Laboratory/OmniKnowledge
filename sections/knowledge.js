@@ -46,11 +46,11 @@
     cards: [0, 1, 2, 3].map(function (k) { return { x: 32 + k * 308, y: 424, w: 290, h: 232 }; })
   };
   var TALL = {
-    W: 350, H: 876, S: 0.5, rk: 1.2, rmin: 2.1, gap: 8, over: 9, apart: 20, semTop: 34, flip: true, tall: true,
-    map: { x: 10, y: 24, w: 330, h: 566 },
-    at: [{ cx: 113, cy: 128 }, { cx: 236, cy: 274 }, { cx: 113, cy: 414 }, { cx: 242, cy: 512 }],
-    lab: [{ x: 216, y: 44 }, { x: 14, y: 262 }, { x: 222, y: 398 }, { x: 14, y: 534 }],
-    cards: [0, 1, 2, 3].map(function () { return { x: 10, y: 626, w: 330, h: 232 }; })
+    W: 350, H: 730, S: 0.34, rk: 1.2, rmin: 1.8, gap: 7, over: 8, apart: 16, semTop: 30, flip: true, tall: true,
+    map: { x: 10, y: 24, w: 330, h: 440 },
+    at: [{ cx: 100, cy: 110 }, { cx: 247, cy: 211 }, { cx: 100, cy: 316 }, { cx: 247, cy: 400 }],
+    lab: [{ x: 190, y: 44 }, { x: 14, y: 210 }, { x: 190, y: 325 }, { x: 14, y: 425 }],
+    cards: [0, 1, 2, 3].map(function () { return { x: 10, y: 480, w: 330, h: 232 }; })
   };
 
   /** Returns the smallest circle that holds every one of the circles given: { x, y, r }. */
@@ -633,7 +633,8 @@
       G = next;
       if (pic) pic.destroy();
       stage.textContent = ''; pick.textContent = '';
-      frame.classList.remove('ka-tall');
+      // Apply mobile type before measuring labels and their yellow markers.
+      frame.classList.toggle('ka-tall', !!G.tall);
       hits = TASKS.map(function (T, k) {
         var R = G.cards[k], b = OK.h('button', { type: 'button', class: 'ka-hit', 'data-k': k, 'aria-label': OK.DATA.tasks[k] + ': ' + T.ask }, stage);
         b.style.cssText = 'left:' + (R.x / G.W * 100) + '%;top:' + (R.y / G.H * 100) + '%;width:' + (R.w / G.W * 100) + '%;height:' + (R.h / G.H * 100) + '%';
@@ -646,7 +647,6 @@
         return b;
       });
       pic = Picture(G, stage, ui, state.arrived ? state.task : -1);
-      frame.classList.toggle('ka-tall', !!G.tall);
       pressed();
       ui.waiting(!state.arrived);
       if (state.view === 'sem') { var still = OK.still; OK.still = true; pic.view('sem'); OK.still = still; }
