@@ -1,85 +1,329 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OmniKnowledge: the knowledge foundation for your next discovery</title>
-<meta name="description" content="OmniKnowledge is an automated pipeline for scientists to find, screen, synthesize and apply the knowledge in the literature.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="OmniKnowledge: the knowledge foundation for your next discovery">
-<meta property="og:description" content="An automated pipeline for scientists to find, screen, synthesize and apply the knowledge in the literature.">
-<meta property="og:url" content="https://colalab.ai/OmniKnowledge/">
-<meta property="og:image" content="https://colalab.ai/OmniKnowledge/assets/share.png">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="canonical" href="https://colalab.ai/OmniKnowledge/">
-<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600;700&display=swap">
-<link rel="stylesheet" href="kit.css">
-<link rel="stylesheet" href="page.css?v=20261015-mobile">
-<link rel="stylesheet" href="hero.css?v=20261015-mobile">
-<link rel="stylesheet" href="sections/features.css?v=20261015-mobile">
-<link rel="stylesheet" href="sections/build.css?v=20261015-mobile">
-<link rel="stylesheet" href="sections/search.css?v=20261015-mobile">
-<link rel="stylesheet" href="sections/screen.css?v=20261015-mobile">
-<link rel="stylesheet" href="sections/knowledge.css?v=20261015-mobile">
-</head>
-<body>
-<div id="top"></div>
-<header class="site-header">
-  <nav class="wrap nav" aria-label="Main">
-    <a class="brand" href="#top"><svg viewBox="0 0 28 28" aria-hidden="true"><path d="M5 7 14 3l9 4v14l-9 4-9-4V7Zm0 0 9 5 9-5M14 12v13" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="14" cy="12" r="3" fill="currentColor"/></svg>OmniKnowledge</a>
-    <div class="nav-links"><a href="#search">How it works</a><a href="#features">Our approach</a><a href="#questions">Questions</a></div>
-    <a class="button" href="https://docs.google.com/forms/d/e/1FAIpQLSfP9cpCi9eRetU46_qqT8IDZWNAUm2WPRN8vKtpMse3wv3n2g/viewform?usp=sharing&amp;ouid=100942124864768633413" target="_blank" rel="noopener">Request access</a>
-  </nav>
-</header>
-<main>
-  <section class="hero wrap">
-    <div class="hero-heading">
-      <h1>Build the <span class="highlight">knowledge foundation</span><br class="wide"> for your next discovery</h1>
-      <div class="hero-aside">
-        <p>An automated pipeline for scientists to find, screen, synthesize and apply the knowledge in the literature.</p>
-        <div class="actions">
-          <a class="button primary" href="https://omniknowledge-demo-agent4sci.netlify.app/" target="_blank" rel="noopener">Explore the demo<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-          <a class="text-button" href="https://docs.google.com/forms/d/e/1FAIpQLSfP9cpCi9eRetU46_qqT8IDZWNAUm2WPRN8vKtpMse3wv3n2g/viewform?usp=sharing&amp;ouid=100942124864768633413" target="_blank" rel="noopener">Request access</a>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OmniKnowledge: the knowledge foundation for your next discovery</title>
+    <meta
+      name="description"
+      content="OmniKnowledge is an automated pipeline for scientists to find, screen, synthesize and apply the knowledge in the literature."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="OmniKnowledge: the knowledge foundation for your next discovery" />
+    <meta
+      property="og:description"
+      content="An automated pipeline for scientists to find, screen, synthesize and apply the knowledge in the literature."
+    />
+    <meta property="og:url" content="https://colalab.ai/OmniKnowledge/" />
+    <meta property="og:image" content="https://colalab.ai/OmniKnowledge/assets/share.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://colalab.ai/OmniKnowledge/" />
+    <link rel="icon" href="assets/icon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600;700&display=swap"
+    />
+    <link rel="stylesheet" href="styles/tokens.css" />
+    <link rel="stylesheet" href="styles/kit.css" />
+    <link rel="stylesheet" href="styles/base.css" />
+    <link rel="stylesheet" href="styles/components.css" />
+    <link rel="stylesheet" href="styles/landing.css" />
+    <link rel="stylesheet" href="sections/hero/hero.css" />
+    <link rel="stylesheet" href="sections/features/features.css" />
+    <link rel="stylesheet" href="sections/build/build.css" />
+    <link rel="stylesheet" href="sections/search/search.css" />
+    <link rel="stylesheet" href="sections/screen/screen.css" />
+    <link rel="stylesheet" href="sections/knowledge/knowledge.css" />
+    <script type="module" src="main.js"></script>
+  </head>
+  <body>
+    <div id="top"></div>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <nav class="wrap nav" aria-label="Main">
+        <a class="brand" href="#top"
+          ><svg viewBox="0 0 28 28" aria-hidden="true"><use href="assets/icons.svg#brand" /></svg>OmniKnowledge</a
+        >
+        <div class="nav-links">
+          <a href="#search">How it works</a><a href="#features">Our approach</a><a href="#questions">Questions</a>
         </div>
-      </div>
-    </div>
-    <figure class="hero-figure"><div class="frame pic"><svg id="hero-pic" viewBox="0 0 1280 400" role="img" aria-labelledby="pic-t"><desc id="pic-t"></desc></svg></div></figure>
-  </section>
+        <a
+          class="button"
+          href="https://docs.google.com/forms/d/e/1FAIpQLSfP9cpCi9eRetU46_qqT8IDZWNAUm2WPRN8vKtpMse3wv3n2g/viewform?usp=sharing&amp;ouid=100942124864768633413"
+          target="_blank"
+          rel="noopener"
+          >Request access</a
+        >
+      </nav>
+    </header>
+    <main id="main">
+      <section class="hero wrap">
+        <div class="hero-heading">
+          <h1>
+            Build the <span class="highlight">knowledge foundation</span><br class="wide" />
+            for your next discovery
+          </h1>
+          <div class="hero-aside">
+            <p>An automated pipeline for scientists to find, screen, synthesize and apply the knowledge in the literature.</p>
+            <div class="actions">
+              <a class="button primary" href="https://omniknowledge-demo-agent4sci.netlify.app/" target="_blank" rel="noopener"
+                >Explore the demo<svg viewBox="0 0 20 20" aria-hidden="true"><use href="assets/icons.svg#arrow" /></svg
+              ></a>
+              <a
+                class="text-button"
+                href="https://docs.google.com/forms/d/e/1FAIpQLSfP9cpCi9eRetU46_qqT8IDZWNAUm2WPRN8vKtpMse3wv3n2g/viewform?usp=sharing&amp;ouid=100942124864768633413"
+                target="_blank"
+                rel="noopener"
+                >Request access</a
+              >
+            </div>
+          </div>
+        </div>
+        <figure class="hero-figure" data-section="hero">
+          <div class="frame pic">
+            <svg id="hero-pic" viewBox="0 0 1280 400" role="img" aria-labelledby="pic-t">
+              <desc id="pic-t">
+                From a research question and three seed papers, three searches (citation tracing, semantic search, database
+                search) find 14,950 papers; seven filters in a row (year, citations, venue, keywords, title criteria, abstract
+                criteria, full-text criteria) keep 212. The 212 stand as one citation network in four topics, and four tasks rest
+                on it: literature review, hypothesis generation, experiment planning and results interpretation, each tied by a
+                line to a paper it cites.
+              </desc>
+            </svg>
+          </div>
+        </figure>
+      </section>
 
-  <section class="wrap" id="features" data-section="features"></section>
-  <section class="sec wrap" id="search" data-section="search"></section>
-  <section class="sec wrap" id="screen" data-section="screen"></section>
-  <section class="sec wrap" id="build" data-section="build"></section>
-  <section class="sec wrap" id="knowledge" data-section="knowledge"></section>
+      <section class="wrap" id="features" data-section="features">
+        <h2 class="visually-hidden">Our approach</h2>
+        <div class="ft-row">
+          <a class="ft-item" href="#search">
+            <div class="ft-pic pic">
+              <svg
+                viewBox="0 0 232 96"
+                width="232"
+                height="96"
+                role="img"
+                data-drawing="comprehensive"
+                aria-label="The same seven papers after one, two and three ways of searching: three are missing, then one, then none"
+              ></svg>
+            </div>
+            <h3 class="ft-name"><span>Comprehensive</span></h3>
+            <p class="ft-text">
+              Triangulated search combines citations, semantics and keywords to deliver the most complete picture of your field.
+            </p>
+          </a>
+          <a class="ft-item" href="#screen">
+            <div class="ft-pic pic">
+              <svg
+                viewBox="0 0 232 96"
+                width="232"
+                height="96"
+                role="img"
+                data-drawing="rigorous"
+                aria-label="Five papers checked against the same three criteria; four pass, one fails the second and is removed"
+              ></svg>
+            </div>
+            <h3 class="ft-name"><span>Rigorous</span></h3>
+            <p class="ft-text">
+              Exact metadata rules and LLM screening, from title to full text, hold every paper to your criteria.
+            </p>
+          </a>
+          <a class="ft-item" href="#screen">
+            <div class="ft-pic pic">
+              <svg
+                viewBox="0 0 232 96"
+                width="232"
+                height="96"
+                role="img"
+                data-drawing="cost-effective"
+                aria-label="A balance: the pile of papers on one end outweighs the single coin on the other"
+              ></svg>
+            </div>
+            <h3 class="ft-name"><span>Cost-effective</span></h3>
+            <p class="ft-text">
+              Cascaded screening lets cheap rules settle the clear cases and saves LLM screening for the hard ones.
+            </p>
+          </a>
+          <a class="ft-item" href="#build">
+            <div class="ft-pic pic">
+              <svg
+                viewBox="0 0 232 96"
+                width="232"
+                height="96"
+                role="img"
+                data-drawing="trustworthy"
+                aria-label="One paper: a trail leads back from it, through the paper it was found from, to a seed paper, each hop marked with the search that made it; two decisions on it, a pass and a fail, are each tied to the line they rest on"
+              ></svg>
+            </div>
+            <h3 class="ft-name"><span>Trustworthy</span></h3>
+            <p class="ft-text">
+              Transparent search and screening pipelines, with a fully auditable record of every decision, keep you in control.
+            </p>
+          </a>
+        </div>
+      </section>
 
-  <section class="faq wrap" id="questions">
-    <h2 class="sec-h">Questions</h2>
-    <div>
-      <details><summary>What is OmniKnowledge?<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m8 5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><p>A web app for systematic literature work. Give it a research topic and a few seed papers; it searches, screens and maps the literature into a corpus you can review, question and build on.</p></details>
-      <details><summary>Where do the papers come from?<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m8 5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><p>From a scholarly index of over 200 million papers across every field: journal articles, conference proceedings and preprints, including those on PubMed, arXiv and bioRxiv.</p></details>
-      <details><summary>Can I trust the results?<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m8 5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><p>Every step is open: each search lists what it found, each filter what it removed and why, with PRISMA-style counts throughout. It is not another LLM agent: an LLM screens only the borderline papers that rules cannot settle, which keeps both the cost and the room for hallucination small.</p></details>
-      <details><summary>What does a run cost?<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m8 5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><p>About $0.50 for a typical run that screens 20,000 papers. Rule-based filters remove most papers at no cost, so an LLM screens only the few that rules cannot settle. The cost grows with scope and settings.</p></details>
-      <details><summary>How can I get access?<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m8 5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><p>OmniKnowledge is in internal testing. Access will open first to collaborating groups, then by request. <a href="https://docs.google.com/forms/d/e/1FAIpQLSfP9cpCi9eRetU46_qqT8IDZWNAUm2WPRN8vKtpMse3wv3n2g/viewform?usp=sharing&amp;ouid=100942124864768633413" target="_blank" rel="noopener">Request access</a> to join the list; meanwhile, <a href="https://omniknowledge-demo-agent4sci.netlify.app/" target="_blank" rel="noopener">the demo</a> walks through a complete run.</p></details>
-    </div>
-  </section>
+      <section class="sec wrap" id="search" data-section="search">
+        <div class="sec-head">
+          <h2 class="sec-h sr-h">Triangulated search across citations, semantics and keywords</h2>
+          <p class="sec-p">
+            Three search paradigms run as one and take the best of each. Citation tracing follows how papers build on one another,
+            semantic search finds related work whatever its wording, and database search reaches papers no citation leads to.
+          </p>
+        </div>
+        <div class="frame pic sr-pic"></div>
+      </section>
 
-</main>
-<footer class="wrap footer">
-  <a class="brand" href="#top"><svg viewBox="0 0 28 28" aria-hidden="true"><path d="M5 7 14 3l9 4v14l-9 4-9-4V7Zm0 0 9 5 9-5M14 12v13" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="14" cy="12" r="3" fill="currentColor"/></svg>OmniKnowledge</a>
-  <span>Example question, papers and counts are illustrative.</span>
-  <a class="footer-lab" href="https://colalab.ai/">COLA Laboratory</a>
-</footer>
+      <section class="sec wrap" id="screen" data-section="screen">
+        <div class="sec-head">
+          <h2 class="sec-h">Screening that scales within your budget</h2>
+          <p class="sec-p">
+            Rule checks on year, citations, venue and keywords cost almost nothing. They lean toward keeping a paper, since a
+            wrong rejection cannot be undone, and leave the doubtful ones to LLM screening of titles, then abstracts, then
+            full&nbsp;texts.
+          </p>
+        </div>
+        <div class="frame pic sc-pic"><svg class="sc-svg" role="img" aria-labelledby="sc-t"></svg></div>
+      </section>
 
-<script src="kit.js"></script>
-<script src="hero.js?v=20261015-mobile"></script>
-<script src="sections/features.js"></script>
-<script src="sections/build.js?v=20261015-mobile"></script>
-<script src="sections/search.js?v=20261015-mobile"></script>
-<script src="sections/screen.js?v=20261015-mobile"></script>
-<script src="sections/knowledge.js?v=20261015-mobile"></script>
-<script src="page.js"></script>
-</body>
+      <section class="sec wrap" id="build" data-section="build">
+        <div class="ba-wrap">
+          <div class="ba-text">
+            <h2 class="sec-h">
+              <span class="ba-s"
+                ><span class="ba-l">Pipelines</span> <span class="ba-l">you can</span> <span class="ba-l">build, monitor</span>
+                <span class="ba-l">and audit</span></span
+              >
+            </h2>
+            <p class="sec-p">
+              A platform for knowledge retrieval pipelines. Every search reports the papers it found and every filter the papers
+              it passes on, so a run can be checked from end to end.
+            </p>
+            <div class="ba-notes">
+              <div class="ba-note">
+                <h3 class="ba-note-h"><span class="pic ba-ico" aria-hidden="true" data-glyph="cite"></span>Search your way</h3>
+                <p class="ba-note-p">
+                  Chain backward and forward citation tracing, semantic search and database search in any order, or run them side
+                  by side.
+                </p>
+              </div>
+              <div class="ba-note">
+                <h3 class="ba-note-h"><span class="pic ba-ico" aria-hidden="true" data-glyph="check"></span>Set your own bar</h3>
+                <p class="ba-note-p">
+                  Choose from a library of criteria, from a publication year to an LLM judgment on the full text.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="frame pic ba-frame">
+            <div class="ba-stage">
+              <div class="k-switch ba-switch" role="group" aria-label="How far the search goes">
+                <button type="button" aria-pressed="false" data-preset="light">Light</button>
+                <button type="button" aria-pressed="true" data-preset="medium">Medium</button>
+                <button type="button" aria-pressed="false" data-preset="heavy">Heavy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="sec wrap" id="knowledge" data-section="knowledge">
+        <div class="sec-head">
+          <h2 class="sec-h">A mapped knowledge corpus, ready to power your research</h2>
+          <p class="sec-p">
+            The papers that pass stand as a citation network or by topic. For a literature review, a hypothesis, an experiment
+            plan or a reading of your results, every paper is read and each statement cites its source.
+          </p>
+        </div>
+        <div class="frame pic ka">
+          <div class="ka-top">
+            <div class="k-switch" role="group" aria-label="How the map is drawn">
+              <button type="button" aria-pressed="true" data-view="net">Citation network</button>
+              <button type="button" aria-pressed="false" data-view="sem">Semantic map</button>
+            </div>
+          </div>
+          <div class="ka-seen"></div>
+          <div class="ka-stage"></div>
+          <div class="k-switch ka-pick" role="group" aria-label="Task">
+            <button type="button" aria-pressed="true" data-k="0">Literature review</button>
+            <button type="button" aria-pressed="false" data-k="1">Hypothesis generation</button>
+            <button type="button" aria-pressed="false" data-k="2">Experiment planning</button>
+            <button type="button" aria-pressed="false" data-k="3">Results interpretation</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="faq wrap" id="questions">
+        <h2 class="sec-h">Questions</h2>
+        <div>
+          <details>
+            <summary>
+              What is OmniKnowledge?<svg viewBox="0 0 20 20" aria-hidden="true"><use href="assets/icons.svg#chevron" /></svg>
+            </summary>
+            <p>
+              A web app for systematic literature work. Give it a research topic and a few seed papers; it searches, screens and
+              maps the literature into a corpus you can review, question and build on.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Where do the papers come from?<svg viewBox="0 0 20 20" aria-hidden="true">
+                <use href="assets/icons.svg#chevron" />
+              </svg>
+            </summary>
+            <p>
+              From a scholarly index of over 200 million papers across every field: journal articles, conference proceedings and
+              preprints, including those on PubMed, arXiv and bioRxiv.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Can I trust the results?<svg viewBox="0 0 20 20" aria-hidden="true"><use href="assets/icons.svg#chevron" /></svg>
+            </summary>
+            <p>
+              Every step is open: each search lists what it found, each filter what it removed and why, with PRISMA-style counts
+              throughout. It is not another LLM agent: an LLM screens only the borderline papers that rules cannot settle, which
+              keeps both the cost and the room for hallucination small.
+            </p>
+          </details>
+          <details>
+            <summary>
+              What does a run cost?<svg viewBox="0 0 20 20" aria-hidden="true"><use href="assets/icons.svg#chevron" /></svg>
+            </summary>
+            <p>
+              About $0.50 for a typical run that screens 20,000 papers. Rule-based filters remove most papers at no cost, so an
+              LLM screens only the few that rules cannot settle. The cost grows with scope and settings.
+            </p>
+          </details>
+          <details>
+            <summary>
+              How can I get access?<svg viewBox="0 0 20 20" aria-hidden="true"><use href="assets/icons.svg#chevron" /></svg>
+            </summary>
+            <p>
+              OmniKnowledge is in internal testing. Access will open first to collaborating groups, then by request.
+              <a
+                href="https://docs.google.com/forms/d/e/1FAIpQLSfP9cpCi9eRetU46_qqT8IDZWNAUm2WPRN8vKtpMse3wv3n2g/viewform?usp=sharing&amp;ouid=100942124864768633413"
+                target="_blank"
+                rel="noopener"
+                >Request access</a
+              >
+              to join the list; meanwhile,
+              <a href="https://omniknowledge-demo-agent4sci.netlify.app/" target="_blank" rel="noopener">the demo</a> walks
+              through a complete run.
+            </p>
+          </details>
+        </div>
+      </section>
+    </main>
+    <footer class="wrap footer">
+      <a class="brand" href="#top"
+        ><svg viewBox="0 0 28 28" aria-hidden="true"><use href="assets/icons.svg#brand" /></svg>OmniKnowledge</a
+      >
+      <span>Example question, papers and counts are illustrative.</span>
+      <a class="footer-lab" href="https://colalab.ai/">COLA Laboratory</a>
+    </footer>
+  </body>
 </html>

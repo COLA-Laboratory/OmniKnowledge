@@ -1,0 +1,269 @@
+/*
+ * The drawing language: the classes every picture is drawn with. A picture is any element with
+ * class "pic"; README.md says what each mark is for. Nothing here knows about the page around a
+ * picture.
+ */
+@font-face {
+  font-family: Hanken;
+  src: url('../assets/fonts/hanken.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+.pic {
+  color: var(--ink);
+  font-family: var(--font-pic);
+}
+
+.pic svg {
+  display: block;
+  overflow: visible;
+}
+
+.pic svg text {
+  font-family: var(--font-pic);
+  fill: var(--ink);
+}
+
+/* ---- marks (SVG) ---- */
+
+/* a citation: thin, straight */
+.pic .edge {
+  fill: none;
+  stroke: var(--ink);
+  stroke-opacity: 0.46;
+  stroke-width: 0.8;
+}
+
+/* a paper in number */
+.pic .dot {
+  fill: var(--y);
+  stroke: var(--ink);
+  stroke-width: 0.8;
+}
+
+/* a seed paper in the network: ring and core */
+.pic .ring {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 1.2;
+}
+
+.pic .core {
+  fill: var(--ink);
+}
+
+/* the pale ground a topic stands on */
+.pic .ground {
+  fill: var(--tint);
+}
+
+/* the pipeline line */
+.pic .lead {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pic .lead.cut {
+  stroke-linecap: butt;
+}
+
+.pic .port {
+  fill: var(--ink);
+}
+
+/* an evidence line */
+.pic .wire {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* the yellow marker behind a number or word */
+.pic .mark {
+  fill: var(--y);
+}
+
+.pic .card {
+  fill: var(--paper);
+  stroke: var(--hair2);
+  stroke-width: 1;
+}
+
+.pic .rule {
+  stroke: var(--hair);
+  stroke-width: 1;
+}
+
+.pic .tile {
+  fill: var(--ink);
+}
+
+.pic .ic {
+  fill: none;
+  stroke: var(--paper);
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pic .ic .f {
+  fill: var(--paper);
+  stroke: none;
+}
+
+.pic .chain {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.25;
+}
+
+.pic .maybe {
+  fill: none;
+  stroke: var(--open);
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-dasharray: 0.1 4.4;
+}
+
+.pic .box {
+  fill: var(--paper);
+  stroke: var(--open);
+  stroke-width: 1.2;
+}
+
+.pic .box.on {
+  stroke: var(--ink);
+}
+
+.pic .tick {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pic .axis {
+  fill: none;
+  stroke: var(--open);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pic .pt {
+  fill: var(--ink);
+}
+
+/* ---- type (SVG text) ---- */
+.pic .note {
+  font-family: var(--font-pic);
+  font-size: var(--pic-size-text);
+  font-weight: 400;
+  fill: var(--t3);
+}
+
+.pic .ask {
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.pic .lab {
+  font-size: var(--pic-size-label);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
+.pic .cnt {
+  font-family: var(--font-mono);
+  font-size: var(--pic-size-count);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.pic .row {
+  font-size: var(--pic-size-text);
+  font-weight: 500;
+  letter-spacing: -0.003em;
+}
+
+.pic .no {
+  font-family: var(--font-mono);
+  font-size: var(--pic-size-number);
+  font-weight: 500;
+  fill: var(--paper);
+}
+
+.pic .topic {
+  font-size: var(--pic-size-topic);
+  font-weight: 600;
+  letter-spacing: -0.012em;
+}
+
+.pic .topic .c {
+  font-family: var(--font-mono);
+  font-size: var(--pic-size-number);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  fill: var(--t2);
+}
+
+.pic .task {
+  font-size: var(--pic-size-task);
+  font-weight: 600;
+  letter-spacing: -0.022em;
+}
+
+/* a task's name in a narrow composition (kit/fit.js sets k-narrow on the frame) */
+.pic.k-narrow .task {
+  font-size: var(--pic-size-task-narrow);
+}
+
+.pic .qm {
+  font-size: 19px;
+  font-weight: 600;
+}
+
+/* ---- the one switch: words in a row, the chosen one on the yellow marker; no boxes, no pills ---- */
+.pic .k-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pic .k-switch button {
+  appearance: none;
+  border: 0;
+  background: none;
+  margin: 0;
+  padding: 3px 7px;
+  font: 600 var(--pic-size-label) / 1.3 var(--font-pic);
+  letter-spacing: -0.005em;
+  color: var(--t3);
+  cursor: pointer;
+  border-radius: 0;
+  transition:
+    color 0.16s var(--ease),
+    background-color 0.16s var(--ease);
+}
+
+.pic .k-switch button:hover {
+  color: var(--ink);
+}
+
+.pic .k-switch button[aria-pressed='true'] {
+  color: var(--ink);
+  background: var(--y);
+}
+
+.pic .k-switch button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <!-- The page's icons, each drawn once; a page shows one with <svg><use href="assets/icons.svg#name"/></svg>. -->
+  <symbol id="brand" viewBox="0 0 28 28">
+    <path d="M5 7 14 3l9 4v14l-9 4-9-4V7Zm0 0 9 5 9-5M14 12v13" fill="none" stroke="currentColor" stroke-width="1.7"/>
+    <circle cx="14" cy="12" r="3" fill="currentColor"/>
+  </symbol>
+  <symbol id="arrow" viewBox="0 0 20 20">
+    <path d="M4 10h12m-5-5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="chevron" viewBox="0 0 20 20">
+    <path d="m8 5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+</svg>

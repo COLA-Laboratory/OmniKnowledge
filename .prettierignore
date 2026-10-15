@@ -1,0 +1,8 @@
+node_modules/
+output/
+test-results/
+playwright-report/
+pnpm-lock.yaml
+assets/
+kit/network.data.js
+sections/knowledge/semantic.data.js
