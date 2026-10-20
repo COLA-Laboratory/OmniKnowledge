@@ -8,7 +8,7 @@
  */
 
 /** The smallest size, in CSS px, a picture's text may be drawn at. */
-export const MIN_TEXT = 11;
+export const MIN_TEXT = 9.5;
 /** The size, in a picture's own units, of the smallest text it sets. */
 export const SMALLEST_TEXT = 12.5;
 

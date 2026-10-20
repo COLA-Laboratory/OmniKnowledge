@@ -3,7 +3,7 @@
  * filters and the record of a run. Prefix: ba-. --ba-text and --ba-pic are the two columns'
  * shares and --ba-own the wide picture's own width (set by build.js from what it measured), so
  * that in a 1280 column the picture stands at its own size. The text stands above the frame
- * where the frame's column would draw the picture's text under 11 px (kit/fit.js); the frame
+ * where the frame's column would draw the picture's text under MIN_TEXT (kit/fit.js); the frame
  * carries ba-narrow while the one-column picture stands in it.
  */
 .ba-wrap {
@@ -108,9 +108,9 @@
   margin-top: -3px;
 }
 
-/* 1254: the widest window at which the two columns would draw the 859-wide picture's text under
-   11 px (kit/fit.js); tests/e2e/readable.spec.js fails if the picture's width moves it */
-@media (width <= 1254px) {
+/* 1200: the two columns keep the 859-wide picture's text above MIN_TEXT (kit/fit.js) down to this
+   window (10.4 px at 1201); tests/e2e/readable.spec.js fails if the picture's width moves it */
+@media (width <= 1200px) {
   .ba-wrap {
     grid-template-columns: minmax(0, 1fr);
     row-gap: 32px;
