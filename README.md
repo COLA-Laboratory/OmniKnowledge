@@ -140,13 +140,13 @@ growing network. It carries `noindex` and is served at `/OmniKnowledge/sign-in/`
 ## Narrow frames
 
 A picture chooses its composition by the width of its frame, not the window (`kit/fit.js`): the
-wide composition stands while its smallest text is drawn at 11 px or more, otherwise the narrow
+wide composition stands while its smallest text is drawn at 9.5 px (`MIN_TEXT`) or more, otherwise the narrow
 one does. Narrow compositions keep a maximum width equal to their viewBox width (324–350 px), so
 a larger frame does not enlarge their labels. Section titles use 28 px on phones, a task's name
 17 px in a narrow composition, and supporting text keeps the kit's 12.5–14 px hierarchy. Compact
 diagrams move their marks closer together instead of scaling all their text down. The Build
-section sets its text beside the frame only where the picture keeps its 11 px there (from
-1255 px).
+section sets its text beside the frame only where the picture keeps that size there (from
+1201 px).
 
 When changing a picture, run `pnpm compare` and look at the pairs it writes; check all three
 pipeline presets, both map views and all four tasks (the scenes do), with motion enabled and
