@@ -3,7 +3,7 @@ import js from '@eslint/js';
 import globals from 'globals';
 
 export default [
-  { ignores: ['node_modules/', 'output/', 'test-results/', 'playwright-report/'] },
+  { ignores: ['node_modules/', 'output/', 'test-results/', 'playwright-report/', 'runs/'] },
   js.configs.recommended,
   {
     languageOptions: { ecmaVersion: 'latest', sourceType: 'module', globals: { ...globals.browser } },

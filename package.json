@@ -9,7 +9,7 @@
   },
   "scripts": {
     "serve": "node tools/serve.mjs",
-    "lint": "eslint . --max-warnings 0 && stylelint \"**/*.css\" --max-warnings 0 && html-validate index.html && node tools/check-static.mjs",
+    "lint": "eslint . --max-warnings 0 && stylelint \"**/*.css\" --max-warnings 0 && html-validate index.html sign-in/index.html && node tools/check-static.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc -p tsconfig.json",
@@ -18,6 +18,7 @@
     "layouts": "node tools/layouts.mjs",
     "compare": "node tools/compare.mjs",
     "shot": "node tools/shot.mjs",
+    "shots:sign-in": "node tools/sign-in-shots.mjs",
     "check": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm test && pnpm test:e2e"
   },
   "devDependencies": {

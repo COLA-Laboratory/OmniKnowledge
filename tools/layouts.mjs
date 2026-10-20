@@ -4,8 +4,9 @@
  * The map of the 212 kept papers (kit/network.data.js) is grown and laid out by simulation:
  * four topics, each a small citation network. The semantic map of the same papers
  * (sections/knowledge/semantic.data.js) places every paper in a sub-topic, once for each of the
- * Knowledge section's arrangements. Both are illustrative and the same on every visit, so they
- * are computed here, once, and checked in; the page only reads them.
+ * Knowledge section's arrangements. The sign-in page's growing network (sign-in/network.data.js)
+ * is laid out by tools/growth-layout.mjs. All are illustrative and the same on every visit, so
+ * they are computed here, once, and checked in; the pages only read them.
  *
  * Usage: node tools/layouts.mjs          writes both data files
  *        node tools/layouts.mjs --check  exits non-zero when a data file is not what this produces
@@ -16,11 +17,22 @@ import { fileURLToPath } from 'node:url';
 import { prng } from '../kit/random.js';
 import { centroid, enclosingCircle } from '../kit/geometry.js';
 import { ARRANGEMENTS, PAD } from '../sections/knowledge/arrangements.js';
+import { growthLayout } from './growth-layout.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 export const FILES = {
   network: path.join(root, 'kit', 'network.data.js'),
   semantic: path.join(root, 'sections', 'knowledge', 'semantic.data.js'),
+  signIn: path.join(root, 'sign-in', 'network.data.js'),
+};
+
+/** The sign-in picture's network: two clusters in its 720 by 430 viewBox, grown from seed 29. */
+const SIGN_IN = {
+  seed: 29,
+  clusters: [
+    { x: 236, y: 222, r: 200, n: 70, sx: 250, sy: 214 },
+    { x: 512, y: 208, r: 178, n: 56, sx: 500, sy: 216 },
+  ],
 };
 
 /* ---------- the citation network ---------- */
@@ -551,6 +563,11 @@ export function files() {
       'SEMANTIC',
       '@type {import("./semantic.js").SemanticData} The semantic map, packed for each arrangement.',
       semantic(),
+    ),
+    [FILES.signIn]: source(
+      'NETWORK',
+      '@type {import("../kit/network-growth.js").GrowthLayout} The network the sign-in picture grows.',
+      growthLayout(SIGN_IN),
     ),
   };
 }

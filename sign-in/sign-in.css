@@ -1,0 +1,115 @@
+/*
+ * The sign-in page's layout: the picture and the form side by side, the picture a band above the
+ * form on narrow screens; the two steps' heading, lede and the lines under each form. Classes are
+ * prefixed si-. The field, the button, the link and the header are styles/components.css.
+ */
+.si-page {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+.si-main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 420px);
+  gap: 72px;
+  align-items: center;
+  padding-block: 40px 72px;
+}
+
+/* the picture stands on the page, not in a frame */
+.si-pic {
+  --pic-ground: var(--pg-bg);
+
+  display: flex;
+  justify-content: center;
+}
+
+.si-pic svg {
+  width: 100%;
+  max-width: 760px;
+  height: auto;
+}
+
+.si-form h1 {
+  font-family: var(--font-page-display);
+  font-size: clamp(30px, 2.6vw, 38px);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.022em;
+  text-wrap: balance;
+}
+
+.si-lede {
+  margin-top: 12px;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--pg-muted);
+  text-wrap: pretty;
+}
+
+.si-lede b {
+  font-weight: 500;
+  color: var(--pg-ink);
+}
+
+.si-form form {
+  margin-top: 28px;
+}
+
+/* the lines under a form: what to do if the code does not come, another address */
+.si-after {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 22px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--pg-muted);
+}
+
+.si-wait {
+  font-variant-numeric: tabular-nums;
+}
+
+.si-note {
+  margin-top: 24px;
+  padding-top: 14px;
+  border-top: 1px solid var(--pg-line);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--pg-muted);
+  text-wrap: balance;
+}
+
+.si-note .link {
+  white-space: nowrap;
+}
+
+@media (width <= 1000px) {
+  .si-main {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    align-content: start;
+    padding-block: 20px 48px;
+  }
+
+  .si-pic svg {
+    max-width: 560px;
+  }
+
+  .si-form {
+    max-width: 440px;
+  }
+}
+
+@media (width <= 600px) {
+  .si-main {
+    padding-block: 8px 40px;
+  }
+
+  .si-form h1 {
+    font-size: 28px;
+  }
+}

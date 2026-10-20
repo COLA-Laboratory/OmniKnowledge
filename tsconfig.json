@@ -12,5 +12,5 @@
     "noImplicitAny": true,
     "skipLibCheck": true
   },
-  "include": ["main.js", "kit/**/*.js", "sections/**/*.js", "tools/**/*.mjs", "tests/**/*.js", "*.config.js"]
+  "include": ["main.js", "kit/**/*.js", "sections/**/*.js", "sign-in/**/*.js", "tools/**/*.mjs", "tests/**/*.js", "*.config.js"]
 }

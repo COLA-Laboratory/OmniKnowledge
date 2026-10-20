@@ -4,8 +4,10 @@
  *
  * The finished picture is always the DOM; a reveal only lays animations over it. The page is
  * still with ?still=1 or while the reader prefers reduced motion; the preference is followed when
- * it changes, and every reveal then stops at its finished state. No automatic reveal lasts longer
- * than REVEAL_LIMIT: a longer one is compressed, keeping its order and proportions.
+ * it changes, and every reveal then stops at its finished state. A reveal made with `fades` plays
+ * under reduced motion as fades only, in the same order, instead of not at all. No automatic
+ * reveal lasts longer than REVEAL_LIMIT: a longer one is compressed, keeping its order and
+ * proportions.
  */
 import { token } from './tokens.js';
 
@@ -78,16 +80,19 @@ const live = new Set();
 /**
  * Returns a new reveal.
  *
+ * @param {{ fades?: boolean }} [options] fades: under reduced motion, play every animation as a
+ *   fade at its own time instead of showing the finished state at once.
  * @returns {Reveal}
  */
-export function reveal() {
+export function reveal({ fades = false } = {}) {
   /** @type {Animation[]} */
   let anims = [];
   /** @type {Reveal} */
   const rv = {
     from(e, frames, delay = 0, duration = 420, easing = token('ease')) {
-      if (isStill()) return null;
-      return rv.add(e.animate(frames, { delay, duration, easing, fill: 'backwards' }));
+      if (isStill() && (!fades || prefs().forced)) return null;
+      const shown = isStill() ? [{ opacity: 0 }, { opacity: 1 }] : frames;
+      return rv.add(e.animate(shown, { delay, duration, easing, fill: 'backwards' }));
     },
     fade: (e, delay, duration = 420) => rv.from(e, [{ opacity: 0 }, { opacity: 1 }], delay, duration),
     arrive: (e, delay, duration = 420) =>
@@ -129,13 +134,14 @@ export function reveal() {
   return rv;
 }
 
-onStill(() => {
+// registered without reading the preference, so the module loads where there is no window
+onStillCalls.add(() => {
   for (const rv of [...live]) rv.cancel();
 });
 
 /** @type {Set<() => void>} */
 const waiting = new Set();
-onStill(() => {
+onStillCalls.add(() => {
   for (const arrive of [...waiting]) arrive();
 });
 

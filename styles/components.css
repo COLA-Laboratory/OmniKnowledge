@@ -1,6 +1,7 @@
 /*
- * The parts a second page reuses: the column, the site header and its brand, buttons, the text
- * button, the skip link, the frame a picture stands in, the highlight marker and the footer.
+ * The parts every page reuses: the column, the site header with its brand and back link, buttons
+ * (and their busy state), the text button, the skip link, the text field with its label, row and
+ * error, the inline link, the frame a picture stands in, the highlight marker and the footer.
  */
 
 /* the column every block of a page is set in */
@@ -77,6 +78,29 @@
   color: var(--pg-ink);
 }
 
+/* a header link back to another page: an arrow and a label, shortened on phones */
+.nav-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  color: var(--pg-muted);
+  transition: color 0.16s var(--ease);
+}
+
+.nav-back:hover {
+  color: var(--pg-ink);
+}
+
+.nav-back svg {
+  width: 18px;
+  height: 18px;
+}
+
+.nav-back .short {
+  display: none;
+}
+
 /* buttons */
 .button {
   min-height: 48px;
@@ -114,6 +138,33 @@
   flex-shrink: 0;
 }
 
+/*
+ * A button at work (aria-busy="true"): its icon gives way to a turning ring of the same size, so
+ * nothing moves. The icon holds both: <use class="idle" …#arrow/><use class="busy" …#busy/>.
+ */
+.button .busy,
+.button[aria-busy='true'] .idle {
+  display: none;
+}
+
+.button[aria-busy='true'] {
+  cursor: progress;
+}
+
+.button[aria-busy='true'] .busy {
+  display: inline;
+}
+
+.button[aria-busy='true'] svg {
+  animation: button-busy 0.9s linear infinite;
+}
+
+@keyframes button-busy {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
 .nav .button {
   min-height: 42px;
   padding: 9px 15px;
@@ -134,6 +185,104 @@
 .text-button:hover {
   text-decoration: underline;
   text-underline-offset: 5px;
+}
+
+/* a text field: its label above, the field, and the field's error under it */
+.field-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.field {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--pg-field);
+  border-radius: var(--radius-control);
+  background: var(--paper);
+  font: 400 16px/1 var(--font-page);
+  color: var(--pg-ink);
+  outline: none;
+  transition:
+    border-color 0.16s var(--ease),
+    box-shadow 0.16s var(--ease);
+}
+
+.field::placeholder {
+  color: var(--pg-placeholder);
+}
+
+.field:focus {
+  border-color: var(--pg-ink);
+  box-shadow: 0 0 0 1px var(--pg-ink);
+}
+
+/* a one-time code: wide-set figures */
+.field.code {
+  padding-left: 16px;
+  font: 500 20px/1 var(--font-page-display);
+  letter-spacing: 0.36em;
+  font-variant-numeric: tabular-nums;
+}
+
+.field[aria-invalid='true'] {
+  border-color: var(--pg-error);
+  box-shadow: 0 0 0 1px var(--pg-error);
+}
+
+.field-error {
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--pg-error);
+}
+
+.field-error:empty {
+  display: none;
+}
+
+/* a field and the button that sends it, side by side; stacked on phones */
+.field-row {
+  display: flex;
+  gap: 10px;
+}
+
+.field-row .button {
+  gap: 14px;
+  white-space: nowrap;
+}
+
+/* a link inside text, underlined; also a button that reads as one */
+.link {
+  color: var(--pg-ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--pg-underline);
+  transition:
+    text-decoration-color 0.16s var(--ease),
+    color 0.16s var(--ease);
+}
+
+.link:hover {
+  color: var(--pg-ink);
+  text-decoration-color: var(--pg-ink);
+}
+
+button.link {
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+}
+
+/* a link in quiet text: as quiet as the text until it is pointed at */
+.link.muted {
+  color: var(--pg-muted);
 }
 
 /* the yellow marker under a phrase of a heading */
@@ -190,6 +339,18 @@
   text-decoration-color: var(--pg-ink);
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .button[aria-busy='true'] svg {
+    animation: button-busy-calm 1.6s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes button-busy-calm {
+  to {
+    opacity: 0.35;
+  }
+}
+
 @media (width <= 1100px) {
   .wrap {
     width: calc(100% - 64px);
@@ -223,6 +384,27 @@
 
   .nav .button {
     display: none;
+  }
+
+  .nav-back {
+    gap: 6px;
+    font-size: 14px;
+  }
+
+  .nav-back .long {
+    display: none;
+  }
+
+  .nav-back .short {
+    display: inline;
+  }
+
+  .field-row {
+    flex-direction: column;
+  }
+
+  .field-row .field {
+    flex: none;
   }
 
   .footer {

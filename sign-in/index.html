@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sign in · OmniKnowledge</title>
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href="../assets/icon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600;700&display=swap"
+    />
+    <link rel="stylesheet" href="../styles/tokens.css" />
+    <link rel="stylesheet" href="../styles/kit.css" />
+    <link rel="stylesheet" href="../styles/base.css" />
+    <link rel="stylesheet" href="../styles/components.css" />
+    <link rel="stylesheet" href="sign-in.css" />
+    <script type="module" src="main.js"></script>
+  </head>
+  <body class="si-page">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <nav class="wrap nav" aria-label="Main">
+        <a class="brand" href="../"
+          ><svg viewBox="0 0 28 28" aria-hidden="true"><use href="../assets/icons.svg#brand" /></svg>OmniKnowledge</a
+        >
+        <a class="nav-back" href="../"
+          ><svg viewBox="0 0 20 20" aria-hidden="true"><use href="../assets/icons.svg#arrow-back" /></svg
+          ><span class="long">Back to the website</span><span class="short">Website</span></a
+        >
+      </nav>
+    </header>
+    <main id="main" class="wrap si-main">
+      <div class="si-pic pic" aria-hidden="true"><svg id="si-network" viewBox="0 0 720 430"></svg></div>
+      <div class="si-form">
+        <section id="si-step-email" aria-labelledby="si-email-heading">
+          <h1 id="si-email-heading">Sign in to your <span class="highlight">knowledge foundation</span></h1>
+          <p class="si-lede">Enter your email and we'll send you a sign&#8209;in code.</p>
+          <form id="si-email-form">
+            <label class="field-label" for="si-email">Email</label>
+            <div class="field-row">
+              <input
+                class="field"
+                id="si-email"
+                type="email"
+                name="email"
+                autocomplete="email"
+                placeholder="you@institution.edu"
+                required
+                aria-describedby="si-email-error"
+              />
+              <button class="button primary" id="si-email-send" type="submit">
+                Email me a code<svg viewBox="0 0 20 20" aria-hidden="true">
+                  <use class="idle" href="../assets/icons.svg#arrow" />
+                  <use class="busy" href="../assets/icons.svg#busy" />
+                </svg>
+              </button>
+            </div>
+            <p class="field-error" id="si-email-error" role="alert"></p>
+          </form>
+          <div class="si-after">
+            <span
+              >Don't have access yet?
+              <a
+                class="link"
+                href="https://docs.google.com/forms/d/e/1FAIpQLSfP9cpCi9eRetU46_qqT8IDZWNAUm2WPRN8vKtpMse3wv3n2g/viewform?usp=sharing&amp;ouid=100942124864768633413"
+                target="_blank"
+                rel="noopener"
+                >Request access</a
+              ></span
+            >
+          </div>
+        </section>
+        <section id="si-step-code" aria-labelledby="si-code-heading" hidden>
+          <h1 id="si-code-heading">Check your <span class="highlight">email</span></h1>
+          <p class="si-lede" id="si-code-lede">
+            We sent a 6-digit code to <b id="si-sent-to"></b>. It expires in <span id="si-expires"></span>.
+          </p>
+          <form id="si-code-form">
+            <label class="field-label" for="si-code">Sign-in code</label>
+            <div class="field-row">
+              <input
+                class="field code"
+                id="si-code"
+                type="text"
+                name="code"
+                inputmode="numeric"
+                autocomplete="one-time-code"
+                minlength="6"
+                maxlength="6"
+                required
+                aria-describedby="si-code-lede si-code-error"
+              />
+              <button class="button primary" id="si-code-send" type="submit">
+                Sign in<svg viewBox="0 0 20 20" aria-hidden="true">
+                  <use class="idle" href="../assets/icons.svg#arrow" />
+                  <use class="busy" href="../assets/icons.svg#busy" />
+                </svg>
+              </button>
+            </div>
+            <p class="field-error" id="si-code-error" role="alert"></p>
+          </form>
+          <div class="si-after">
+            <span
+              >Didn't get it? <span class="si-wait" id="si-wait">Resend code in <span id="si-seconds"></span></span
+              ><button class="link" id="si-resend" type="button" hidden>Resend code</button></span
+            >
+            <button class="link" id="si-change-email" type="button">Use a different email</button>
+          </div>
+          <p class="si-note">
+            No email? Only invited addresses get a code —
+            <a
+              class="link muted"
+              href="https://docs.google.com/forms/d/e/1FAIpQLSfP9cpCi9eRetU46_qqT8IDZWNAUm2WPRN8vKtpMse3wv3n2g/viewform?usp=sharing&amp;ouid=100942124864768633413"
+              target="_blank"
+              rel="noopener"
+              >Request access</a
+            >
+          </p>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

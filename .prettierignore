@@ -2,7 +2,9 @@ node_modules/
 output/
 test-results/
 playwright-report/
+runs/
 pnpm-lock.yaml
 assets/
 kit/network.data.js
 sections/knowledge/semantic.data.js
+sign-in/network.data.js

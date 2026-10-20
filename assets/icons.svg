@@ -7,6 +7,12 @@
   <symbol id="arrow" viewBox="0 0 20 20">
     <path d="M4 10h12m-5-5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
   </symbol>
+  <symbol id="arrow-back" viewBox="0 0 20 20">
+    <path d="M16 10H4m5-5-5 5 5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="busy" viewBox="0 0 20 20">
+    <path d="M10 3.5a6.5 6.5 0 1 1-6.5 6.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+  </symbol>
   <symbol id="chevron" viewBox="0 0 20 20">
     <path d="m8 5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
   </symbol>

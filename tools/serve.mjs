@@ -1,6 +1,7 @@
 /**
  * Serves a directory over HTTP the way GitHub Pages serves this repository: static files, an
- * optional path prefix (Pages publishes the site under /OmniKnowledge/), index.html for a folder.
+ * optional path prefix (Pages publishes the site under /OmniKnowledge/), index.html for a folder
+ * (a folder named without its slash is redirected to it).
  * Node's own http module, no dependency. Used by every tool and by the end-to-end tests.
  *
  * Usage: node tools/serve.mjs [--root=<dir>] [--port=4173] [--prefix=/OmniKnowledge/]
@@ -52,7 +53,14 @@ export async function serve({ root = path.dirname(path.dirname(fileURLToPath(imp
       return;
     }
     try {
-      if ((await fs.stat(file)).isDirectory()) file = path.join(file, 'index.html');
+      if ((await fs.stat(file)).isDirectory()) {
+        // as Pages does: a folder is addressed with its slash, so the page's relative links resolve
+        if (!url.pathname.endsWith('/')) {
+          res.writeHead(301, { location: `${url.pathname}/${url.search}` }).end();
+          return;
+        }
+        file = path.join(file, 'index.html');
+      }
       const body = await fs.readFile(file);
       res.writeHead(200, {
         'content-type': TYPES[path.extname(file)] ?? 'application/octet-stream',

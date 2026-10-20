@@ -16,6 +16,9 @@
   --pg-underline: #c5c6ba;
   --pg-accent: #eee89a;
   --pg-accent-ink: #3d4329;
+  --pg-field: #cfd0c4;
+  --pg-placeholder: #9a9d91;
+  --pg-error: #a3402c;
   --pg-width: 1280px;
   --font-page: 'Inter', 'Helvetica Neue', helvetica, arial, sans-serif;
   --font-page-display: 'Inter Tight', 'Helvetica Neue', helvetica, arial, sans-serif;
@@ -37,6 +40,9 @@
   --hair2: #d2d2cb;
   --tint: #f5f5f1;
   --tint-on-page: #efeee7;
+
+  /* what a picture's knock-outs are filled with: the ground it stands on (a frame is white) */
+  --pic-ground: var(--paper);
 
   /* pale greys: marks only, never text */
   --q: #9d9d96;

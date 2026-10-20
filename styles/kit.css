@@ -53,6 +53,11 @@
   fill: var(--ink);
 }
 
+/* the ground knocked out round a mark, so the lines under it stop short */
+.pic .halo {
+  fill: var(--pic-ground);
+}
+
 /* the pale ground a topic stands on */
 .pic .ground {
   fill: var(--tint);
